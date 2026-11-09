@@ -55,7 +55,7 @@ What is left for a person to run is in [user-tests.md](user-tests.md) (sections 
 
 ## Phase 5: Cut-over
 - [x] 24. Coming-soon panels and polish **(you)** (`PadInfoClient` + `PadInfo`: panel shows at both arches and the shop, no teleport path; audio not done, see user-tests)
-- [ ] 25. Cut-over to the live universe (backups, start place, rename, `RequireLobby = true`) **(you, explicit go-ahead)** (runbook written in [../../docs/cutover.md](../../docs/cutover.md); nothing live touched, waits for Checkpoints C, D and your go-ahead)
+- [x] 25. Cut-over to the live universe (backups, start place, rename, `RequireLobby = true`) **(you, explicit go-ahead)** (DONE via a role swap: start place 123789153131367 is now the lobby (size 50), 92877530696258 the boss (size 6); see docs/cutover.md; the final live two-account check and the old server lock removal remain)
 
 ## Checkpoint E: Live
 - [ ] Joining lands in the lobby; boss-place link bounces back; a live party run works
