@@ -1,0 +1,12 @@
+# Mirror pairs: a client-side runtime module committed in ReplicatedStorage and the server copy that Presentation.Publish() clones from.
+# Publish() returns early when the ReplicatedStorage folder already exists, so an edit to ONLY the server copy never reaches clients.
+# Format: status<TAB>ReplicatedStorage copy (what clients run)<TAB>server copy.  status: identical | drift (known, not yet reconciled)
+identical	src/ReplicatedStorage/BossShared/Presentation/FinalityRuntime/Geometry.luau	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Geometry.luau
+identical	src/ReplicatedStorage/BossShared/Presentation/FinalityRuntime/Visuals.luau	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Visuals.luau
+identical	src/ReplicatedStorage/BossShared/Presentation/PolarisRuntime/Camera.luau	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Camera.luau
+identical	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Geometry.luau	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Geometry.luau
+identical	src/ReplicatedStorage/BossShared/Presentation/MysteriousGuyRuntime/Client.luau	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Client.luau
+drift	src/ReplicatedStorage/BossShared/Presentation/PolarisRuntime/Style.luau	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Style.luau
+drift	src/ReplicatedStorage/BossShared/Presentation/BlackHoleRuntime/Client.luau	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau
+drift	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Style.luau	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Style.luau
+drift	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Visuals.luau	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau
