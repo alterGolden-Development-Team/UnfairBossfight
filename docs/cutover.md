@@ -1,62 +1,53 @@
 # Cut-over to the live universe (plan task 25)
 
-**Nothing in here has been done.** This is the runbook. It starts only after you say go, and only after Checkpoint C and D
-(real teleport, cash, Return to Lobby) passed in the test universe. Live universe 10768840017: the lobby is "Place1" /
-Talueber's Place (92877530696258, empty today) and the boss is The Golden Encounter (123789153131367).
+Live universe 10768840017. Checkpoints C and D passed in the test universe and the live lobby to boss run was tested.
 
-## The order matters
+## The swap
 
-The boss place must not start bouncing players to the lobby before the lobby exists and is the way in. So:
+Creator Hub gave no way to move the start place, so the places swap roles instead. The start place (123789153131367, the old
+Golden Encounter link) becomes the **lobby**, and the boss moves to 92877530696258:
 
-| # | Step | Who | Effect on live players |
+| Place | Was | Is now | Server size |
 |---|---|---|---|
-| 1 | Backups (below) | you | none |
-| 2 | Publish the lobby build to the live lobby place (Env = Live) | you, after my 2-line change | none: nobody can reach it yet |
-| 3 | Open the lobby place's link yourself and walk through it | you | none |
-| 4 | Publish the boss build (Env = Live, `RequireLobby = true`) | you | direct joins of the boss place now bounce to the lobby |
-| 5 | Creator Hub: set the lobby as the **start place** | you | new players now land in the lobby |
-| 6 | Rename the experience to "Unfair Bossfight" | you | none |
-| 7 | Run the 2-account check (below) | you + alt | none |
-| 8 | Remove the old server lock setting on the boss place | you, last | boss place is now guarded only by the lobby |
+| 123789153131367 (start place) | boss | **lobby** | 50 |
+| 92877530696258 | lobby | **boss** | 6 |
 
-## 1. Backups
+`UnfairConfig.Places.Live` already has the swapped ids, `Env = "Live"`, `RequireLobby = true`. Both windows must run a build with
+that config. (Found on the way: the boss place had server size 4, too small for a party of 6.)
 
-- Creator Hub > each live place > Version History: write down the current published version number of **both** places here:
-  lobby `____`, boss `____`.
-- In Studio, open each live place and File > Save to File As: `lobby/place/Lobby.rbxl`, `boss/place/TheGoldenEncounter.rbxl`
-  (the boss file already exists in the repo; replace it with the current live version).
-- Note the current start place and the server lock setting.
+## Steps (do them back to back, with nobody playing)
 
-## 2. The code change (mine, only on your go-ahead)
+Windows: **A** = the boss window (bound to 123789153131367), **B** = the lobby window (bound to 92877530696258).
 
-`shared/UnfairShared/UnfairConfig.luau`:
+1. **Backups.** In Creator Hub > each place > Version History note the current version numbers: 123789153131367 `____`, 92877530696258 `____`.
+2. **Save local copies.** In A: File > Download a Copy > `boss-live.rbxl`. In B: File > Download a Copy > `lobby-live.rbxl`.
+   These are the backups and the starting points for the swap.
+3. **Close A and B.** An open window counts as a Team Create session and blocks publishing to that place.
+4. **Lobby into the start place.** File > Open from File > `lobby-live.rbxl`. Connect Rojo to **34873**. File > **Publish to Roblox As**,
+   choose the existing place **123789153131367** (overwrite). Close the window.
+5. **Boss into the other place.** File > Open from File > `boss-live.rbxl`. Connect Rojo to **34872**. File > **Publish to Roblox As**,
+   choose the existing place **92877530696258** (overwrite). Close the window.
+6. **Place settings** (done by the assistant through the API after step 5): lobby place name "Unfair Bossfight", server size 50;
+   boss place name "The Golden Encounter", server size 6.
+7. **Rename the experience** in Creator Hub > Game details > Name: "Unfair Bossfight".
+8. **Two-account check** (below).
+9. **Last:** remove the old server lock setting on the boss place.
 
-```lua
-Config.Env = "Live"        -- was "Test"
-Config.RequireLobby = true -- was false
-```
+## Two-account check
 
-Then run `tools/check-all.ps1` and commit. Publish **both** places from builds with these values (the boss place reads them to
-decide where "back to the lobby" goes and whether to bounce direct joins). After this, builds meant for the test universe need
-`Env = "Test"` again, so switch it back on a branch (or before the next test round) and never publish a Test build to a live place.
-
-## 3. Lobby place settings to check before publishing
-
-- `Workspace.StreamingEnabled` is off.
-- Teleports between the two places need no setting (same universe). DataStores always work in published servers; the
-  "Enable Studio Access to API Services" switch only matters for Studio sessions.
-- `UnfairConfig.DryRun` is `false`.
-- `UnfairConfig.DevPayload` is `nil`.
-
-## 7. The 2-account check
-
-1. Alt joins the experience link: lands in the lobby (not the boss place).
+1. The alt joins the experience link: lands in the lobby (no boss-place hop).
 2. Both pick a class, form a party, Hardcore + Enraged, Start: both arrive in one private boss server with the right class.
-3. Open `https://www.roblox.com/games/123789153131367` directly: bounces to the lobby.
+3. Open `https://www.roblox.com/games/92877530696258` directly: bounces to the lobby.
 4. Win (or die and use Return to Lobby): cash appears in the lobby HUD, once.
+5. A party of 5 or 6 can launch (server size 6).
 
 ## Rollback
 
-Any step: Creator Hub > start place > set it back to The Golden Encounter; publish the previous boss version from Version History
-(step 1 numbers) or restore `boss/place/TheGoldenEncounter.rbxl`; set `RequireLobby = false` and republish if the boss place was
-already updated. Cash already written stays in the data store and is harmless.
+Version History in Creator Hub for each place: restore the version noted in step 1 (or publish the `.rbxl` copies from step 2
+back to their own places). Then restore the old ids in `UnfairConfig.Places.Live`, set `RequireLobby = false` and republish. Cash
+already written stays in the data store and is harmless.
+
+## After this
+
+Builds for the test universe need `Env = "Test"` again (switch it on a branch or before the next test round). Never publish a Test
+build to a live place.

@@ -10,7 +10,9 @@ local Config = {}
 Config.Env = "Live" :: "Test" | "Live"
 
 Config.Places = {
-	Live = { Lobby = 92877530696258, Boss = 123789153131367 }, -- universe 10768840017: "Place1" (lobby, empty) and The Golden Encounter
+	-- universe 10768840017. SWAPPED at the cut-over so the existing start place (123789153131367, the old Golden Encounter
+	-- link) is the lobby and the boss lives in 92877530696258. Server sizes: lobby 50, boss 6.
+	Live = { Lobby = 123789153131367, Boss = 92877530696258 },
 	Test = { Lobby = 83310105029258, Boss = 76581021814220 }, -- "Unfair Bossfight TEST" universe 10775538032
 }
 

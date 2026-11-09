@@ -39,8 +39,8 @@ still running. Never connect a Studio window that holds the live game to a Rojo 
 
 | | Live universe | Test universe ("Unfair Bossfight TEST") |
 |---|---|---|
-| Lobby | 92877530696258 | 83310105029258 |
-| Boss | 123789153131367 | 76581021814220 |
+| Lobby | 123789153131367 (the start place, formerly The Golden Encounter) | 83310105029258 |
+| Boss | 92877530696258 | 76581021814220 |
 
 `shared/UnfairShared/UnfairConfig.luau` holds both sets. `Env = "Test"` while building; `Env = "Live"` and `RequireLobby = true`
 come with the cut-over (see [docs/cutover.md](docs/cutover.md)). The test universe already enforces the lobby
