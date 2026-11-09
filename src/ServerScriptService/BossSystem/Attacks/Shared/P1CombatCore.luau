@@ -60,7 +60,6 @@ return function(actor)
 	effects.Parent = runtime.Effects
 	Effects.TrackContainer(effects, actor)
 	local gold = Color3.fromRGB(255, 210, 25)
-	local bright = Color3.fromRGB(255, 255, 190)
 	local function active()
 		return b.Parent and h.Health>0 and b:GetAttribute("AIEnabled")~=false
    and workspace:GetServerTimeNow()>=(b:GetAttribute("ClassStunnedUntil") or 0)

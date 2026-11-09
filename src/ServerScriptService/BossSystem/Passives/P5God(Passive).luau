@@ -1,4 +1,3 @@
-local B=script:FindFirstAncestor("BossSystem")
 return function(actor)
  local api={IsPassive=true}
  function api.IsActive()

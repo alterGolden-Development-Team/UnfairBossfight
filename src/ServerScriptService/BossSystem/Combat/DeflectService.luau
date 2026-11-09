@@ -55,9 +55,6 @@ local function shields(s, kind, t)
 	end
 	return list
 end
-local function anyShield(s, t)
-	return #shields(s, "Tap", t) > 0 or #shields(s, "Hold", t) > 0 or t <= (s.Chain.Tap or 0) or t <= (s.Chain.Hold or 0)
-end
 
 input.OnServerEvent:Connect(function(player, kind)
 	local s = get(player)

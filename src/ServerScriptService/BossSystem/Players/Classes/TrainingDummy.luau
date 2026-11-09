@@ -1,4 +1,3 @@
-local BossSystem = script:FindFirstAncestor("BossSystem")
 local Players = game:GetService("Players")
 local api = {}
 local dummy

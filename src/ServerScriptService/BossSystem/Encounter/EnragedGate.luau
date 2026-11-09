@@ -7,7 +7,6 @@
  Enraged (BossClient.Presentation.P5ModeAuraClient draws the red aura). The gate closes during a fight and the flag
  clears when the encounter ends.
 ]]
-local Players = game:GetService("Players")
 local B = script:FindFirstAncestor("BossSystem")
 local Arena = require(B.Encounter.ArenaController)
 local api = {}

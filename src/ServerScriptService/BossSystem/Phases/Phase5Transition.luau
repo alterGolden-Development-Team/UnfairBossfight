@@ -30,7 +30,6 @@ local FX = Golden.FX
 local GOLD = Color3.fromRGB(255, 196, 40)
 local BRIGHT = Color3.fromRGB(255, 236, 160)
 local WHITE = Color3.fromRGB(255, 252, 236)
-local EMBER = Color3.fromRGB(255, 150, 40)
 local OBSIDIAN = Color3.fromRGB(20, 16, 24)
 local VOID = Color3.fromRGB(40, 20, 60)
 local METAL = Color3.fromRGB(255, 200, 90)
