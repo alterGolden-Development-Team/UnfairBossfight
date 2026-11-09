@@ -1,0 +1,13 @@
+-- Who may pick which class. A class that is not listed here is open to everybody.
+--   Kind = "Badge"    -> the player must own the badge (Id)
+--   Kind = "GamePass" -> the player must own the game pass (Id). Id = 0 means "not set up yet": nobody can buy or own it.
+-- Upgrades: owning the badge upgrades the class itself (shown as a different title and stronger numbers).
+-- The server checks this when a class is picked (ClassService "Select"); the client only uses it to show padlocks.
+return table.freeze({
+  Duelist = table.freeze({ Kind = "Badge", Id = 2347131894818918, Hint = "Beat True Hardcore to unlock." }),
+  Twinblade = table.freeze({ Kind = "Badge", Id = 1170331551749924, Hint = "Beat Hellaven to unlock." }),
+  Disorderer = table.freeze({ Kind = "GamePass", Id = 2074456085, Price = 25, Hint = "Game pass class - 25 Robux." }),
+  -- the final class (concept only for now; not in ClassConfig.Order yet)
+  TrueWarrior = table.freeze({ Kind = "Badge", Id = 126477610981225, Hint = "Beat True Hardcore solo to unlock.",
+  Upgrade = table.freeze({ Name = "Champion", Id = 2914248639183662, Hint = "Beat Hellaven solo to become the Champion." }) }),
+})
