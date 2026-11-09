@@ -1,7 +1,6 @@
 local Shared = game:GetService("ReplicatedStorage"):WaitForChild("BossShared")
 local Players = game:GetService("Players")
 local Run = game:GetService("RunService")
-local CAS = game:GetService("ContextActionService")
 local StarterGui = game:GetService("StarterGui")
 local Tween = game:GetService("TweenService")
 local player = Players.LocalPlayer
@@ -409,12 +408,6 @@ local victoryConnection = workspace:GetAttributeChangedSignal("BossEncounterWon"
 end)
 if workspace:GetAttribute("BossEncounterWon") then
   showVictory(workspace:GetAttribute("BossVictoryTitle"))
-end
-local function updateSkill(button, timer, remaining, cooldown, alive)
-  button.Active = alive and remaining <= 0 and cooldown <= 0
-  button.AutoButtonColor = button.Active
-  timer.Text = remaining > 0 and string.format("Active · %.1fs", remaining)
-    or (cooldown > 0 and string.format("Cooldown · %.1fs", cooldown) or "Ready")
 end
 local uiElapsed = 0
 local heartbeat = Run.Heartbeat:Connect(function(dt)

@@ -112,18 +112,6 @@ local function show(k,seconds)
  end
 end
  -- a press with nothing coming: the shield flicks up, faint, so you can see the press went in
-local function flick()
- if gui.Enabled and mode~="Flick" then return end
- local at=avatar()
- if not at then return end
- mode="Flick"
- gui.Adornee=at
- paint(WHITE,"")
- track.Visible=false ring.Visible=false
- showUntil=os.clock()+.22
- gui.Enabled=true
- pop(1.2,.12)
-end
 
 Run.RenderStepped:Connect(function()
  if not gui.Enabled then return end

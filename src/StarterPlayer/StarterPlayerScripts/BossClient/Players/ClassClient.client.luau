@@ -11,27 +11,9 @@ local ClassConfig = require(game.ReplicatedStorage:WaitForChild("BossShared"):Wa
 local remote = game.ReplicatedStorage:WaitForChild("ClassControl")
 local EnemyTargets=require(game.ReplicatedStorage.BossShared.Classes.EnemyTargetRules)
 
-local INK, DIM = Color3.fromRGB(229, 225, 211), Color3.fromRGB(157, 162, 172)
+local DIM = Color3.fromRGB(157, 162, 172)
 local function now()
   return workspace:GetServerTimeNow()
-end
-local function corner(o, r)
-  local c = Instance.new("UICorner")
-  c.CornerRadius = UDim.new(0, r)
-  c.Parent = o
-end
-local function label(parent, text, size, color, font)
-  local t = Instance.new("TextLabel")
-  t.BackgroundTransparency = 1
-  t.Text = text
-  t.TextSize = size
-  t.Font = font or Enum.Font.Gotham
-  t.TextColor3 = color or INK
-  t.TextXAlignment = Enum.TextXAlignment.Left
-  t.TextYAlignment = Enum.TextYAlignment.Top
-  t.TextWrapped = true
-  t.Parent = parent
-  return t
 end
 local function character()
   local c = player.Character

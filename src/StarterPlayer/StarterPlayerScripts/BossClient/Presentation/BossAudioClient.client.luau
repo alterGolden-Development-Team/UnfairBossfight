@@ -63,7 +63,6 @@ local illusionToken
 local illusionStartedAt
 local illusionEnded = false
 local sonicStartedAt  -- Phase 5's final attack: its song starts at this server time and plays once (boss SonicBlasterMusicStartedAt)
-local sonicPreloaded = false
 local currentTrack
 local currentAsset
 local Difficulty=require(Shared.Config.DifficultyConfig)

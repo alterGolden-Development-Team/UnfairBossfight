@@ -10,8 +10,6 @@ local arena=workspace:WaitForChild("GoldenGrasslandArena",30)
 local GROUPS={"SurroundingWalls","Scenery","RuinedApproach","ChronicleCourt"}
 local CHAR=Color3.fromRGB(40,32,26)
 local EMBER=Color3.fromRGB(255,150,40)
-local GOLD=Color3.fromRGB(255,206,70)
-local SHINE=Color3.fromRGB(255,240,190)
 
  -- the arena rectangle: inside the knockback barriers
 local function bounds()

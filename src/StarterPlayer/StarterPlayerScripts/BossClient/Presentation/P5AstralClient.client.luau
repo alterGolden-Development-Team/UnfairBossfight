@@ -50,12 +50,9 @@ local render=Run.RenderStepped:Connect(function(dt)
   if not owner or not owner.Parent or not h or h.Health<=0 or owner:GetAttribute("Phase")~=5
    or owner:GetAttribute("EncounterEnded")or(owner:GetAttribute("PhaseGeneration")or 0)~=(effect.Generation or 0)or now-effect.StartedAt>effect.Duration+2 then active[token]=nil
   elseif root and Reset.ViewAllowed()and bossRoot then
-   local distance=((root.Position-bossRoot.Position)*Vector3.new(1,0,1)).Magnitude
    if effect.Attack=="P5Polaris(Ultimate)"then
     -- Polaris darkens through VFXEngine.Sky (real night sky) instead of a black overlay
    elseif effect.Attack=="P5IrisStar"then
-    local starPosition=bossRoot.Position+Vector3.yAxis*effect.Params.Height
-    local proximity=(root.Position-starPosition).Magnitude
     -- Iris Star now blinds with white light (VFXEngine.Effects.IrisStar); no red heat
    end
   end

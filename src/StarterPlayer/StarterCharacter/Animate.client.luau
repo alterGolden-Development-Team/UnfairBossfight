@@ -201,7 +201,6 @@ local jumpAnimDuration = 0.3
 
 local toolTransitionTime = 0.1
 local fallTransitionTime = 0.3
-local jumpMaxLimbVelocity = 0.75
 
  
 
