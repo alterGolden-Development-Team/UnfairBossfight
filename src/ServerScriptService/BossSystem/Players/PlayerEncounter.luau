@@ -10,7 +10,6 @@ local immunity = require(BossSystem.Players.PlayerImmunity)
 local Classes = require(Shared.Classes.ClassConfig)
 local DamageService = require(BossSystem.Combat.DamageService)
 local AbilityMetadata = require(BossSystem.Combat.AbilityMetadata)
-local Time = require(BossSystem.Mechanics.Time.TimeEffectController)
 local EncounterConfig = require(Shared:WaitForChild("Config"):WaitForChild("EncounterConfig"))
 local api = {}
 local Aim = require(BossSystem.Combat.AttackTargetContinuity)
