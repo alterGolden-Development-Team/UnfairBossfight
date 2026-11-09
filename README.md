@@ -41,3 +41,14 @@ Open this folder in VS Code and install the two recommended extensions when it a
 From then on, saving a file in VS Code updates the script in Studio. Rojo does not pull edits made in
 Studio back into the files, so either keep VS Code as the place you edit scripts, or re-run the export
 (step 1) before you start working in VS Code again.
+
+## Project layout
+
+- `src/` — Rojo-managed scripts used for editing and syncing.
+- `place/TheGoldenEncounter.rbxl` — full Roblox place snapshot, including the map and saved instances. Open it in Roblox Studio.
+- `exports/studio-source/` — 771-script source snapshot from Studio, plus its instance mapping and notes. This preserves the direct export separately from the Rojo-formatted source.
+- `tools/` — Studio export receiver and helper script.
+- `_backup/` — existing project backups.
+
+Roblox cloud assets in the place remain referenced by their asset IDs and may need Roblox access to load.
+
