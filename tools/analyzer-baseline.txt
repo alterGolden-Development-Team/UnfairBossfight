@@ -90,21 +90,26 @@
 1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'vanished' not found in table 'S'
 1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau: LocalUnused: Variable 'title' is never used; prefix with '_' to silence
 120	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau : TypeError: Key 'Slammed' not found in table '{| Core: any, Fields: {any}, G: any, Top: any |}'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau : TypeError: Unknown global 'g'; consider assigning to it first
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: ForRange: For loop should iterate backwards; did you forget to specify -1 as step?
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: FunctionUnused: Function 'thorn' is never used; prefix with '_' to silence
-112	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalShadow: Variable 'g' shadows a global variable used at line N
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'boom' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'f' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'floor' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'rings' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'shocks' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'smoke' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'sparks' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'swirls' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'warnColor' is never used; prefix with '_' to silence
-250	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+13	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ChronoBomb.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+22	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/Core.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+42	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/FireKnives.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+2	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/RootsStars.luau : TypeError: Key 'Slammed' not found in table '{| Core: any, Fields: {any}, G: any, Top: any |}'
+37	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/RootsStars.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+2	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau : TypeError: Unknown global 'g'; consider assigning to it first
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: ForRange: For loop should iterate backwards; did you forget to specify -1 as step?
+14	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: LocalShadow: Variable 'g' shadows a global variable used at line N
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: LocalUnused: Variable 'f' is never used; prefix with '_' to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: LocalUnused: Variable 'floor' is never used; prefix with '_' to silence
+34	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+38	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/Slashes.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: LocalUnused: Variable 'boom' is never used; prefix with '_' to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: LocalUnused: Variable 'rings' is never used; prefix with '_' to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: LocalUnused: Variable 'shocks' is never used; prefix with '_' to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: LocalUnused: Variable 'smoke' is never used; prefix with '_' to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: LocalUnused: Variable 'sparks' is never used; prefix with '_' to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: LocalUnused: Variable 'swirls' is never used; prefix with '_' to silence
+1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: LocalUnused: Variable 'warnColor' is never used; prefix with '_' to silence
+61	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ViperTearer.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/VFXEngine/Effects/Polaris.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/Polaris.luau: LocalUnused: Variable 'c3' is never used; prefix with '_' to silence
 20	src/ReplicatedStorage/VFXEngine/Effects/Polaris.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -283,8 +288,6 @@
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 21	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: LocalUnused: Variable 'cam' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: LocalUnused: Variable 'core' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: LocalUnused: Variable 'gp' is never used; prefix with '_' to silence
 101	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Geometry.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Presentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
