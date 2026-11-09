@@ -9,7 +9,7 @@ This request bundles several independently testable capabilities, so they are li
 
 | Module id | Responsibility | Depends on | Milestone |
 |---|---|---|---|
-| `project-layout` | `D:/UnfairBossfight` folder, two Rojo projects, shared mounts, tooling | none | 1 |
+| `project-layout` | `D:/Project/UnfairBossfight` folder, two Rojo projects, shared mounts, tooling | none | 1 |
 | `teleport-contract` | The payload the lobby sends and the boss place validates | project-layout | 1 |
 | `lobby-world` | Lobby map, spawn, 3 pads, shop placeholder | project-layout | 1 |
 | `class-picker` | Class choice in the lobby (UI plus server check) | lobby-world | 1 |
@@ -68,10 +68,10 @@ Paths assume the new layout in section 5. Until the move, boss commands run from
 
 ## 5. Project structure
 
-Target: one git repo rooted at `D:/UnfairBossfight`, with the current repo's history preserved (`.git` moved up one level, existing files `git mv`-ed into `boss/`).
+Target: one git repo rooted at `D:/Project/UnfairBossfight`, with the current repo's history preserved (`.git` moved up one level, existing files `git mv`-ed into `boss/`).
 
 ```
-D:/UnfairBossfight/
+D:/Project/UnfairBossfight/
   boss/                    the current alterGoldenBossfight project, moved as-is
     default.project.json   unchanged tree, paths still relative to boss/
     src/ place/ tools/ tasks/ _backup/
@@ -222,5 +222,5 @@ Answers: 1 yes, Talueber's Place is the empty lobby place. 2 yes, create a test 
 2. OK to create a **separate test universe** for teleport testing before the live game changes? Without it, any teleport test touches the live game.
 3. Cash values for the middle modes (proposed NerfedHardcore 15, Hardcore 25, TrueHardcore 35) fine?
 4. After a loss, should the party be able to change difficulty without leaving the server, or is Return to Lobby the only way (my assumption)?
-5. Git move: OK to make `D:/UnfairBossfight` the git root and `git mv` the current project into `boss/` (history kept)? The alternative is leaving the repo where it is and adding `lobby/` as a sibling folder in a new, second repo.
+5. Git move: OK to make `D:/Project/UnfairBossfight` the git root and `git mv` the current project into `boss/` (history kept)? The alternative is leaving the repo where it is and adding `lobby/` as a sibling folder in a new, second repo.
 6. Is the 4-rooms-per-lobby-server count fine, or do you want a different number?

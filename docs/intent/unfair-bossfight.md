@@ -45,7 +45,7 @@ The boss place is a single place guarded by a server lock. A lobby lets anyone j
 
 ## Project layout (assumption, not yet confirmed in detail)
 
-`D:/UnfairBossfight` holds the lobby project and the boss project side by side. Each has its own Rojo project file, with a shared folder for config. The untracked BossEncounter folder is committed first.
+`D:/Project/UnfairBossfight` holds the lobby project and the boss project side by side. Each has its own Rojo project file, with a shared folder for config. The untracked BossEncounter folder is committed first.
 
 ## Out of scope
 

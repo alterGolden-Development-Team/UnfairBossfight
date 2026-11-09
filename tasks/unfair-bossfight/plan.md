@@ -3,7 +3,7 @@
 Spec: [docs/spec/unfair-bossfight.md](../../docs/spec/unfair-bossfight.md) (approved). Intent: [docs/intent/unfair-bossfight.md](../../docs/intent/unfair-bossfight.md).
 Task checklist: [todo.md](todo.md). Module ids below match the spec's capability map.
 
-This lives in `tasks/unfair-bossfight/` because `tasks/plan.md` and `tasks/todo.md` are the refactor record and still have unchecked tasks (they were not touched). After task 2 the whole repo moves into `boss/`; this folder and `docs/` are lifted to the new root `D:/UnfairBossfight/` in that task.
+This lives in `tasks/unfair-bossfight/` because `tasks/plan.md` and `tasks/todo.md` are the refactor record and still have unchecked tasks (they were not touched). After task 2 the whole repo moves into `boss/`; this folder and `docs/` are lifted to the new root `D:/Project/UnfairBossfight/` in that task.
 
 ## Overview
 
@@ -17,7 +17,7 @@ Corrections to the earlier research notes: `src/ServerStorage/BossEncounter/` is
 - A separate **test universe** is used for every teleport test. The live game is only touched in the final cut-over task.
 - Return to Lobby is the only way to change difficulty. Retry stays in the same reserved server with the same settings.
 - Cash table: Easy 5, NerfedHardcore 15, Hardcore 25, TrueHardcore 35, Hellaven 50; Enraged x2. 4 party rooms per lobby server.
-- Git root moves to `D:/UnfairBossfight`, current project goes into `boss/`, history kept (`git mv`).
+- Git root moves to `D:/Project/UnfairBossfight`, current project goes into `boss/`, history kept (`git mv`).
 - Boss place changes are kept minimal and additive (a new intake module plus small hooks), because the refactor just finished and there are no automated tests for the boss code.
 
 ## Dependency graph
@@ -102,7 +102,7 @@ Sizes: XS 1 file, S 1-2, M 3-5. No task is larger than M. (you) = needs you in S
 - Verify: `git log -1` shows the commit.
 - Files: `docs/**`, `tasks/unfair-bossfight/**`. Deps: none.
 
-**T2 - Move the repo to `D:/UnfairBossfight` (project-layout).** (M) Close VS Code, Studio and Rojo first (you). Backup copy of the whole folder. Create `D:/UnfairBossfight`, move `.git` up, `git mv` the project files into `boss/`, lift `docs/` and `tasks/unfair-bossfight/` to the new root, fix hard-coded `D:\Project\alterGoldenBossfight` paths (README, `tools/*`, `.vscode`), regenerate `sourcemap.json`, copy Claude memory files to the new project memory directory, and record the new location in memory.
+**T2 - Move the repo to `D:/Project/UnfairBossfight` (project-layout).** (M) Close VS Code, Studio and Rojo first (you). Backup copy of the whole folder. Create `D:/Project/UnfairBossfight`, move `.git` up, `git mv` the project files into `boss/`, lift `docs/` and `tasks/unfair-bossfight/` to the new root, fix hard-coded `D:\Project\alterGoldenBossfight` paths (README, `tools/*`, `.vscode`), regenerate `sourcemap.json`, copy Claude memory files to the new project memory directory, and record the new location in memory.
 - Accept: `git log --follow boss/src/...` shows history; `boss/default.project.json` builds; `check.ps1` result equals the pre-move baseline; Rojo serves boss on 34872 and Studio syncs.
 - Verify: `powershell -File boss/tools/check.ps1`; `rojo build boss/default.project.json -o build/boss.rbxl`; you open the new folder in VS Code and Studio connects. (you)
 - Files: README, `tools/*.ps1`, `.vscode/*`, `sourcemap.json` (many renames, few edits). Deps: T1.

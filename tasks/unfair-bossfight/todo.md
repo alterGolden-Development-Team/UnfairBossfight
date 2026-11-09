@@ -5,7 +5,7 @@ Task numbers match plan.md; they are listed in build order, not numeric order.
 
 ## Phase 0: Safety and layout
 - [x] 1. Commit docs (intent, spec, plan)
-- [x] 2. Move repo to `D:/UnfairBossfight` (`boss/`), fix paths, copy Claude memory (done as a clone + `git mv`, so the old folder is untouched and nothing had to be closed)
+- [x] 2. Move repo to `D:/Project/UnfairBossfight` (`boss/`), fix paths, copy Claude memory (done as a clone + `git mv`, so the old folder is untouched and nothing had to be closed)
 - [x] 3. Lobby skeleton, `shared/UnfairShared/UnfairConfig`, mounts, `check.ps1` for both projects
 - [ ] 4. Test universe with copies of both places **(you)**
 - [ ] 5. Place IDs and `Env` switch into `UnfairConfig` (live IDs done; test IDs wait for task 4)
