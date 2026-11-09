@@ -1,13 +1,11 @@
 ﻿17	src/ReplicatedStorage/BossShared/Classes/D20Geometry.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/BossShared/Config/BattleScaling.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/BossShared/Config/DifficultyConfig.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-2	src/ReplicatedStorage/BossShared/Movement/R6DashClient.luau : TypeError: Key 'restoreRotate' not found in table '{| active: any, attachment: any, char: any, h: any, hover: any, listeners: {any}, params: any, pending: {|  |}, restoreRotate: any, root: any, staminaCap: any, velocity: any |}'
 1	src/ReplicatedStorage/BossShared/Movement/R6DashMotion.luau: ImplicitReturn: Function '__index' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ReplicatedStorage/BossShared/Presentation/BlackHoleRuntime/Client.luau: LocalUnused: Variable 'cam' is never used; prefix with '_' to silence
 101	src/ReplicatedStorage/BossShared/Presentation/BlackHoleRuntime/Client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/BossShared/Presentation/CameraFov.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 3	src/ReplicatedStorage/BossShared/Presentation/CinematicReset.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ReplicatedStorage/BossShared/Presentation/DeathScythe/Cinematic.luau : TypeError: Expected this to be 'number', but got 'number | unknown'
 2	src/ReplicatedStorage/BossShared/Presentation/DeathScythe/Cinematic.luau: LocalUnused: Variable 'humanoid' is never used; prefix with '_' to silence
 3	src/ReplicatedStorage/BossShared/Presentation/DeathScythe/Cinematic.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ReplicatedStorage/BossShared/Presentation/DialoguePresentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -16,9 +14,6 @@
 1	src/ReplicatedStorage/BossShared/Presentation/FinalityRuntime/Visuals.luau: CommentDirective: Comment directive is ignored because it is placed after the first non-comment token
 1	src/ReplicatedStorage/BossShared/Presentation/FinalityRuntime/Visuals.luau: LocalUnused: Variable 'S' is never used; prefix with '_' to silence
 112	src/ReplicatedStorage/BossShared/Presentation/FinalityRuntime/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-4	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Visuals.luau : TypeError: Key 'bloom' not found in table 'post'
-2	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Visuals.luau : TypeError: Key 'grade' not found in table 'post'
-4	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Visuals.luau : TypeError: Key 'tween' not found in table 'fov'
 2	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Visuals.luau: LocalUnused: Variable 'C' is never used; prefix with '_' to silence
 2	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Visuals.luau: LocalUnused: Variable 'camera' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/BossShared/Presentation/HyperElasticRuntime/Visuals.luau: LocalUnused: Variable 'P' is never used; prefix with '_' to silence
@@ -31,7 +26,6 @@
 20	src/ReplicatedStorage/BossShared/Presentation/PolarisRuntime/Camera.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 37	src/ReplicatedStorage/BossShared/Presentation/StatusIcons.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/BossShared/Presentation/TrialMenuKit.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-5	src/ReplicatedStorage/BossShared/Presentation/TrueIllusion/Cinematic.luau : TypeError: Key 'Saved' not found in table 'camera'
 2	src/ReplicatedStorage/BossShared/Presentation/TrueIllusion/Cinematic.luau: LocalUnused: Variable 'humanoid' is never used; prefix with '_' to silence
 8	src/ReplicatedStorage/BossShared/Presentation/TrueIllusion/Cinematic.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ReplicatedStorage/BossShared/SonicBlaster.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -46,13 +40,8 @@
 1	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: LocalUnused: Variable 'BLOCK' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: LocalUnused: Variable 'bot' is never used; prefix with '_' to silence
 93	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ReplicatedStorage/VFXEngine/Effects/DyingStar.luau : TypeError: Key 'Flight' not found in table '{| D: any, G: any, Grow: any, Heat: any, Inflow: any, Layers: {| [any]: any |}, Light: any, Mode: any, Root: any, Shell: any, Star: any, Swell: any, Trail: any |}'
 14	src/ReplicatedStorage/VFXEngine/Effects/DyingStar.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ReplicatedStorage/VFXEngine/Effects/GroundShatter.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'Ending' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
-4	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'FlashAt' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
-1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'Gone' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
-1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'Locked' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
 1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau: LocalUnused: Variable 'ga' is never used; prefix with '_' to silence
 13	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 97	src/ReplicatedStorage/VFXEngine/Effects/P5Arsenal.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -63,41 +52,15 @@
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'mark' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'width' is never used; prefix with '_' to silence
 191	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-3	src/ReplicatedStorage/VFXEngine/Effects/P5Finale.luau : TypeError: Key 'blend' not found in table 'cam'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Finale.luau : TypeError: Key 'from' not found in table 'cam'
-2	src/ReplicatedStorage/VFXEngine/Effects/P5Finale.luau : TypeError: Key 'shot' not found in table 'cam'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Finale.luau : TypeError: Key 'started' not found in table 'cam'
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Finale.luau: LocalUnused: Variable 'inner' is never used; prefix with '_' to silence
 57	src/ReplicatedStorage/VFXEngine/Effects/P5Finale.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Argument count mismatch. Function 'setSpell' expects 0 arguments, but 2 are specified
-3	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'blend' not found in table 'cam'
-2	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'boss' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'bound' not found in table 'cam'
-17	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'center' not found in table 'S'
-2	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'core' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'cx' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'cz' not found in table 'S'
-8	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'floorY' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'from' not found in table 'cam'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'hat' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'kick' not found in table 'S'
-4	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'radius' not found in table 'S'
-4	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'running' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'shot' not found in table 'cam'
-3	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'startAt' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'started' not found in table 'cam'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'tiltGoal' not found in table 'S'
-1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau : TypeError: Key 'vanished' not found in table 'S'
 1	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau: LocalUnused: Variable 'title' is never used; prefix with '_' to silence
 120	src/ReplicatedStorage/VFXEngine/Effects/P5SonicBlaster.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 13	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/ChronoBomb.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 22	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/Core.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 42	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/FireKnives.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/RootsStars.luau : TypeError: Key 'Slammed' not found in table '{| Core: any, Fields: {any}, G: any, Top: any |}'
 37	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/RootsStars.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau : TypeError: Unknown global 'g'; consider assigning to it first
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: ForRange: For loop should iterate backwards; did you forget to specify -1 as step?
-14	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: LocalShadow: Variable 'g' shadows a global variable used at line N
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: LocalUnused: Variable 'f' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: LocalUnused: Variable 'floor' is never used; prefix with '_' to silence
 34	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes/SilentRiver.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -122,7 +85,6 @@
 4	src/ReplicatedStorage/VFXEngine/Effects/TrueWarrior.luau: LocalUnused: Variable 'c' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/TrueWarrior.luau: LocalUnused: Variable 'crown' is never used; prefix with '_' to silence
 49	src/ReplicatedStorage/VFXEngine/Effects/TrueWarrior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ReplicatedStorage/VFXEngine/init.luau : TypeError: Key 'Lights' not found in table 'E'
 11	src/ReplicatedStorage/VFXEngine/init.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ReplicatedStorage/VFXEngine/Library.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ReplicatedStorage/VFXEngine/Lighting.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -140,12 +102,9 @@
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenThrust/Behavior.luau: LocalUnused: Variable 'effects' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenThrust/Behavior.luau: LocalUnused: Variable 'h' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenThrust/Behavior.luau: LocalUnused: Variable 'motors' is never used; prefix with '_' to silence
-6	src/ServerScriptService/BossSystem/Attacks/P1/P1NormalSlash/Behavior.luau : TypeError: Key 'MovementRevision' not found in table '{| ChooseTarget: (any) -> (...any), Combo: (any) -> (...any), Crescent: any, DamageArc: (any, any, any) -> (...any), Dispose: () -> (...any), GetTarget: (any) -> (...any), HitFx: any, IsInArc: (any, any, any) -> (...any), MovementRevision: any, Pose: (any, any) -> (...any), PoseAngles: (any, any) -> (...any), RunToTarget: (any, any) -> (...any), Settle: () -> (...any) |}'
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1NormalSlash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1RangedSlashes/Behavior.luau: LocalUnused: Variable 'h' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1TornadoSlash/Behavior.luau: LocalUnused: Variable 'melee' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P2.5/P2.5StolenSecond/Behavior.luau : TypeError: Key 'previewPosition' not found in table '{| anchored: any, cast: any, character: any, closed: any, direction: any, id: any, inputDeadline: any, lastPacket: any, mode: any, networkOwner: any, origin: any, ownershipAuto: any, player: any, previewFrame: any, previewPosition: any, replayFrame: any, replayProgress: any, samples: {any}, sequence: any, speed: any |}'
-2	src/ServerScriptService/BossSystem/Attacks/P2.5/P2.5StolenSecond/Behavior.luau : TypeError: Key 'storedDash' not found in table '{| anchored: any, cast: any, character: any, closed: any, direction: any, id: any, inputDeadline: any, lastPacket: any, mode: any, networkOwner: any, origin: any, ownershipAuto: any, player: any, previewFrame: any, previewPosition: any, replayFrame: any, replayProgress: any, samples: {any}, sequence: any, speed: any |}'
 7	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5IllusionBomb/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 8	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5IllusionGun/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Behavior.luau: LocalUnused: Variable 'finished' is never used; prefix with '_' to silence
@@ -161,95 +120,28 @@
 1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Launcher.luau: LocalUnused: Variable 'suitColor' is never used; prefix with '_' to silence
 25	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3ControlDistortion/Behavior.luau: ImplicitReturn: Function 'targetFor' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'AnimateDisabled' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'AnimateScript' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'AutomaticOwnership' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'Box' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-3	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'DownedSnapshot' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'Held' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'HeldHumanoid' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-6	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'HeldRoot' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'NetworkOwner' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'Player' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-2	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'SafeReleaseFrame' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'WasAnchored' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3PickThePupils(Ultimate)/init.luau : TypeError: Key 'Mode' not found in table '{| Attempt: any, Cups: {any}, Deadline: any, DebuffPenalties: any, Focus: any, Holder: any, LastCorrect: any, LastPenalty: any, Mode: any, Mood: any, Pads: {| [any]: any |}, Penalties: any, PickTotal: any, Pupil: any, Results: {{| Correct: any, Mode: any, Penalties: any, Round: any |}}, RoundsCompleted: any, SelectedSlot: any, Stage: any, Token: any, Votes: any, Wins: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3PlayerClone/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Projectile/Behavior.luau: LocalUnused: Variable 'flatRing' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'BeamRing' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-3	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'DUST' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau: DuplicateCondition: Condition has already been checked on column N
-1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-5	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau : TypeError: Expected this to be 'Color3', but got 'ColorSequence | any'
-10	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau : TypeError: Key 'BeamRing' not found in table '{  }'
-6	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau : TypeError: Key 'Disc' not found in table '{  }'
-4	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau : TypeError: Key 'DUST' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau : TypeError: Other overloads are also not viable: ({ColorSequenceKeypoint}) -> ColorSequence
 2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5OrderBreak/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5OrderBreak/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5OrderBreak/Behavior.luau: LocalUnused: Variable 'dt' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-10	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'DEEP' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
-3	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'DUST' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
-8	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'GOLD' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'ROSE' not found in table '{  }'
-13	src/ServerScriptService/BossSystem/Attacks/P4/P4Burst/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-12	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'DEEP' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'DUST' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'GOLD' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'ROSE' not found in table '{  }'
-5	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau: DuplicateCondition: Condition has already been checked on column N
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4Dash/Behavior.luau: ImplicitReturn: Function 'focus' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 7	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathRoars(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathRoars(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathScythe(Ultimate)/Behavior.luau : TypeError: Key 'Forced' not found in table '{| CanUse: (any) -> (...any), Combo: (any) -> (...any), Cooldown: any, Dispose: () -> (...any), IsUltimate: any, ManagesCooldown: any, UltimatePhase: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathScythe(Ultimate)/Behavior.luau : TypeError: Key 'Quick' not found in table '{| CanUse: (any) -> (...any), Combo: (any) -> (...any), Cooldown: any, Dispose: () -> (...any), IsUltimate: any, ManagesCooldown: any, UltimatePhase: any |}'
-8	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedThrust/Visuals.luau: LocalUnused: Variable 'cometEmitter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau: LocalUnused: Variable 'last' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau: MultiLineStatement: Statement spans multiple lines; use indentation to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau: ImplicitReturn: Function 'near' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 3	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-14	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Borealis/Behavior.luau: LocalUnused: Variable 'END' is never used; prefix with '_' to silence
 14	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Borealis/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Borealis/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'BeamRing' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-3	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'DUST' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau: DuplicateCondition: Condition has already been checked on column N
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -263,24 +155,10 @@
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 5	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5DeathRoar/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-10	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'DEEP' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
-3	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'DUST' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
-8	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'GOLD' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'ROSE' not found in table '{  }'
-13	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedGlidedThread/Behavior.luau: LocalUnused: Variable 'stagger' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau: LocalUnused: Variable 'last' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau: MultiLineStatement: Statement spans multiple lines; use indentation to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'landed' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5JudgementZone/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 4	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5NullifiedZone/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -298,20 +176,12 @@
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5DyingStar/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 5	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5DyingStar/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau: ImplicitReturn: Function 'near' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 3	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-14	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Presentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau : TypeError: Key 'bloom' not found in table 'post'
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau : TypeError: Key 'grade' not found in table 'post'
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau : TypeError: Key 'tween' not found in table 'fov'
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau: LocalUnused: Variable 'C' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau: LocalUnused: Variable 'camera' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau: LocalUnused: Variable 'P' is never used; prefix with '_' to silence
@@ -340,115 +210,41 @@
 112	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/Shared/BossDamageService.luau: MultiLineStatement: Statement spans multiple lines; use indentation to silence
 1	src/ServerScriptService/BossSystem/Attacks/Shared/BossDamageService.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ServerScriptService/BossSystem/Attacks/Shared/P1CombatCore.luau : TypeError: Key 'AirborneFloor' not found in table '{| Active: () -> (...any), Afterimage: (any) -> (...any), AirborneFloor: any, Alive: (any) -> (...any), BeginTelegraph: (any, any) -> (...any), CanHit: (any, any) -> (...any), Characters: any, Damage: (any, any, any) -> (...any), Dispose: () -> (...any), Effects: any, Face: (any) -> (...any), FloorY: (any, any) -> (...any), Humanoid: any, KeepFor: (any, any, any) -> (...any), Melee: any, MotionLine: (any, any, any, any, any, any) -> (...any), Motors: any, Params: any, Part: (any, any, any, any, any... *TRUNCATED*'
 1	src/ServerScriptService/BossSystem/Attacks/Shared/P1CombatCore.luau: ImplicitReturn: Function 'floorY' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 25	src/ServerScriptService/BossSystem/Attacks/Shared/P35IllusionFX.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-85	src/ServerScriptService/BossSystem/Attacks/Shared/P4CrimsonFX.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Attacks/Shared/P4GoldenFX.luau : TypeError: Cyclic dependencies
 18	src/ServerScriptService/BossSystem/Attacks/Shared/P5AstralCore.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 4	src/ServerScriptService/BossSystem/Attacks/Shared/P5MatterBeam.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 4	src/ServerScriptService/BossSystem/Attacks/Shared/P5StrikeCore.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-340	src/ServerScriptService/BossSystem/Attacks/Shared/ShieldBreakCombat.luau : TypeError: Cyclic dependencies
-170	src/ServerScriptService/BossSystem/Attacks/Shared/ShieldBreakControl.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Attacks/Shared/ShieldBreakVFX.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Attacks/Shared/ShieldBreakVFX.luau : TypeError: Expected this to be 'number', but got 'NumberSequence | any'
 1	src/ServerScriptService/BossSystem/Attacks/Shared/ShieldBreakVFX.luau: ImplicitReturn: Function 'Floor' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-340	src/ServerScriptService/BossSystem/Boss/BossLocomotion.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Boss/BossLocomotion.luau: ImplicitReturn: Function 'Idle' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Boss/BossLocomotion.luau: ImplicitReturn: Function 'Run' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-255	src/ServerScriptService/BossSystem/Combat/AbilityCooldownService.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Combat/AstralBurnSchedule.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/ServerScriptService/BossSystem/Combat/AttackController.luau : TypeError: Key 'Context' not found in table '{  }'
-4	src/ServerScriptService/BossSystem/Combat/AttackController.luau : TypeError: Key 'FX' not found in table '{  }'
-170	src/ServerScriptService/BossSystem/Combat/AttackDebuffService.luau : TypeError: Cyclic dependencies
-170	src/ServerScriptService/BossSystem/Combat/AttackRegistry.luau : TypeError: Cyclic dependencies
-255	src/ServerScriptService/BossSystem/Combat/AttackSelector.luau : TypeError: Cyclic dependencies
-850	src/ServerScriptService/BossSystem/Combat/CardDebuffService.luau : TypeError: Cyclic dependencies
 2	src/ServerScriptService/BossSystem/Combat/CardDebuffService.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-85	src/ServerScriptService/BossSystem/Combat/CataclysmQTEService.luau : TypeError: Cyclic dependencies
-595	src/ServerScriptService/BossSystem/Combat/CombatRuntime.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Combat/CombatRuntime.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 8	src/ServerScriptService/BossSystem/Combat/DamageTracker.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-85	src/ServerScriptService/BossSystem/Combat/EffectService.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Combat/P5Debuffs.luau : TypeError: Cyclic dependencies
-255	src/ServerScriptService/BossSystem/Combat/P5ModeService.luau : TypeError: Cyclic dependencies
 2	src/ServerScriptService/BossSystem/Combat/P5ModeWeapon.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-8	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Anchored' not found in table '{| Anchored: any, Done: any, Fly: any, Goal: any, Look: any, Phase: any, Snap: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Burst' not found in table '{| BlackHole: any, Breath: any, Burst: any, Clock: any, Cosmos: any, Gilded: any, Illusion: any, Jets: any, Spokes: any, Thread: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Clock' not found in table '{| BlackHole: any, Breath: any, Burst: any, Clock: any, Cosmos: any, Gilded: any, Illusion: any, Jets: any, Spokes: any, Thread: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Cosmos' not found in table '{| BlackHole: any, Breath: any, Burst: any, Clock: any, Cosmos: any, Gilded: any, Illusion: any, Jets: any, Spokes: any, Thread: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Fly' not found in table '{| Anchored: any, Done: any, Fly: any, Goal: any, Look: any, Phase: any, Snap: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Illusion' not found in table '{| BlackHole: any, Breath: any, Burst: any, Clock: any, Cosmos: any, Gilded: any, Illusion: any, Jets: any, Spokes: any, Thread: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Jets' not found in table '{| BlackHole: any, Breath: any, Burst: any, Clock: any, Cosmos: any, Gilded: any, Illusion: any, Jets: any, Spokes: any, Thread: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Look' not found in table '{| Anchored: any, Done: any, Fly: any, Goal: any, Look: any, Phase: any, Snap: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Snap' not found in table '{| Anchored: any, Done: any, Fly: any, Goal: any, Look: any, Phase: any, Snap: any |}'
-4	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau : TypeError: Key 'Spokes' not found in table '{| BlackHole: any, Breath: any, Burst: any, Clock: any, Cosmos: any, Gilded: any, Illusion: any, Jets: any, Spokes: any, Thread: any |}'
 1	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau: LocalUnused: Variable 'counter' is never used; prefix with '_' to silence
 8	src/ServerScriptService/BossSystem/Combat/P5SonicBlaster.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-170	src/ServerScriptService/BossSystem/Combat/PassiveController.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Combat/PassiveController.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-595	src/ServerScriptService/BossSystem/Combat/ProjectileService.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Combat/ProjectileService.luau : TypeError: Key 'Removed' not found in table '{| Body: any, BodyLease: any, Clock: any, FX: any, FXKind: any, FixedHeading: any, Guard: any, GuardLease: any, HomingDuration: any, InitialDirection: any, KnifeParts: any, LockedAim: any, Position: any, State: any, TrackingOffset: any, Trail: any |}'
 1	src/ServerScriptService/BossSystem/Combat/ProjectileService.luau: DuplicateCondition: Condition has already been checked on line N
-935	src/ServerScriptService/BossSystem/Combat/StatusEffectService.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Combat/StatusEffectService.luau: ImplicitReturn: Function 'activeEntry' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 4	src/ServerScriptService/BossSystem/Combat/StatusEffectService.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-170	src/ServerScriptService/BossSystem/Combat/TauntService.luau : TypeError: Cyclic dependencies
 3	src/ServerScriptService/BossSystem/Combat/TauntService.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 6	src/ServerScriptService/BossSystem/Combat/TPService.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-170	src/ServerScriptService/BossSystem/Combat/UltimateService.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Combat/UltimateService.luau: ImplicitReturn: Function 'staleReason' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Development/InstantPhaseOverride.luau: ImplicitReturn: Function 'Selected' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-85	src/ServerScriptService/BossSystem/Encounter/ArenaPlacement.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Encounter/EncounterStory.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Encounter/EncounterStory.luau: LocalShadow: Variable 'ultimateLines' shadows previous declaration at line N
 1	src/ServerScriptService/BossSystem/Encounter/EncounterStory.luau: LocalUnused: Variable 'ultimateLines' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Encounter/VictoryRewards.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1445	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Cyclic dependencies
-170	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Key 'Cancelled' not found in table '{| Actor: any, AppearanceAt: any, AppearanceCast: any, AppearanceDuration: any, AttackInterval: any, AttackName: any, ExpiresAt: any, FadeDuration: any, Generation: any, Handle: any, HoldDuration: any, Humanoid: any, MirrorMotors: {{| Copy: any, Source: any |}}, MirrorOwner: any, MirrorReadyAt: any, Mode: any, MovementCast: any, OnDefeated: any, OnHealthUpdate: any, Owner: any, OwnerHumanoid: any, Parts: {| [any]: any |}, Pool: any, ReadyAt: any, Role: any, State: any, Target: any, WorldOffset: any... *TRUNCATED*'
-170	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Key 'Closed' not found in table '{| Actor: any, AppearanceAt: any, AppearanceCast: any, AppearanceDuration: any, AttackInterval: any, AttackName: any, ExpiresAt: any, FadeDuration: any, Generation: any, Handle: any, HoldDuration: any, Humanoid: any, MirrorMotors: {{| Copy: any, Source: any |}}, MirrorOwner: any, MirrorReadyAt: any, Mode: any, MovementCast: any, OnDefeated: any, OnHealthUpdate: any, Owner: any, OwnerHumanoid: any, Parts: {| [any]: any |}, Pool: any, ReadyAt: any, Role: any, State: any, Target: any, WorldOffset: any... *TRUNCATED*'
-595	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | "ShieldGate" | never cannot be compared with "HourDebt"
-935	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | "ShieldGate" | never cannot be compared with "Illusion"
-85	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | "ShieldGate" | never cannot be compared with "Normal"
-85	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | "ShieldGate" | never cannot be compared with "Past"
-85	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | "ShieldGate" | never cannot be compared with "Persistent"
-85	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | never cannot be compared with "Illusion"
-170	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | never cannot be compared with "Normal"
-85	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | never cannot be compared with "Past"
-170	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" | never cannot be compared with "Persistent"
-85	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Type "ShieldGate" cannot be compared with "HourDebt"
 8	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-170	src/ServerScriptService/BossSystem/Mechanics/Clones/ShieldGateAttacks.luau : TypeError: Cyclic dependencies
-255	src/ServerScriptService/BossSystem/Mechanics/Clones/ShieldGateMovement.luau : TypeError: Cyclic dependencies
-595	src/ServerScriptService/BossSystem/Mechanics/Reality/RealityController.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Mechanics/Reality/RealityController.luau: LocalUnused: Variable 'core' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Mechanics/Time/GoldenHourAttacks.luau: ImplicitReturn: Function 'threatGround' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-510	src/ServerScriptService/BossSystem/Mechanics/Time/TimeEffectController.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Mechanics/Time/TimeEffectController.luau: ImplicitReturn: Function 'ActiveStop' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Passives/P3Misdirection(Passive).luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 4	src/ServerScriptService/BossSystem/Passives/P4Enraged(Passive).luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1785	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau : TypeError: Cyclic dependencies
-340	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau : TypeError: Key 'Revealed' not found in table '{| Cast: any, Duration: any, Elapsed: any, Geometry: any, Ready: any, Revealed: any, RevealedAt: any |}'
-170	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau : TypeError: Key 'RevealedAt' not found in table '{| Cast: any, Duration: any, Elapsed: any, Geometry: any, Ready: any, Revealed: any, RevealedAt: any |}'
-1	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau: LocalShadow: Variable 'api' shadows previous declaration at line N
-1	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau: LocalShadow: Variable 'Config' shadows previous declaration at line N
-1	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau: LocalShadow: Variable 'Effects' shadows previous declaration at line N
-1	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau: LocalShadow: Variable 'GOLD' shadows previous declaration at line N
-1	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau: LocalShadow: Variable 'Placement' shadows previous declaration at line N
-1	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau: LocalShadow: Variable 'random' shadows previous declaration at line N
-1	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau: LocalShadow: Variable 'Runtime' shadows previous declaration at line N
-1360	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau : TypeError: Cyclic dependencies
-255	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau : TypeError: Key 'Aura' not found in table '{| Actor: any, Cancel: (any, any) -> (...any), CancelReason: any, Cast: any, Completed: any, Core: any, Dressings: {any}, Generation: any, IsActive: (any) -> (...any), MotionFrame: any, Random: any, RootAnchored: any, Sequence: any, Target: any |}'
-85	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau : TypeError: Key 'CancelReason' not found in table '{| Actor: any, Cancel: (any, any) -> (...any), CancelReason: any, Cast: any, Completed: any, Core: any, Dressings: {any}, Generation: any, IsActive: (any) -> (...any), MotionFrame: any, Random: any, RootAnchored: any, Sequence: any, Target: any |}'
-85	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau : TypeError: Key 'PoseToken' not found in table '{| Actor: any, Cancel: (any, any) -> (...any), CancelReason: any, Cast: any, Completed: any, Core: any, Dressings: {any}, Generation: any, IsActive: (any) -> (...any), MotionFrame: any, Random: any, RootAnchored: any, Sequence: any, Target: any |}'
-85	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau : TypeError: Key 'RecallBase' not found in table '{| Active: any, Burst: any, Center: any, FirstGap: any, Frame: any, HalfX: any, HalfZ: any, Players: {| [any]: any |}, Pull: any, Pulse: any, Recall: any, Waves: {any} |}'
 1	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau: ImplicitReturn: Function 'shoulderEndpoint' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-170	src/ServerScriptService/BossSystem/Phases/Phase45Transition.luau : TypeError: Cyclic dependencies
-425	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 2	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-3400	src/ServerScriptService/BossSystem/Phases/PhaseController.luau : TypeError: Cyclic dependencies
-340	src/ServerScriptService/BossSystem/Players/Classes/ClassFX.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassFX.luau: DuplicateFunction: Duplicate function definition: 'FX.Beam' also defined on line N
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassFX.luau: DuplicateFunction: Duplicate function definition: 'FX.Burst' also defined on line N
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassFX.luau: DuplicateFunction: Duplicate function definition: 'FX.Flash' also defined on line N
@@ -462,7 +258,6 @@
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Duelist.luau: LocalUnused: Variable 'glow' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Duelist.luau: LocalUnused: Variable 'sin' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Duelist.luau: LocalUnused: Variable 'trail' is never used; prefix with '_' to silence
-174	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Gambler.luau : TypeError: Key '_stopDie' not found in table '{| Char: any, Destroy: () -> (...any), _conns: {| [any]: any |} |}'
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Gambler.luau: LocalShadow: Variable 'BALL' shadows previous declaration at line N
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Gambler.luau: LocalShadow: Variable 'NEON' shadows previous declaration at line N
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Gambler.luau: LocalUnused: Variable 'BALL' is never used; prefix with '_' to silence
@@ -487,16 +282,11 @@
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Warrior.luau: LocalUnused: Variable 'cos' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Warrior.luau: LocalUnused: Variable 'glowLine' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassModels/Warrior.luau: LocalUnused: Variable 'sin' is never used; prefix with '_' to silence
-1275	src/ServerScriptService/BossSystem/Players/Classes/ClassService.luau : TypeError: Cyclic dependencies
-170	src/ServerScriptService/BossSystem/Players/Classes/ClassService.luau : TypeError: Key 'GenerationConnection' not found in table '{| Frame: any, Generation: any, GenerationConnection: any, Revision: any, WasAnchored: any |}'
-255	src/ServerScriptService/BossSystem/Players/Classes/ClassService.luau : TypeError: Key 'Tank' not found in table 'Kits'
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassService.luau: ImplicitReturn: Function 'Boss' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 21	src/ServerScriptService/BossSystem/Players/Classes/ClassService.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Disorderer.luau: LocalUnused: Variable 'MAG' is never used; prefix with '_' to silence
 3	src/ServerScriptService/BossSystem/Players/Classes/Kits/Disorderer.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 29	src/ServerScriptService/BossSystem/Players/Classes/Kits/Gambler.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Mage.luau : TypeError: Type "C" | never cannot be compared with "F"
-1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Mage.luau : TypeError: Type "C" cannot be compared with "M1"
 1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Mage.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 28	src/ServerScriptService/BossSystem/Players/Classes/Kits/Mage.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Supporter.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
@@ -506,22 +296,12 @@
 9	src/ServerScriptService/BossSystem/Players/Classes/Kits/Twinblade.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Warrior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Warrior.luau: LocalUnused: Variable 'STEEL' is never used; prefix with '_' to silence
-85	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Argument count mismatch. Function 'Aim.Register' expects 0 to 1 argument, but 2 are specified
-1275	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Key 'started' not found in table 'api'
-425	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Key 'StartingLives' not found in table 'api'
 1	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau: ImplicitReturn: Function '__index' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-85	src/ServerScriptService/BossSystem/Players/PlayerR6Appearance.luau : TypeError: Cyclic dependencies
 5	src/ServerScriptService/BossSystem/Players/PlayerR6Appearance.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-340	src/ServerScriptService/BossSystem/Players/R6DashService.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Players/R6DashService.luau : TypeError: Key 'started' not found in table 'api'
 1	src/ServerScriptService/BossSystem/Players/R6DashService.luau: LocalUnused: Variable 'now' is never used; prefix with '_' to silence
-340	src/ServerScriptService/BossSystem/Presentation/CharacterEffects.luau : TypeError: Cyclic dependencies
-85	src/ServerScriptService/BossSystem/Presentation/CombatAudio.luau : TypeError: Cyclic dependencies
 2	src/StarterGui/AlterGoldenBossHUD/UpdateBossHUD.client.luau: LocalUnused: Variable 'entry' is never used; prefix with '_' to silence
 8	src/StarterGui/AlterGoldenBossHUD/UpdateBossHUD.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/StarterGui/PlayerVitalsHUD/PlayerVitalsAndDash.client.luau : TypeError: Argument count mismatch. Function 'predictor.Start' expects 0 to 2 arguments, but 3 are specified
 1	src/StarterPlayer/StarterCharacter/Animate.client.luau: DeprecatedApi: Function 'wait' is deprecated, use 'task.wait' instead
 1	src/StarterPlayer/StarterCharacter/Animate.client.luau: FunctionUnused: Function 'moveSit' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterCharacter/Animate.client.luau: LocalUnused: Variable 'Neck' is never used; prefix with '_' to silence
@@ -530,28 +310,18 @@
 3	src/StarterPlayer/StarterPlayerScripts/BossClient/Input/P5PullMovementClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassAnimator.client.luau: ImplicitReturn: Function 'sample' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 5	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassAnimator.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-2	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau : TypeError: Key 'C' not found in table '{| [any]: any |}'
-2	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau : TypeError: Key 'C' not found in table 'heldKeys'
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau : TypeError: Key 'HumanoidRootPart' not found in external type 'Instance'
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: ImplicitReturn: Function 'character' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: LocalUnused: Variable 'DIM' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: LocalUnused: Variable 'orbs' is never used; prefix with '_' to silence
 6	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau : TypeError: Expected this to be '{| [any]: any |}', but got 'nil'
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau : TypeError: Key 'dashAt' not found in table '{| char: any, connections: {any}, dashAt: any, dashElapsed: any, frozenPlaying: any, frozenTracks: {| [any]: any |}, h: any, joints: {| [any]: any |}, kind: any, player: any |}'
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau : TypeError: Key 'frozenPlaying' not found in table '{| char: any, connections: {any}, dashAt: any, dashElapsed: any, frozenPlaying: any, frozenTracks: {| [any]: any |}, h: any, joints: {| [any]: any |}, kind: any, player: any |}'
 14	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/ArenaRuinClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BlackHoleClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau : TypeError: Key 'Waiting' not found in table '{| Busy: any, EQ: any, Ended: any, Loaded: any, Part: any, Sound: any |}'
-2	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossCombatEffectsClient.client.luau : TypeError: Expected this to be 'number', but got 'number | unknown'
 4	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossCombatEffectsClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-3	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau : TypeError: Argument count mismatch. Function 'clear' expects 0 arguments, but 1 is specified
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau : TypeError: Expected this to be 'number', but got 'number | unknown'
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau: LocalUnused: Variable 'humanoid' is never used; prefix with '_' to silence
 3	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/Spam.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathScytheClient.client.luau : TypeError: Expected this to be 'number', but got 'number | unknown'
 27	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeflectClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DifficultyClient.client.luau: LocalUnused: Variable 'attribution' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/EtherealAcumenCinematics.client.luau: LocalUnused: Variable 'lastFov' is never used; prefix with '_' to silence

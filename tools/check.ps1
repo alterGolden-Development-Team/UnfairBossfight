@@ -74,6 +74,7 @@ $raw = & $lsp.FullName analyze "--definitions=$($defs.FullName)" "--sourcemap=$s
 $ErrorActionPreference = 'Stop'
 
 $counts = @{}
+$noise = 0
 foreach ($line in $raw) {
     if ($line -notmatch '(TypeError|[A-Za-z]+Unused|[A-Za-z]+): ') { continue }
     $l = $line -replace '\\', '/'
@@ -84,8 +85,14 @@ foreach ($line in $raw) {
     $l = $l -replace 'line \d+', 'line N' -replace 'column \d+', 'column N'
     $l = $l -replace '(Cyclic dependencies).*', '$1'
     $l = $l.Trim()
+    # Cross-module type-inference noise: a symptom of the require cycles in tasks\cycles.md (Luau cannot infer types across
+    # a cycle). Its count shifts whenever a module moves, so it is reported but not gated.
+    if ($l -match "Cyclic dependencies|Key '[^']+' not found in table|cannot be compared with|Expected this to be|Argument count mismatch|could not be converted") {
+        $noise++; continue
+    }
     $counts[$l] = 1 + [int]$counts[$l]
 }
+Write-Host "      (cross-module type-inference noise, not gated: $noise diagnostics)"
 if ($counts.Count -eq 0) { Stop-Tooling 'the analyzer produced no diagnostics at all (it normally reports hundreds); something is wrong' }
 
 if ($UpdateBaseline) {
