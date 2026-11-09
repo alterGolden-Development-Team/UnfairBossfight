@@ -328,7 +328,7 @@ function P.SilentShatter(E,d)
    E.Sprite(a,{tex="star.glare2",size={{0,4},{.2,small and 24 or 44},{1,6}},alpha={{0,0},{1,1}},color=WHITE,rot={spin,spin}},.3)
    E.Emit(a,{tex="star.crisp",size={{0,1.1},{1,0}},color={{0,WHITE},{1,GOLD}},life={.35,.7},speed={25,60},spread=180,drag=2},small and 16 or 40)
    if not small then
-    local floor=E.Ground(vr.Position,{g,h.Folder})
+    local floor=E.Ground(vr.Position,{h.Folder})
     local f=E.Anchor(h,CFrame.new((floor or vr.Position-UP*3)+UP*.15))
     -- (no ring on the ground any more)
    end
