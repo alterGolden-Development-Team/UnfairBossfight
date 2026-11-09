@@ -9,9 +9,9 @@ local Config = {}
 
 Config.Env = "Test" :: "Test" | "Live"
 
--- 0 = not filled in yet
+-- 0 = not filled in yet (Test is filled in when the test universe exists, plan task 4)
 Config.Places = {
-	Live = { Lobby = 0, Boss = 0 },
+	Live = { Lobby = 92877530696258, Boss = 123789153131367 }, -- universe 10768840017: "Place1" (lobby, empty) and The Golden Encounter
 	Test = { Lobby = 0, Boss = 0 },
 }
 

@@ -4,11 +4,11 @@ Every task passes `tools/check.ps1` (build + analyzer diff). **(you)** = needs y
 Task numbers match plan.md; they are listed in build order, not numeric order.
 
 ## Phase 0: Safety and layout
-- [ ] 1. Commit docs (intent, spec, plan)
-- [ ] 2. Move repo to `D:/UnfairBossfight` (`boss/`), fix paths, copy Claude memory **(you: close VS Code, Studio, Rojo; reopen from the new folder)**
-- [ ] 3. Lobby skeleton, `shared/UnfairShared/UnfairConfig`, mounts, `check.ps1` for both projects
+- [x] 1. Commit docs (intent, spec, plan)
+- [x] 2. Move repo to `D:/UnfairBossfight` (`boss/`), fix paths, copy Claude memory (done as a clone + `git mv`, so the old folder is untouched and nothing had to be closed)
+- [x] 3. Lobby skeleton, `shared/UnfairShared/UnfairConfig`, mounts, `check.ps1` for both projects
 - [ ] 4. Test universe with copies of both places **(you)**
-- [ ] 5. Place IDs and `Env` switch into `UnfairConfig`
+- [ ] 5. Place IDs and `Env` switch into `UnfairConfig` (live IDs done; test IDs wait for task 4)
 
 ## Checkpoint A: Layout and test universe
 - [ ] Both projects build and pass `check.ps1`; Rojo serves 34872 (boss) and 34873 (lobby); test universe IDs recorded
