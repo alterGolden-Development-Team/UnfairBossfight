@@ -12,7 +12,6 @@ return function(actor)
 	local b = actor
 	local core = Registry.For(b, "P1CombatCore")
 	local root, h, melee = core.Root, core.Humanoid, core.Melee
-	local Run = game:GetService("RunService")
 	local Tween = Effects
 	local Debris = Effects
 	local api = {}

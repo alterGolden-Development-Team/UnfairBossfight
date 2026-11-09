@@ -6,7 +6,6 @@ local Shared = game:GetService("ReplicatedStorage"):WaitForChild("BossShared")
  
  
 return function(actor)
-	local system = script:FindFirstAncestor("BossSystem")
 	local Registry = require(BossSystem.Combat.AttackRegistry)
 	local Effects = require(BossSystem.Combat.EffectService)
 	local Runtime = require(BossSystem.Combat.CombatRuntime)

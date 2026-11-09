@@ -16,7 +16,6 @@ return function(actor)
 	local Audio = require(BossSystem.Presentation.CombatAudio)
 	local b = actor
 	local core = Registry.For(b, "P1CombatCore")
-	local Run = game:GetService("RunService")
 	local Tween = Effects
 	local Debris = Effects
 	local api = {}

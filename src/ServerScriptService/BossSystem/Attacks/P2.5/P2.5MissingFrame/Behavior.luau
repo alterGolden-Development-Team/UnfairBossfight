@@ -14,7 +14,6 @@ return function(actor)
 	local Config = require(Shared:WaitForChild("Config"):WaitForChild("EncounterConfig"))
 	local Players = game:GetService("Players")
 	local core = Registry.For(actor, "P1CombatCore")
-	local random = Random.new()
 	local api = { Cooldown = Config.MissingFrameCooldown or 20 }
 	local current, currentFx
 	local GOLD = Style.GOLD

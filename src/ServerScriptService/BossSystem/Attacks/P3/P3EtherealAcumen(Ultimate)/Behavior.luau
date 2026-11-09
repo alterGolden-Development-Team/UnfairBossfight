@@ -548,7 +548,6 @@ return function(actor)
 				card.Name = "EtherealCenterShotCard"
 				card.Size = Config.EtherealAcumenCardSize or Vector3.new(5, 7, 0.12)
 				local shotIndex = cardIndex
-    local debuffKey={}
 				card.Color = shotIndex % 2 == 0 and WHITE or GOLD
 				 
 				card.Material = Enum.Material.Neon

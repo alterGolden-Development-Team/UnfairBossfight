@@ -296,7 +296,6 @@ return function(actor)
 				local delay = opts.Delay or 0
 				local homing = opts.Homing
 				local group = opts.HitGroup
-    local debuffKey=opts.DebuffKey or group or {}
     local fake=opts.Fake==true
     local cued=false
 				local rocketCast = Effects.NewCast(actor, "TrueIllusionRocket", range / speed + delay + 0.6)

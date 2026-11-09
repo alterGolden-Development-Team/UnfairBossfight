@@ -28,8 +28,6 @@ local function stage(core,life)
 end
 
 local GROUND=-1.5  
-local RISE=2.6     
-local WHITE=Color3.new(1,1,1)
 local YELLOW=Style.Indicator or Color3.fromRGB(255,224,40)
 local YELLOW_HOT=Style.IndicatorHot or Color3.fromRGB(255,247,165)
 local NORMAL={
@@ -47,7 +45,6 @@ local function palette(angry) return angry and ENRAGED or NORMAL end
 local function count(n) return math.max(3,math.floor(n*Style.Detail+.5)) end
 local function rnd(a,b) return a+math.random()*(b-a) end
 local function on(key) return Style[key]~=false end  
-local function spin() return CFrame.Angles(rnd(0,6.28),rnd(0,6.28),rnd(0,6.28)) end
 
 local function play(part,t,props,style,dir)
 	Effects:Create(part,TweenInfo.new(t,style or Enum.EasingStyle.Quad,dir or Enum.EasingDirection.Out),props):Play()

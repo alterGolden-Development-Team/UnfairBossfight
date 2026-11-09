@@ -233,43 +233,6 @@ local function ring(parent,position,diameter,color,thickness,transparency)
 end
 
  
-local function scorch(parent,position,diameter,color,brightness)
-	local plate=newPart("IllusionScorch")
-	plate.Material=Enum.Material.SmoothPlastic
-	plate.Transparency=1
-	plate.Size=Vector3.new(diameter,.1,diameter)
-	plate.CFrame=CFrame.new(position)
-	plate.Parent=holder(parent)
-
-	local gui=Instance.new("SurfaceGui")
-	gui.Face=Enum.NormalId.Top
-	gui.SizingMode=Enum.SurfaceGuiSizingMode.FixedSize
-	gui.CanvasSize=Vector2.new(256,256)
-	gui.LightInfluence=0
-	gui.Brightness=brightness
-	gui.Parent=plate
-
-	local group=Instance.new("CanvasGroup")
-	group.BackgroundTransparency=1
-	group.Size=UDim2.fromScale(1,1)
-	group.Parent=gui
-
-	for i=1,5 do
-		local scale=1-(i-1)*.17
-		local f=Instance.new("Frame")
-		f.AnchorPoint=Vector2.new(.5,.5)
-		f.Position=UDim2.fromScale(.5,.5)
-		f.Size=UDim2.fromScale(scale,scale)
-		f.BackgroundColor3=color
-		f.BackgroundTransparency=.8
-		f.BorderSizePixel=0
-		local corner=Instance.new("UICorner")
-		corner.CornerRadius=UDim.new(.5,0)
-		corner.Parent=f
-		f.Parent=group
-	end
-	return group
-end
 
  
 local function ping(parent,position,color,from,to,seconds)
@@ -623,7 +586,6 @@ end
  
 function VFX.RealImpact(parent,point,radius,color,accent)
 	local hot=color:Lerp(WHITE,.45)
-	local ember=color:Lerp(accent,.5)
 	local dark=color:Lerp(BLACK,.82)
 	local root=bundle(parent,math.max(CFG.ScorchSeconds,2)+.8)
 

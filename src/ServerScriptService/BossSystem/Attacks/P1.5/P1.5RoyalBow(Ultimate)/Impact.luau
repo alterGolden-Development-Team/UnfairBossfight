@@ -72,12 +72,10 @@ function Visuals.aftermath(ctx)
 	local ring = ctx.ring
 	local BRIGHT = ctx.BRIGHT
 	local api = ctx.api
-	local dustEmitter = ctx.dustEmitter
 	local sparkEmitter = ctx.sparkEmitter
 	local GRAVITY = ctx.GRAVITY
 	local crackField = ctx.crackField
 	local random = ctx.random
-	local STONE = ctx.STONE
 	local screenGrade = ctx.screenGrade
 	local Time = ctx.Time
 	local setAlpha = ctx.setAlpha

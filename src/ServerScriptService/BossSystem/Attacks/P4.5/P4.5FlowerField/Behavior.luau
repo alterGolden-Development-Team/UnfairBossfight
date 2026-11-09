@@ -19,7 +19,6 @@ local function FIELD_DURATION()
 end
 local GOLD = Color3.fromRGB(246, 172, 28)
 local BRIGHT = Color3.fromRGB(255, 222, 96)
-local AMBER = Color3.fromRGB(232, 140, 24)
 local HEART = Color3.fromRGB(255, 118, 24)
 local UP = Vector3.yAxis
 

@@ -14,7 +14,6 @@ return function(actor)
 	local melee = Registry.For(b, "P1NormalSlash")
 	local core = Registry.For(b, "P1CombatCore")
 	local Time = require(BossSystem.Mechanics.Time.TimeEffectController)
-	local Players = game:GetService("Players")
 	local Run = game:GetService("RunService")
 	local TweenService = game:GetService("TweenService")
 	local Tween = Effects

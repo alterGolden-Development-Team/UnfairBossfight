@@ -56,12 +56,6 @@ function Visuals.Cleave(core,lane,groundY,cast,style,scale)
  FX.Impact(ctx,cast,origin+Vector3.new(0,1,0),style.Gold,style.White,1.4*scale,{Ground=CFrame.new(origin+Vector3.new(0,.1,0)),Shake=.8,Tint=.7})
 end
 
-local function fade(cast,part,seconds,properties)
- Effects:Create(part,TweenInfo.new(seconds,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),properties):Play()
- cast:Schedule(seconds+.05,function()
-  if cast.objects[part] then Effects.Release(part);cast.objects[part]=nil end
- end)
-end
 function Visuals.Charge(core,lane,groundY,cast,style)
  local center=Vector3.new(core.Root.Position.X,groundY+.2,core.Root.Position.Z)
  local ctx=Crimson.Context(core)

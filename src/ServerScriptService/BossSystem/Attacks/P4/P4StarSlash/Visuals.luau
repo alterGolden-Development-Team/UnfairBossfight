@@ -9,7 +9,6 @@ local V={}
 local UP=Vector3.yAxis
 local gold,white,hot,ember=Style.Gold,Style.White,Style.Hot,Style.Ember
 local violet=Style.Violet or Color3.fromRGB(145,75,255)
-local rng=Random.new()
 local ES,ED=Enum.EasingStyle,Enum.EasingDirection
 
 local TEX_SPARK="rbxasset://textures/particles/sparkles_main.dds"

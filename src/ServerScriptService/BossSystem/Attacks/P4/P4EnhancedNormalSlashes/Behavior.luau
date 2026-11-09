@@ -594,7 +594,6 @@ return function(actor)
 
 			local function sequence()
 				local homing = false
-				local maxDashTime = math.clamp(Config.P4EnhancedNormalHomingMaxTime or 1.5, 0.5, 4)
 				local turnRate = math.clamp(Config.P4EnhancedNormalDashTurnRate or 7, 2, 30)
 				local stopRange = 6
 				local reverse = Config.P4EnhancedNormalReverseSlash ~= false

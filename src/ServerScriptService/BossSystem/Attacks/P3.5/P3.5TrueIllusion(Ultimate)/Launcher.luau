@@ -1,6 +1,5 @@
 
 
-local TweenService = game:GetService("TweenService")
 local Launcher = {}
 
 local TAU = math.pi * 2
