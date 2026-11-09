@@ -26,7 +26,6 @@ local GOLD, WHITE, INK, IVORY, FLASH = Style.Gold, Style.White, Style.Ink, Style
 local TAU = math.pi * 2
 local SUIT_BY_NAME = Style.Suits
 local function smooth(a) return a * a * (3 - 2 * a) end
-local function easeOut(a) return 1 - (1 - a) ^ 3 end
 
 local function make(class, props, parent)
 	local instance = Instance.new(class)

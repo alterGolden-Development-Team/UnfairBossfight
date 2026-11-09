@@ -2131,8 +2131,6 @@ function P.SilentEnd(E,d)silentClear()end
 
  -- Scarlet River: his arm burns red and gold - the arm itself turns to light, crimson flame pours off the hand, rings of
  -- force spin round the forearm and red ripples spread under him
-local RED=Color3.fromRGB(230,24,48)
-local DEEP_RED=Color3.fromRGB(120,0,20)
 function P.RiverCharge(E,d)
  local boss=d.Boss
  local r=rootOf(boss)
@@ -3219,15 +3217,7 @@ local function thorn(g,base,height,width,lean)
  local tip=newPart(g,Vector3.new(width*.25,height*.35,width*.25),VINE_TIP,.1)
  return {P=p,Tip=tip,Base=base,H=height,Lean=lean or 0}
 end
-local function placeThorn(th,k)
- local h=th.H*math.max(k,.01)
- th.P.Size=Vector3.new(th.P.Size.X,h,th.P.Size.Z)
- local cf=th.Base*CFrame.Angles(th.Lean,0,0)*CFrame.new(0,h/2,0)
- th.Tip.Size=Vector3.new(th.Tip.Size.X,h*.35,th.Tip.Size.Z)
- return cf,cf*CFrame.new(0,h*.3,0)
-end
 
-local VINE_DARK=Color3.fromRGB(44,88,54)
  -- a bramble: a stem of six cylinder segments curling a little more at each joint (Curl, about its X; Twist about
  -- its Z), a wedge thorn on every other segment and an aurora bud at the tip. poseBramble lays it out at growth k
  -- (0..1, the stem grows segment by segment) and height scale, adding its parts to parts/cfs for one BulkMoveTo
@@ -3455,7 +3445,6 @@ function P.ThicketSnap(E,d)
 end
 
  -- Aurora Curtain: where the next curtain starts - a line of aurora light on the ground and two pillars on its gap
-local AURORA={{0,MINT},{.5,BLUE},{1,VIOLET}}
 function P.CurtainWarn(E,d)
  local g=E.Group("P5CurtainWarn")
  local f=d.Frame

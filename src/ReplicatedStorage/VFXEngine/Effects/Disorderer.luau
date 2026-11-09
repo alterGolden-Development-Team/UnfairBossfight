@@ -23,7 +23,6 @@ local player=Players.LocalPlayer
 
 local MAG=Color3.fromRGB(255,80,225)
 local CYAN=Color3.fromRGB(70,235,255)
-local VIOLET=Color3.fromRGB(125,70,255)
 local DARK=Color3.fromRGB(19,17,28)
 local ASH=Color3.fromRGB(58,50,82)
 local PALE=Color3.fromRGB(255,235,255)
@@ -822,7 +821,6 @@ function T.DecoySpawn(_,d)
  local model=d.Char and d.Char.Parent and cloneAvatar(d.Char)
  local state={G=g,Pos=d.CFrame.Position,Target=d.CFrame.Position,Model=model}
  decoys[d.Id]=state
- local groundOffset=0
  if model then
   local root=model:FindFirstChild("HumanoidRootPart")
   model.Parent=g.Folder

@@ -10,7 +10,6 @@ local SW={}
 local OBSIDIAN=Color3.fromRGB(30,18,52)
 local VOID=Color3.fromRGB(12,7,22)
 local VIOLET=Color3.fromRGB(150,84,255)
-local PALE=Color3.fromRGB(228,210,255)
 local GOLD=Color3.fromRGB(255,206,84)
 local SHINE=Color3.fromRGB(255,240,190)
 local METAL,NEON=Enum.Material.Metal,Enum.Material.Neon

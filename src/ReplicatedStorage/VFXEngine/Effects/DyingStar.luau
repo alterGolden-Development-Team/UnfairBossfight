@@ -11,7 +11,6 @@
 local D={}
 local FlightPoint=require(game.ReplicatedStorage.BossShared.Presentation.DyingStarFlight)
 local WHITE=Color3.new(1,1,1)
-local BLACK=Color3.new(0,0,0)
 local GOLD=Color3.fromRGB(255,206,110)
 local ORANGE=Color3.fromRGB(255,140,40)
 local RED=Color3.fromRGB(255,60,40)

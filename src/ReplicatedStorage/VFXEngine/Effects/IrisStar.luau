@@ -15,8 +15,6 @@ local BLACK=Color3.new(0,0,0)
 local IRIS=Color3.fromRGB(255,120,200)
 local GOLD=Color3.fromRGB(255,208,111)
 local VIOLET=Color3.fromRGB(174,114,255)
-local SAFE=Color3.fromRGB(115,255,205)
-local DANGER=Color3.fromRGB(255,50,90)
 local casts={}
 
 local okReset,Reset=pcall(function()return require(game.ReplicatedStorage.BossShared.Presentation.CinematicReset)end)

@@ -416,7 +416,6 @@ function P.SwordRing(E,d)
       w.Shown=true
       E.Emit(E.Anchor(g,CFrame.new(w.From)),{tex="star.crisp",size={{0,1.6},{1,0}},color={{0,WHITE},{1,GOLD}},life={.25,.4},speed={6,14},spread=180},8)
      end
-     local tk=math.clamp((t-w.Spawn)/(w.Launch-w.Spawn),0,1)
      -- (no lane warning on the floor any more)
     elseif t>=w.Launch then
      local u=t-w.Launch
@@ -630,7 +629,6 @@ function P.RedOrb(E,d)
  local c,orbAt=d.Pos,d.Orb
  local tell,warm,spinT,stop=d.Tell or 1.2,d.Warm or .9,d.SpinTime or 6,d.Stop or 2
  local arms,start,spin=d.Arms or 4,d.Start or 0,d.Spin or .85
- local osc=d.OrbScale or 1
  local big=d.OrbSize or 34
  local inner,outer,width=d.Inner or 16,d.Outer or 150,math.rad(d.Width or 26)
  local R,final=d.Radius or 40,d.Final or 50
@@ -651,7 +649,6 @@ function P.RedOrb(E,d)
  local carrier=part(g,Vector3.one*.2,WHITE,1)
  carrier.CFrame=CFrame.new(c+UP*.1)
  local tiles,edges,flames={},{},{}
- local step=8
  local function beam(p0,p1,axis,w0,w1,lit)
   local i0=Instance.new("Attachment") i0.CFrame=CFrame.fromMatrix(p0,UP,axis) i0.Parent=carrier
   local i1=Instance.new("Attachment") i1.CFrame=CFrame.fromMatrix(p1,UP,axis) i1.Parent=carrier
