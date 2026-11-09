@@ -10,7 +10,10 @@
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "$path": "src/ReplicatedStorage",
-      "$ignoreUnknownInstances": true
+      "$ignoreUnknownInstances": true,
+      "UnfairShared": {
+        "$path": "../shared/UnfairShared"
+      }
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",

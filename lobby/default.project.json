@@ -1,0 +1,36 @@
+{
+  "name": "UnfairBossfightLobby",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$path": "src/ReplicatedStorage",
+      "$ignoreUnknownInstances": true,
+      "UnfairShared": {
+        "$path": "../shared/UnfairShared"
+      },
+      "BossShared": {
+        "$className": "Folder",
+        "$ignoreUnknownInstances": true,
+        "Classes": {
+          "$path": "../boss/src/ReplicatedStorage/BossShared/Classes"
+        }
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$path": "src/ServerScriptService",
+      "$ignoreUnknownInstances": true
+    },
+    "StarterGui": {
+      "$className": "StarterGui",
+      "$path": "src/StarterGui",
+      "$ignoreUnknownInstances": true
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$path": "src/StarterPlayer",
+      "$ignoreUnknownInstances": true
+    }
+  }
+}

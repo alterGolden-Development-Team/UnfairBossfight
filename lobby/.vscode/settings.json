@@ -1,0 +1,11 @@
+{
+  "files.associations": {
+    "*.luau": "luau"
+  },
+  "luau-lsp.sourcemap.enabled": true,
+  "luau-lsp.sourcemap.rojoProjectFile": "default.project.json",
+  "luau-lsp.types.roblox": true,
+  "luau-lsp.completion.imports.enabled": true,
+  "editor.tabSize": 4,
+  "files.trimTrailingWhitespace": false
+}
