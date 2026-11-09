@@ -2,7 +2,6 @@ return table.freeze({
  Name="P3.5IllusionBomb",  Cooldown=14,
 
   
-  -- buffed 2026-10-30: more and bigger bombs, more of them real, more aimed at players, and a real
   -- hit staggers (slow) so the next wave is harder to step out of
  Bombs=28, RealChance=.7, Damage=30, Radius=14, HitHeight=7,
  HitSlow=.35, HitSlowSeconds=1.5,

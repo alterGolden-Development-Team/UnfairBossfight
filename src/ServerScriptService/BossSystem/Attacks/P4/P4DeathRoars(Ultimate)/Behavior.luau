@@ -25,7 +25,7 @@ return function(actor)
 	local current
 	function api.CanUse(target)
 		return not current and math.min(4, math.floor(actor:GetAttribute("Phase") or 0)) == 4 and core.Active() and core.Alive(target)
-			and not actor:GetAttribute("IsGoldenClone") and not actor:GetAttribute("PhaseTransitionInProgress")
+			and (not actor:GetAttribute("IsGoldenClone") or actor:GetAttribute("PastClone") == true) and not actor:GetAttribute("PhaseTransitionInProgress")
 			and not actor:GetAttribute("EncounterEnded") and not Time.IsStopped(actor)
 			and Placement.GetBounds() ~= nil and Cooldowns.Ready(actor, NAME)
 	end

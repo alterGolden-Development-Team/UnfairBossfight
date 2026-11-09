@@ -120,7 +120,11 @@ end
 
 local function startAnimator()
 	if animator then return end
-	animator = Run.Heartbeat:Connect(function()
+	local acc = 0
+	animator = Run.Heartbeat:Connect(function(dt)
+		acc += dt
+		if acc < 1 / 20 then return end
+		acc = 0
 		local now = os.clock()
 		local any = false
 		for actor, form in pairs(forms) do

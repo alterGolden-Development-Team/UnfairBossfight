@@ -74,7 +74,6 @@ function K.Ornament(parent,y,width)
 end
 
  -- the full-screen sheet: a warm dark backdrop (click it to close) and a fixed-size stage that
- -- scales to fit the viewport
 function K.Screen(name,parent)
  local gui=make("ScreenGui",parent,{Name=name,ResetOnSpawn=false,DisplayOrder=90,IgnoreGuiInset=true,
   ZIndexBehavior=Enum.ZIndexBehavior.Sibling,Enabled=false})

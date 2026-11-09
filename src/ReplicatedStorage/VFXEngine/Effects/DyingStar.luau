@@ -62,7 +62,6 @@ function D.Start(E,d)
   shell.CFrame=star.CFrame
   c.Grow=smooth(t/(d.Summon or 1))
   if c.Inflow and t>=(d.Summon or 1)then c.Inflow.Enabled=false c.Inflow=nil
-   -- ignition pop
    E.Sprite(star,{tex="flare.burst2",size={{0,R*2},{.25,R*7},{1,R*8}},alpha={{0,0},{.4,.3},{1,1}},color=WHITE},.35)
    E.Sprite(star,{tex="ring.crisp",size={{0,R},{1,R*9}},alpha={{0,0},{1,1}},color=GOLD},.35)
   end
@@ -244,7 +243,6 @@ function D.Burst(E,d)
  local g=E.Group("DyingStarBurst")
  local R=(c and c.D.Radius)or 12
  local r=d.Radius or 28
-  -- the star is gone: clear its layers, trail and fire
  if c then
   for _,L in ipairs(c.Layers)do L.E:Clear()L.E.Size=NumberSequence.new(0)end
   if c.Trail then c.Trail.Enabled=false end
@@ -254,7 +252,6 @@ function D.Burst(E,d)
  end
  local a=E.Anchor(g,CFrame.new(d.Pos))
  screenFlash(d.Pos,220,1.1,.55)
-  -- implosion snap, then the blast
  E.Sprite(a,{tex="ring.inverse",light=0,color=DEEP,size={{0,r*2.5},{1,R*.5}},alpha={{0,.2},{1,.6}},z=-3},.1)
  E.Sprite(a,{tex="glow.soft",light=0,color=DEEP,size={{0,r*2},{1,r*3.5}},alpha={{0,.3},{1,1}},z=-3},.3)
  E.Sprite(a,{tex="flare.big",size={{0,R*3},{.12,r*4.5},{1,r*5}},alpha={{0,0},{.3,.15},{1,1}},color=WHITE},.5)
@@ -285,7 +282,6 @@ function D.Burst(E,d)
   E.Sprite(ga,{tex="ring.inverse",orient="flat",light=0,color=DEEP,size={{0,r},{1,r*2.6}},alpha={{0,.3},{1,1}},z=-1},1)
   E.Emit(ga,{tex="smoke",light=0,color=Color3.fromRGB(70,52,44),size={{0,5},{1,16}},alpha={{0,1},{.15,.5},{1,1}},
    life={1.2,1.9},speed={50,90},spread=85,dir=Enum.NormalId.Top,drag=3,rot={0,360}},32)
-   -- light pillar
   local top=E.Anchor(g,CFrame.new(gp+Vector3.new(0,260,0)))
   local p0,p1=E.Attach(ga),E.Attach(top)
   local pil=E.Beam(g,p0,p1,{tex="beam.core",width=r*.9,length=1,mode=Enum.TextureMode.Stretch,color={{0,WHITE},{1,GOLD}},alpha={{0,0},{.7,.3},{1,1}},brightness=4,segments=2})

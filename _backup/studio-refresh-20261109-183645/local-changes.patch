@@ -1,0 +1,78 @@
+diff --git a/src/ServerScriptService/BossSystem/Combat/AbilityMetadata.luau b/src/ServerScriptService/BossSystem/Combat/AbilityMetadata.luau
+index 6f3d4d5..fd5503d 100644
+--- a/src/ServerScriptService/BossSystem/Combat/AbilityMetadata.luau
++++ b/src/ServerScriptService/BossSystem/Combat/AbilityMetadata.luau
+@@ -160,7 +160,7 @@ for name, mode in pairs({
+ end
+ local unarmed = { P5DistortedCounter = true, P5GoldenPierce = true, P5Slam = true }
+ for _, name in ipairs({ "P5ClawForward", "P5Assassination", "P5UpperCut", "P5Butterfly", "P5DistortedCounter", "P5GoldenPierce",
+-	"P5Slam", "P5Viper", "P5HorrifyingGround" }) do
++	"P5Slam", "P5Viper", "P5HorrifyingGround", "P5DeathRoar" }) do
+ 	add(name, 5, { SwordBased = not unarmed[name], AnyRange = name ~= "P5ClawForward",
+ 		CanClone = false, CanHourDebt = false, ModuleFolder = "P5/NormalAttack", P5Mode = "Normal" })
+ end
+diff --git a/src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau b/src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau
+index af69f9f..c0538d8 100644
+--- a/src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau
++++ b/src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau
+@@ -18,6 +18,7 @@ local respawning = setmetatable({}, { __mode = "k" })
+ local bound = setmetatable({}, { __mode = "k" })
+ local damageStatuses, damagePassives
+ local damageGates = setmetatable({}, { __mode = "k" })
++local DEATH_ROAR_SKILLS = table.freeze({ ["P4DeathRoars(Ultimate)"] = true, P5DeathRoar = true })
+ function api.SetDamageGate(character, token, active)
+   if active then
+     if damageGates[character] and damageGates[character] ~= token then
+@@ -216,7 +217,7 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
+     or amount <= 0
+     or amount == math.huge
+     or not api.CanReceiveHit(char, balance and balance.IsStatusDamage == true and balance.Skill == "Rupture",
+-      balance and balance.IgnoreIFrames == true and balance.Skill == "P4DeathRoars(Ultimate)"
++      balance and balance.IgnoreIFrames == true and DEATH_ROAR_SKILLS[balance.Skill] == true
+         and (char:GetAttribute("ClassId") ~= nil or Difficulty.Mercy("AllowPierce", api.DamageOwner(sourceActor)) ~= false))
+   then
+     if duelistPhasing(char) and type(amount) == "number" and amount == amount and amount > 0 and amount < math.huge
+@@ -271,14 +272,16 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
+  local resolvedEcho=balance and balance.Skill=="TemporalWound" and balance.IsStatusDamage==true
+  if flatBurn then amount=2 end
+    
+-  local exact = balance and balance.ExactDamage == true and balance.Skill == "P4.5HeavenlyDisciple(Ultimate)"
++  local exact = balance and balance.ExactDamage == true
++    and (balance.Skill == "P4.5HeavenlyDisciple(Ultimate)" or balance.Skill == "P5DeathRoar")
++  local flatPercent = exact and balance.Skill == "P5DeathRoar"
+   if owner and math.min(4, math.floor(owner:GetAttribute("Phase") or 0)) == 4 and not flatBurn and not resolvedEcho and not exact then
+     damagePassives = damagePassives or require(BossSystem.Combat.PassiveController)
+     amount *= damagePassives.DamageMultiplier(owner)
+   end
+   local ignoresDefense = balance
+     and balance.IgnoreDefense == true
+-    and (balance.Skill == "P4EnhancedNormalSlashes" or balance.Skill == "P4DeathRoars(Ultimate)")
++    and (balance.Skill == "P4EnhancedNormalSlashes" or DEATH_ROAR_SKILLS[balance.Skill] == true)
+     and owner
+     and math.min(4, math.floor(owner:GetAttribute("Phase") or 0)) == 4
+     and sourceActor
+@@ -298,9 +301,9 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
+     return 0
+   end
+  
+- if not resolvedEcho then amount = Difficulty.Damage(amount, owner) end
++ if not resolvedEcho and not flatPercent then amount = Difficulty.Damage(amount, owner) end
+   
+- if not resolvedEcho then amount *= require(BossSystem.Combat.DifficultyPassive).OutgoingMultiplier(owner) end
++ if not resolvedEcho and not flatPercent then amount *= require(BossSystem.Combat.DifficultyPassive).OutgoingMultiplier(owner) end
+  if isUltimate and not resolvedEcho then amount *= Difficulty.Mercy("UltimateDamage", owner) or 1 end
+   
+ 
+diff --git a/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau b/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau
+index ea537d4..f0521b0 100644
+--- a/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau
++++ b/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau
+@@ -414,7 +414,7 @@ local function stage(data)
+ 				if not active or active.Token ~= token then return end
+ 				flashScreen(0.1, 0.5)
+ 				for _ = 1, 8 do screenStreak(true) end
+-				slamTitle("DEATH ROARS", "", 1.6)
++				if not data.NoText then slamTitle("DEATH ROARS", "", 1.6) end
+ 			end)
+ 			Spam.Burst({ ArenaCrescent = 120, ArenaCut = 300, Streak = 220 })
+ 			Spam.SetRates({ ArenaCrescent = 200, ArenaCut = 500, Streak = 380 })

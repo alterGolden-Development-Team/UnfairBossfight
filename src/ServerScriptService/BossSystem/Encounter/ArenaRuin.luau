@@ -44,7 +44,7 @@ local function burn()
 			local char = player.Character
 			local root = char and char:FindFirstChild("HumanoidRootPart")
 			if root and Fires.Touching(rim, root.Position, elapsed) then
-				pcall(Encounter.Damage, char, Config.ArenaFireDamage, source, nil, { Skill = "ArenaFire" })
+				pcall(Encounter.Damage, char, Config.ArenaFireDamage, source, nil, { Skill = "ArenaFire", IsStatusDamage = true })  -- status damage: PostHitGrace never eats a burn tick
 			end
 		end
 		task.wait(Config.ArenaFireTick)

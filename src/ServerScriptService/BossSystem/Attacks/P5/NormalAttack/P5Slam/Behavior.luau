@@ -12,7 +12,8 @@ return function(actor)
 	local api = { Cooldown = S.Cooldown }
 
 	function api.CanUse(target)
-		return c.CanStart(target)
+		 -- a melee slam: only with his target close (Style UseRange)
+		return c.CanStart(target) and (target.HumanoidRootPart.Position - c.Root.Position).Magnitude <= S.UseRange
 	end
 	function api.Combo(target)
 		if not api.CanUse(target) then
@@ -39,7 +40,7 @@ return function(actor)
 				Height = S.SpikeHeight, Knock = { Speed = 10, Lift = 45, Duration = 0.3, Sustain = 0.06, AllowPlayerControl = true,
 					ContainsArena = true } })
 			actor:SetAttribute("P5Slams", (actor:GetAttribute("P5Slams") or 0) + 1)
-			return c.Wait(0.45)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

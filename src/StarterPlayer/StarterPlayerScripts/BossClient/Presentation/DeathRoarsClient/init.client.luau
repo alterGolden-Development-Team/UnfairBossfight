@@ -414,7 +414,7 @@ local function stage(data)
 				if not active or active.Token ~= token then return end
 				flashScreen(0.1, 0.5)
 				for _ = 1, 8 do screenStreak(true) end
-				slamTitle("DEATH ROARS", "", 1.6)
+				if not data.NoText then slamTitle("DEATH ROARS", "", 1.6) end
 			end)
 			Spam.Burst({ ArenaCrescent = 120, ArenaCut = 300, Streak = 220 })
 			Spam.SetRates({ ArenaCrescent = 200, ArenaCut = 500, Streak = 380 })

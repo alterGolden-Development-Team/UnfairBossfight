@@ -62,10 +62,21 @@ local elapsed = 0
 local illusionToken
 local illusionStartedAt
 local illusionEnded = false
+local sonicStartedAt  -- Phase 5's final attack: its song starts at this server time and plays once (boss SonicBlasterMusicStartedAt)
+local sonicPreloaded = false
 local currentTrack
 local currentAsset
 local Difficulty=require(Shared.Config.DifficultyConfig)
-local function trackAsset(key)return key and Config.MusicAsset(key,Difficulty.Id())end
+local failedAssets = {}
+local trackSetAt = 0
+local function trackAsset(key)
+	if not key then return nil end
+	local asset = Config.MusicAsset(key, Difficulty.Id())
+	if asset and failedAssets[asset] then
+		asset = Config.Assets[key == "Phase15" and "Hero" or key] or asset
+	end
+	return asset
+end
 local trackPositions = {}
 local trackNames = {}
 local requestedNames = {}
@@ -89,7 +100,17 @@ local function preloadAssets(assets)
 	end
 	if #pending > 0 then
 		task.spawn(function()
-			pcall(Content.PreloadAsync, Content, pending)
+			-- preload as Sound instances: raw id strings get fetched as images and fail with "Asset type does not match"
+			local refs = {}
+			for _, asset in ipairs(pending) do
+				local sound = Instance.new("Sound")
+				sound.SoundId = asset
+				table.insert(refs, sound)
+			end
+			pcall(Content.PreloadAsync, Content, refs)
+			for _, sound in ipairs(refs) do
+				sound:Destroy()
+			end
 		end)
 	end
 end
@@ -273,10 +294,10 @@ local function stopToken(token)
 end
 local function publishTrack(key)
 	local asset = trackAsset(key)
-	SoundService:SetAttribute("BossSoundtrackName", key and (trackNames[asset] or Config.MusicNames[key]) or "")
+	SoundService:SetAttribute("BossSoundtrackName", key and (Config.TrackNames[asset] or trackNames[asset] or Config.MusicNames[key]) or "")
 	SoundService:SetAttribute("BossSoundtrackAssetId", asset or "")
 	SoundService:SetAttribute("BossSoundtrackPlaying", key ~= nil)
-	if not key or requestedNames[asset] then
+	if not key or key == "SonicBlaster" or Config.TrackNames[asset] or requestedNames[asset] then  -- (the final attack's song keeps its own name)
 		return
 	end
 	requestedNames[asset] = true
@@ -289,7 +310,7 @@ local function publishTrack(key)
 		if destroyed then
 			return
 		end
-		if ok and type(info) == "table" and type(info.Name) == "string" and info.Name ~= "" then
+		if ok and type(info) == "table" and type(info.Name) == "string" and info.Name ~= "" and not info.Name:match("^[#%s]+$") then
 			trackNames[asset] = info.Name
 			if currentTrack == key and currentAsset==asset then
 				SoundService:SetAttribute("BossSoundtrackName", info.Name)
@@ -306,11 +327,13 @@ local function setTrack(key)
 	music:Stop()
 	currentTrack = key
  currentAsset=asset
+	trackSetAt = os.clock()
 	if key and asset then
 		music.SoundId = asset
-		music.Looped = key ~= "TrueIllusion"
+		music.Looped = key ~= "TrueIllusion" and key ~= "SonicBlaster"
 		music.PlaybackSpeed = 1
-		music.TimePosition = key == "TrueIllusion" and math.max(0, workspace:GetServerTimeNow() - (illusionStartedAt or workspace:GetServerTimeNow())) or (trackPositions[asset] or 0)
+		music.TimePosition = key == "SonicBlaster" and math.max(0, workspace:GetServerTimeNow() - (sonicStartedAt or workspace:GetServerTimeNow()))
+			or key == "TrueIllusion" and math.max(0, workspace:GetServerTimeNow() - (illusionStartedAt or workspace:GetServerTimeNow())) or (trackPositions[asset] or 0)
 		music:Play()
 	end
 	publishTrack(key)
@@ -497,7 +520,35 @@ local function updateTrack()
   or boss:GetAttribute("Phase3IntroActive") or boss:GetAttribute("Phase4TransitionInProgress")) then
   key = nil
  end
+	 -- Phase 5's final attack: silence for his last words, then its own song from the top, once, in sync with the server
+	if boss and boss.Parent and boss:GetAttribute("SonicBlasterActive") then  -- (it plays on to its end after the win)
+		local started = boss:GetAttribute("SonicBlasterMusicStartedAt")
+		local length = boss:GetAttribute("SonicBlasterLength") or 175.5
+		local position = type(started) == "number" and workspace:GetServerTimeNow() - started
+		if position and position >= 0 and position < length then
+			if sonicStartedAt ~= started then
+				sonicStartedAt = started
+				if currentTrack == "SonicBlaster" then setTrack(nil) end
+			end
+			key = "SonicBlaster"
+			duckUntil, duckVolume = 0, 1
+		else
+			key = nil
+		end
+	end
 	setTrack(key)
+	if currentTrack and currentAsset and not music.IsLoaded and os.clock() - trackSetAt > 6 and not failedAssets[currentAsset] then
+		failedAssets[currentAsset] = true
+		warn("[BossAudio] soundtrack " .. currentAsset .. " did not load; using the normal-mode track for " .. currentTrack)
+		local k = currentTrack
+		currentTrack = nil
+		setTrack(k)
+	end
+	if key == "SonicBlaster" and music.IsLoaded then
+		local position = math.max(0, workspace:GetServerTimeNow() - sonicStartedAt)
+		if math.abs(music.TimePosition - position) > 0.3 then music.TimePosition = position end
+		if not music.IsPlaying then music:Play() end
+	end
 	if key == "TrueIllusion" and music.IsLoaded then
 		local position = math.max(0, workspace:GetServerTimeNow() - illusionStartedAt)
 		if math.abs(music.TimePosition - position) > 0.35 then music.TimePosition = position end

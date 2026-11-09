@@ -55,7 +55,7 @@ end
 function V.Build(ctx,root,style)
  local s=style
  local fx={Style=s,Root=root,Token=Http:GenerateGUID(false),NextPulse=0,Chimed={}}
- fx.Total=s.Charge+(s.Shots-1)*s.ShotGap+s.ProjectileLife+#s.Burn*s.BurnInterval+s.Recovery
+ fx.Total=s.Duration or (s.Charge+(s.Shots-1)*s.ShotGap+s.ProjectileLife+#s.Burn*s.BurnInterval+s.Recovery)
  fx.FinaleAt=s.Charge+(s.Shots-1)*s.ShotGap
  Net.Send("Polaris","Start",{
   Token=fx.Token,Root=root,Center=root.Position,Ground=findGround(root),T0=Net.Now(),

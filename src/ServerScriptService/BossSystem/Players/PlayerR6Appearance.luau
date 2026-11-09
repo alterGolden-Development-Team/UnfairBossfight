@@ -42,12 +42,7 @@ function api.Apply(player,char)
   local original=originalDescription(player,h)
   repeat
    if player.Character~=char or not char.Parent or h.Health<=0 then return false end
-   local avatar=player:GetAttribute("UseAvatarAppearance")==true
-   local description=original:Clone()
-   if not avatar then
-    description.Head=0 description.Torso=0
-    description.LeftArm=0 description.RightArm=0 description.LeftLeg=0 description.RightLeg=0
-   end
+      local description=original:Clone()
    local saved=char:FindFirstChild("ClassAvatarAccessories")if saved then saved:Destroy()end
    local gear=char:FindFirstChild("ClassGear")if gear then gear:Destroy()end
    local sword=char:FindFirstChild("Classic Sword")
@@ -56,10 +51,9 @@ function api.Apply(player,char)
    h:ApplyDescriptionResetAsync(description)
    description:Destroy()
    if player.Character~=char or not char.Parent or h.Health<=0 then return false end
-   char:SetAttribute("UseAvatarAppearance",avatar)
    local classId=char:GetAttribute("ClassId")
    if classId then require(script.Parent.Classes.ClassModels).Build(char,classId) end
-   if avatar==(player:GetAttribute("UseAvatarAppearance")==true) then return true end
+   do return true end
   until player.Character~=char
   return false
  end,debug.traceback)

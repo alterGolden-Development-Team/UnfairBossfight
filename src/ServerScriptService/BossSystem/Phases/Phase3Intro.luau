@@ -27,6 +27,11 @@ local SPARKLE = "rbxasset://textures/particles/sparkles_main.dds"
 local RECALL = Config.Phase3WaveRecallDuration or 15
 local RETURN_SCALE = 0.6
 local TURN_HOLD = Config.Phase3WaveTurnHold or 0.3
+ -- (mode "Hold", they hurt nobody there); only when the last wave is out does he PULL THEM BACK, one after another at the same
+ -- spacing as they were thrown (RETURN_GAP) so every returning wave keeps its own safe opening. Before, the pull-back began
+ -- the moment the first wave turned and overlapped the barrage.
+local RETURN_GAP = (Config.Phase3WaveBarrageDuration or 12) / math.max(1, Config.Phase3WaveCount or 20)
+local RECALL_LEAD = 0.5  -- seconds between the last wave arriving and the pull-back starting
 
 local function alive(character)
 	if Observer.IsCharacter(character) then
@@ -742,8 +747,19 @@ local function absorb(record, wave)
 	end
 	record.Actor:SetAttribute("Phase3WavesReturned", (record.Actor:GetAttribute("Phase3WavesReturned") or 0) + 1)
 end
+ -- a wave reached the edge and waits there; the LAST one starts the countdown to the pull-back
+local function holdWave(record, gravity, wave, now)
+	for _, data in ipairs(wave.Parts) do
+		data.Part.Transparency = 0.82
+		data.Rim.Transparency = 0.45
+	end
+	if wave.Index >= (Config.Phase3WaveCount or 20) and not gravity.RecallBase then
+		gravity.RecallBase = now + RECALL_LEAD
+	end
+end
 local function turnFlare(record, gravity, wave)
 	for _, data in ipairs(wave.Parts) do
+		data.Part.Transparency = 0.64
 		data.Part.Color = Color3.fromRGB(226, 198, 118)
 		data.Rim.Color = white
 		data.Rim.Transparency = 0.1
@@ -905,9 +921,17 @@ local function beginWave(record, gravity, index)
 				local progress = math.min((now - wave.ReleaseAt) / travel, 1)
 				wave.Radius = 5 + limit * progress
 				if progress >= 1 then
-					wave.Mode = "Turn"
+					wave.Mode = "Hold"
 					wave.ModeAt = now
 					table.clear(wave.Hit)
+					holdWave(record, gravity, wave, now)
+				end
+			elseif wave.Mode == "Hold" then
+				 -- waiting at the edge until the barrage is complete; then the waves come back in the order they were thrown
+				wave.Radius = outer
+				if gravity.RecallBase and now >= gravity.RecallBase + (wave.Index - 1) * RETURN_GAP then
+					wave.Mode = "Turn"
+					wave.ModeAt = now
 					turnFlare(record, gravity, wave)
 				end
 			elseif wave.Mode == "Turn" then
@@ -944,7 +968,7 @@ local function beginWave(record, gravity, index)
 				data.Glow.CFrame = CFrame.lookAt((groundStart + groundFinish) * 0.5, groundFinish)
 				data.Glow.Size = Vector3.new(wave.Width * 2.4, 0.1, length)
 			end
-			if wave.Mode ~= "Turn" then
+			if wave.Mode == "Out" or wave.Mode == "Return" then
 				local damage = wave.Mode == "Return" and returnDamage or Config.Phase3WaveDamage
 				for _, character in ipairs(Runtime.Characters()) do
 					if
@@ -1134,17 +1158,16 @@ local function gravityField(record, bounds)
 	local started = record.Cast:Now()
 	while valid(record) do
 		local elapsed = record.Cast:Now() - started
-		if elapsed >= total then
-			local live = false
-			for _, wave in ipairs(gravity.Waves) do
-				if wave.Warning or wave.Active then
-					live = true
-					break
-				end
-			end
-			if not live or elapsed >= total + 6 then
+		local live = false
+		for _, wave in ipairs(gravity.Waves) do
+			if wave.Warning or wave.Active then
+				live = true
 				break
 			end
+		end
+		local allThrown = #gravity.Waves >= (Config.Phase3WaveCount or 20) and gravity.RecallBase ~= nil
+		if (not live and (allThrown or elapsed >= total)) or elapsed >= total + 6 then
+			break
 		end
 		Run.Heartbeat:Wait()
 	end

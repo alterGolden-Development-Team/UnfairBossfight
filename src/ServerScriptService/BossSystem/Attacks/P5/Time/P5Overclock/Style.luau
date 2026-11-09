@@ -5,6 +5,7 @@
 return table.freeze({
 	Name = "P5Overclock", Cooldown = 18,
 	Tell = 0.6, Fast = 8, Slow = 5,
-	Volleys = 3, VolleyGap = 0.22, Shots = 3, Spread = 9, ShotSpeed = 240, ShotRange = 140, ShotRadius = 2.6, ShotDamage = 18,
+	Volleys = 3, VolleyGap = 0.22, Shots = 3, Spread = 9, ShotSpeed = 240, ShotRange = 700, ShotRadius = 2.6, ShotDamage = 18,
+	 -- (ShotRange 700: clear across the 620-long arena and beyond; it was 140)
 	Line = "Your seconds are mine now.",
 })

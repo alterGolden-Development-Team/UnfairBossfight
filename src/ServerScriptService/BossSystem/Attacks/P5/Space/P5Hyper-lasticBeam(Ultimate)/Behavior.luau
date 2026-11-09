@@ -43,7 +43,7 @@ return function(actor)
    and Placement.GetBounds()~=nil and Cooldowns.Ready(actor,S.Name)
  end
  function api.Combo(target)
-  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"HuntMaxSpeed","RingSpeed"},Agile={"AcquireTurnRate"},Count={"RingCount"},Tell={"Charge"}})  -- difficulty knobs, this cast only
+  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"HuntMaxSpeed","RingSpeed"},Agile={"AcquireTurnRate"},Count={"RingCount"},Tell={"Charge"}})
   if not api.CanUse(target) then return false end
   return core.Perform(target,S.Name,function()
    Cooldowns.Start(actor,S.Name,S.Cooldown)

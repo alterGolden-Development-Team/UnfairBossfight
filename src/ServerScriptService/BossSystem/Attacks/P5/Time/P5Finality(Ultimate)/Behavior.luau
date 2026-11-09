@@ -39,13 +39,14 @@ return function(actor)
  function api.CanUse(target)
   return not current and actor:GetAttribute("Phase")==5 and core.Active() and core.Alive(target)
    and not actor:GetAttribute("IsGoldenClone") and not actor:GetAttribute("PhaseTransitionInProgress")
-   and Placement.GetBounds()~=nil and Cooldowns.Ready(actor,S.Name)
+   and Placement.GetBounds()~=nil and (Cooldowns.Ready(actor,S.Name) or actor:GetAttribute("P5LastStand")==S.Name)
  end
  function api.Combo(target)
-  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"PullStart","PullEnd","PullSpeedLimit","ShockwaveSpeed"},Rate={"ShockwaveInterval","ShockwaveIntervalEnd"},Tell={"Breath"}})  -- difficulty knobs, this cast only
+  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"PullStart","PullEnd","PullSpeedLimit","ShockwaveSpeed"},Rate={"ShockwaveInterval","ShockwaveIntervalEnd"},Tell={"Breath"}})
   if not api.CanUse(target) then return false end
   return core.Perform(target,S.Name,function()
    Cooldowns.Start(actor,S.Name,S.Cooldown)
+   if actor:GetAttribute("P5LastStand")==S.Name then actor:SetAttribute("P5LastStand",nil) end  -- paid (Combat/P5ModeService owes it when the Time shield is down)
    Encounter.Say("This is where every story ends. Breathe in... it will be your last.",nil,{Duration=3.2})
    local root=core.Root
    local generation=actor:GetAttribute("PhaseGeneration") or 0

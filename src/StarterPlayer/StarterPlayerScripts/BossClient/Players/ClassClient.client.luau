@@ -48,7 +48,7 @@ local function controlLocked(c)
   or player:GetAttribute("PermanentlyDefeated") or c.HumanoidRootPart.Anchored
   or workspace:GetAttribute("GoldenTimeStopped")==true or player:GetAttribute("TimeFrozen")
   or c:GetAttribute("ParryFrozen") or c:GetAttribute("TimeFrozen")
-  or c:GetAttribute("AbilitiesLocked") or c:GetAttribute("StatusLocked")
+  or c:GetAttribute("AbilitiesLocked") or c:GetAttribute("StatusLocked") or c:GetAttribute("FinalAttackLocked")
   or c:GetAttribute("MovementLocked") or c:GetAttribute("ShieldBreakDashLocked")
   or c:GetAttribute("ShieldBreakCinematicLocked") or c:GetAttribute("DeathScytheHaltToken") ~= nil
   or now() < math.max(player:GetAttribute("AbilitiesSealedUntil") or 0,c:GetAttribute("AbilitiesSealedUntil") or 0)
@@ -91,7 +91,8 @@ local function aimPoint(key)
   local char=character()
   if player:GetAttribute("ClassAutoAim")==false or not char
    or char:GetAttribute("ClassId")=="Supporter" and (key=="F" or key=="C")
-   or char:GetAttribute("ClassId")=="Mage" and key=="C" then return manual end
+   or char:GetAttribute("ClassId")=="Mage" and key=="C"
+   or char:GetAttribute("ClassId")=="Disorderer" and key=="F" then return manual end
   local sightParams=RaycastParams.new()
   sightParams.FilterType=Enum.RaycastFilterType.Exclude
   sightParams.RespectCanCollide=true
@@ -123,7 +124,7 @@ canUse = function(c, id, key)
   local t = workspace:GetServerTimeNow()
   local chainF=id=="Mage" and key=="F" and (c:GetAttribute("MageNearbyOrbs") or 0)>=ClassConfig.Classes.Mage.F.OrbCost and t>=(c:GetAttribute("MageOrbDashReadyAt") or 0)
   if t < (c:GetAttribute("ClassCD_" .. key) or 0) and not chainF then
-    if not (id == "Duelist" and ((key == "F" and c:GetAttribute("ClassStatus_FlashstepReady")) or (key == "C" and c:GetAttribute("ClassStatus_PhasingReady")))) then
+    if not (id == "Duelist" and ((key == "F" and c:GetAttribute("ClassStatus_FlashstepReady")) or (key == "C" and c:GetAttribute("ClassStatus_PhasingReady")))) and not (id == "Disorderer" and key == "V" and c:GetAttribute("ClassStatus_Checkpoint")) and not (id == "TrueWarrior" and (key == "C" or key == "F") and c:GetAttribute("TWHidden_" .. key)) then
       return false
     end
   end
@@ -138,7 +139,7 @@ canUse = function(c, id, key)
   if id == "Gambler" and key == "C" and c:GetAttribute("ClassStatus_TrustedGun") then
     return false
   end
-  local cost = ({ Supporter = { F = 15 }, Duelist = { F = 8, C = 15, V = 30 } })[id]
+  local cost = ({ Supporter = { F = 15 }, Duelist = { F = 8, C = 15, V = 30 }, Disorderer = { F = 15 } })[id]
   if cost and cost[key] and stamina < cost[key] then
     return false
   end
@@ -156,7 +157,7 @@ local function act(key, phase)
   return
  end
  if controlLocked(c) then return end
- if key=="R" and phase=="Begin" and (c:GetAttribute("ClassHoldingSkill") or now()<(c:GetAttribute("BlockBrokenUntil") or 0) or now()<(c:GetAttribute("ClassCD_R") or 0)) then return end
+ if key=="R" and phase=="Begin" and (c:GetAttribute("ClassHoldingSkill") and not c:GetAttribute("TWHidden_R") or now()<(c:GetAttribute("BlockBrokenUntil") or 0) or (now()<(c:GetAttribute("ClassCD_R") or 0) and not c:GetAttribute("TWHidden_R"))) then return end
  local id=c:GetAttribute("ClassId")
  local aimKey=key=="Aim" and ((heldKeys.C or hudHeldKeys.C) and id=="Mage" and "C" or "V") or key
  local aim=aimPoint(aimKey)
@@ -172,7 +173,9 @@ end
 
  
 local moving
+local twinPath
 local function stopMove()
+  if twinPath then twinPath:Disconnect() twinPath = nil end
   if moving then
     moving.Conn:Disconnect()
     if moving.LV.Parent then
@@ -229,6 +232,77 @@ end
  
  
  
+local function startTwinPath(data)
+  stopMove()
+  local c = character()
+  if controlLocked(c) then
+    return
+  end
+  local root = c.HumanoidRootPart
+  local revision = c:GetAttribute("ClassActionRevision") or 0
+  local steps, started = data.Steps or {}, os.clock()
+  local params = RaycastParams.new()
+  params.FilterType = Enum.RaycastFilterType.Exclude
+  params.RespectCanCollide = true
+  local ignore = { c }
+  local fx = workspace:FindFirstChild("ClassEffects")
+  if fx then
+    table.insert(ignore, fx)
+  end
+  for model in pairs(aimTargets) do
+    table.insert(ignore, model)
+  end
+  params.FilterDescendantsInstances = ignore
+  local from, prevT, index = root.Position, 0, 1
+  local function bossRoot(step)
+    local boss = step.Boss
+    return boss and boss.Parent and boss:FindFirstChild("HumanoidRootPart")
+  end
+  local function resolve(step)
+    local target = bossRoot(step)
+    if target then
+      local b = target.Position
+      local flat = Vector3.new(b.X - from.X, 0, b.Z - from.Z)
+      flat = flat.Magnitude > 0.1 and flat.Unit or Vector3.zAxis
+      local p = b - flat * (step.Back or 0) + Vector3.new(0, step.Up or 0, 0)
+      if step.Ground then
+        local hit = workspace:Raycast(Vector3.new(p.X, b.Y + 20, p.Z), Vector3.new(0, -300, 0), params)
+        p = Vector3.new(p.X, (hit and hit.Position.Y or b.Y - 3) + 3, p.Z)
+      end
+      return p
+    end
+    return step.To or root.Position
+  end
+  twinPath = Run.Heartbeat:Connect(function()
+    if not root.Parent or controlLocked(c) or (c:GetAttribute("ClassActionRevision") or 0) ~= revision then
+      if twinPath then twinPath:Disconnect() twinPath = nil end
+      return
+    end
+    local t = os.clock() - started
+    while steps[index] and t >= steps[index].T do
+      from = resolve(steps[index])
+      prevT = steps[index].T
+      index += 1
+    end
+    local step = steps[index]
+    if not step then
+      root.CFrame = CFrame.new(from) * root.CFrame.Rotation
+      root.AssemblyLinearVelocity = Vector3.zero
+      if twinPath then twinPath:Disconnect() twinPath = nil end
+      return
+    end
+    local k = math.clamp((t - prevT) / math.max(step.T - prevT, 0.001), 0, 1)
+    if step.Ease == "in" then k = k * k elseif step.Ease == "out" then k = 1 - (1 - k) ^ 2 end
+    local pos = from:Lerp(resolve(step), k)
+    local target = bossRoot(step)
+    local look = target and (target.Position - pos) or (data.Face or root.CFrame.LookVector)
+    local flat = Vector3.new(look.X, 0, look.Z)
+    root.CFrame = flat.Magnitude > 0.1 and CFrame.lookAt(pos, pos + flat) or CFrame.new(pos) * root.CFrame.Rotation
+    root.AssemblyLinearVelocity = Vector3.zero
+    root.AssemblyAngularVelocity = Vector3.zero
+  end)
+end
+
 local function startBlink(data)
   stopMove()
   local c = character()
@@ -288,6 +362,48 @@ end
  
  
 local TweenService = game:GetService("TweenService")
+local function twinStorm(data)
+  local assets = game.ReplicatedStorage:FindFirstChild("VFXEngine") and game.ReplicatedStorage.VFXEngine:FindFirstChild("Assets")
+  local template = assets and assets:FindFirstChild("ArcSlash")
+  if not template then return end
+  local def = ClassConfig.Classes.Twinblade
+  local Debris = game:GetService("Debris")
+  local white = Color3.new(1, 1, 1)
+  local rng = Random.new(data.Seed)
+  local folder = Instance.new("Folder")
+  folder.Name = "TwinStormLocal"
+  folder.Parent = workspace
+  local half, frame = data.Half, data.Frame
+  local function slash(cf, width, color, alpha, life)
+    local p = template:Clone()
+    p.Size = template.Size * (width / template.Size.X)
+    p.Color, p.Material, p.TextureID, p.Transparency = color, Enum.Material.Neon, "", alpha
+    p.Anchored, p.CanCollide, p.CanQuery, p.CanTouch, p.CastShadow = true, false, false, false, false
+    p.CFrame = cf
+    p.Parent = folder
+    TweenService:Create(p, TweenInfo.new(life, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { Transparency = 1 }):Play()
+    Debris:AddItem(p, life + 0.05)
+  end
+  task.spawn(function()
+    local interval = data.Duration / data.Ticks
+    for i = 1, data.Ticks do
+      if i > 2 and not (data.Char and data.Char.Parent and data.Char:GetAttribute("TwinbladeVanished")) then break end
+      for n = 1, data.Slashes do
+        local at = frame * Vector3.new(rng:NextNumber(-half, half), rng:NextNumber(2, 28), rng:NextNumber(-half, half))
+        local cf = CFrame.new(at) * CFrame.Angles(rng:NextNumber(0, 6.28), rng:NextNumber(0, 6.28), rng:NextNumber(0, 6.28))
+        local width = rng:NextNumber(18, 40)
+        slash(cf, width * 1.14, n % 2 == 0 and def.Color or def.Color2, 0.42, 0.26)
+        if n % 2 == 0 then slash(cf, width, white, 0.05, 0.26) end
+      end
+      for n = 1, 6 do
+        local cf = frame * CFrame.new(rng:NextNumber(-half, half), 0.4, rng:NextNumber(-half, half)) * CFrame.Angles(0, rng:NextNumber(0, 6.28), 0) * CFrame.Angles(math.pi / 2, 0, 0)
+        slash(cf, rng:NextNumber(20, 34), n % 2 == 0 and def.Color or def.Color2, 0.1, 0.8)
+      end
+      task.wait(interval)
+    end
+    task.delay(1.2, function() folder:Destroy() end)
+  end)
+end
 local Cam = { fov = 0, roll = 0, push = 0, tFov = 0, tRoll = 0, tPush = 0, speed = 8, applied = 0 }
 local cinemaGui, topBar, bottomBar
 local function setBars(on, time)
@@ -382,6 +498,8 @@ end
  
 local lasering = false
 local function requestDash()
+  local dashChar = player.Character
+  if dashChar and dashChar:GetAttribute("TrueWarriorCinematic") then return end
   local vitals = player.PlayerGui:FindFirstChild("PlayerVitalsHUD")
   local request = vitals and vitals:FindFirstChild("RequestDash")
   if request then
@@ -487,6 +605,7 @@ task.spawn(function()
     if (heldKeys.F or hudHeldKeys.F) and sc and sc:GetAttribute("ClassId")=="Tank" then
      if UIS:IsKeyDown(Enum.KeyCode.F) or hudHeldKeys.F then act("F","Hold") else heldKeys.F=nil act("F","End") end
     end
+    if (heldKeys.R or hudHeldKeys.R) and sc and sc:GetAttribute("ClassStatus_Blocking") then act("R","Hold") end
     if lasering or heldKeys.C or hudHeldKeys.C or (sc and sc:GetAttribute("ClassAimStream")) then
       act("Aim", "Hold")
     end
@@ -702,18 +821,26 @@ local function slotTitle(def, key, c)
   if key == "Q" then
     return "Dash"
   elseif key == "R" then
-    return "Block"
+    if def.Name == "True Warrior" and c and c:GetAttribute("TWHidden_R") then
+      return "Holy Counter"
+    end
+    return def.R and def.R.Name or (def.Name == "Warrior" and "Aegis Guard" or "Block")
   end
   local ability = def[key]
   if not ability then
     return ""
   end
+  if def.Name == "True Warrior" and c then
+    if key == "C" and c:GetAttribute("TWHidden_C") then return "Supreme King Slash" end
+    if key == "F" and c:GetAttribute("TWHidden_F") then return "The Truth" end
+    if key == "V" and c:GetAttribute("TrueWarriorChain") then return "Last Stand " .. ({ "II", "III" })[c:GetAttribute("TrueWarriorChain")] end
+  end
   if def.Name == "Warrior" and (key == "C" or key == "V") then
     local offensive = (c and c:GetAttribute("ClassMode") or "Offensive") == "Offensive"
     if key == "C" then
-      return offensive and "X-Slash" or "Slam"
+      return offensive and "X-Slash" or "Shield Charge"
     end
-    return offensive and "Conclusion" or "Parry"
+    return offensive and "Conclusion" or "Aegis Burst"
   end
   return ability.Name
 end
@@ -759,7 +886,7 @@ local hudConnection=Run.Heartbeat:Connect(function(dt)
     elseif key == "R" then
       local remaining=math.max(0,(c:GetAttribute("ClassCD_R") or 0)-t)
       ready=remaining<=0
-      text=c:GetAttribute("ClassStatus_Blocking") and "Blocking" or remaining>0 and string.format("Cooldown · %.1fs",remaining) or "Hold"
+      text=c:GetAttribute("ClassStatus_Blocking") and "Blocking" or c:GetAttribute("ClassStatus_CounterStance") and "Countering" or remaining>0 and string.format("Cooldown · %.1fs",remaining) or (def.R and "Tap" or "Hold")
     else
       local remaining=math.max(0,(c:GetAttribute("ClassCD_"..key) or 0)-t)
       if def.Name=="Mage" and key=="F" and (c:GetAttribute("MageNearbyOrbs") or 0)>=def.F.OrbCost then
@@ -823,8 +950,6 @@ for _,d in player.PlayerGui:GetDescendants() do hideOldButton(d) end
 player.PlayerGui.DescendantAdded:Connect(hideOldButton)
 
  
- -- the class picker (the armory statue sends "Open"): hover a plate to preview, click to take it.
- -- Look: TrialMenuKit (shared with the trial picker).
 local Kit = require(game.ReplicatedStorage.BossShared.Presentation.TrialMenuKit)
 local KC, KF = Kit.Colors, Kit.Fonts
 local menuScreen = Kit.Screen("ClassMenu", player.PlayerGui)
@@ -835,8 +960,22 @@ local close = Kit.Close(mstage)
 local cards, preview = {}, nil
 local showDetail
 local classCount = #ClassConfig.Order
-local CPW, CGAP = 148, 12
+local CGAP = classCount > 6 and 8 or 12
+local CPW = math.min(148, math.floor((Kit.W - 40 - (classCount - 1) * CGAP) / classCount))
 local cx0 = (Kit.W - (classCount * CPW + (classCount - 1) * CGAP)) / 2
+local Unlocks = require(game.ReplicatedStorage.BossShared.Classes.ClassUnlocks)
+local cardTitles = {
+  Duelist = "THE RIPOSTE",
+  Twinblade = "DUAL FURY",
+  Disorderer = "REALITY BREAKER",
+  TrueWarrior = "THE CHAMPION",
+}
+local function unlockState(id)
+  if not Unlocks[id] then return "open" end
+  local v = player:GetAttribute("ClassUnlocked_" .. id)
+  if v == true then return "open" elseif v == false then return "locked" end
+  return "pending"
+end
 local maxHP, maxSTA, maxSPD = 1, 1, 1
 for _, id in ipairs(ClassConfig.Order) do
   local d = ClassConfig.Classes[id]
@@ -845,20 +984,61 @@ end
 local function currentClass()
   return player:GetAttribute("PlayerClass") or ClassConfig.Default
 end
+local leaveToken = 0
+local function leaveLocked(id)
+  leaveToken += 1
+  local token = leaveToken
+  task.delay(0.4, function()
+    if token == leaveToken and preview == id then
+      preview = nil
+      showDetail(currentClass())
+    end
+  end)
+end
 for i, id in ipairs(ClassConfig.Order) do
   local def = ClassConfig.Classes[id]
   local plate = Kit.Plate(mstage, {
-    Id = id, Glyph = def.Name:sub(1, 1), Name = def.Name, NameSize = 16, Color = def.Color,
-    Note = def.Exclusive and "Exclusive" or def.Passive.Name,
+    Id = id, Glyph = def.Name:sub(1, 1), Name = def.Short or def.Name, NameSize = classCount > 6 and 15 or 16, Color = def.Color,
+    Note = cardTitles[id] or def.Passive.Name,
     Position = UDim2.fromOffset(cx0 + (i - 1) * (CPW + CGAP), 146), Size = UDim2.fromOffset(CPW, 164),
   })
+  local okLogo = pcall(function()
+    local Icons = require(game.ReplicatedStorage.BossShared.Presentation.StatusIcons)
+    Icons.Create(plate.Button, "Logo" .. id, UDim2.fromOffset(56, 56), UDim2.fromOffset((CPW - 56) / 2, 31), def.Color)
+  end)
+  if okLogo then plate.Glyph.Text = "" end
   cards[id] = plate
+  local overlay = Instance.new("Frame")
+  overlay.Name = "LockOverlay"
+  overlay.Size = UDim2.fromScale(1, 1)
+  overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+  overlay.BackgroundTransparency = 0.45
+  overlay.BorderSizePixel = 0
+  overlay.ZIndex = 20
+  overlay.Visible = false
+  overlay.Parent = plate.Button
+  local lockText = Instance.new("TextLabel")
+  lockText.BackgroundTransparency = 1
+  lockText.Size = UDim2.fromScale(1, 0.18)
+  lockText.Position = UDim2.fromScale(0, 0.04)
+  lockText.Font = Enum.Font.Garamond
+  lockText.Text = "LOCKED"
+  lockText.TextSize = 15
+  lockText.TextColor3 = Color3.fromRGB(235, 215, 150)
+  lockText.ZIndex = 21
+  lockText.Parent = overlay
+  plate.LockOverlay = overlay
+  overlay.Interactable = false  -- the padlock veil never takes the cursor away from the card under it
   plate.Button.MouseEnter:Connect(function()
+    leaveToken += 1
     preview = id
     showDetail(id)
   end)
   plate.Button.MouseLeave:Connect(function()
-    if preview == id then
+    if preview ~= id then return end
+    if unlockState(id) ~= "open" then
+      leaveLocked(id)
+    else
       preview = nil
       showDetail(currentClass())
     end
@@ -870,7 +1050,6 @@ for i, id in ipairs(ClassConfig.Order) do
   end)
 end
 
- -- the numbers, as a strip of gauges under the plates
 local SW, SGAP = 212, 20
 local sx0 = (Kit.W - (4 * SW + 3 * SGAP)) / 2
 local hpGauge = Kit.Gauge(mstage, UDim2.fromOffset(sx0, 330), SW, "Health")
@@ -878,14 +1057,12 @@ local staGauge = Kit.Gauge(mstage, UDim2.fromOffset(sx0 + (SW + SGAP), 330), SW,
 local spdGauge = Kit.Gauge(mstage, UDim2.fromOffset(sx0 + 2 * (SW + SGAP), 330), SW, "Speed")
 local defGauge = Kit.Gauge(mstage, UDim2.fromOffset(sx0 + 3 * (SW + SGAP), 330), SW, "Defense")
 
- -- left: who they are; right: their four abilities
 local DY = 380
 local cname = Kit.Text(mstage, { FontFace = KF.Title, TextSize = 30, Position = UDim2.fromOffset(50, DY), Size = UDim2.fromOffset(360, 34) })
 local tagline = Kit.Text(mstage, { FontFace = KF.Italic, TextSize = 16, Position = UDim2.fromOffset(50, DY + 38), Size = UDim2.fromOffset(360, 62) })
 local passiveTitle = Kit.Text(mstage, { FontFace = KF.Caps, TextSize = 12, Position = UDim2.fromOffset(50, DY + 108), Size = UDim2.fromOffset(360, 16) })
 local passiveText = Kit.Text(mstage, { FontFace = KF.Body, TextSize = 15, TextColor3 = KC.Muted, Position = UDim2.fromOffset(50, DY + 128), Size = UDim2.fromOffset(360, 84) })
 Kit.Frame(mstage, { Position = UDim2.fromOffset(432, DY + 4), Size = UDim2.fromOffset(1, 200), BackgroundTransparency = 0.6, BackgroundColor3 = KC.GoldDim })
- -- the ability list flows: each row grows to fit its description
 local abilityList = Kit.Frame(mstage, { Position = UDim2.fromOffset(460, DY), Size = UDim2.fromOffset(490, 210) })
 local abilityFlow = Instance.new("UIListLayout")
 abilityFlow.Padding = UDim.new(0, 7)
@@ -908,8 +1085,6 @@ end
 
 local status = Kit.Text(mstage, { FontFace = KF.Italic, TextSize = 16, TextColor3 = KC.Gold, TextXAlignment = Enum.TextXAlignment.Center,
   AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 594), Size = UDim2.fromOffset(820, 20) })
-Kit.Text(mstage, { Text = Kit.Spaced("Q Dash with i-frames · R Block: +75% defense, -35% speed"), FontFace = KF.Caps, TextSize = 11,
-  TextColor3 = KC.GoldDim, TextXAlignment = Enum.TextXAlignment.Center, AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 616), Size = UDim2.fromOffset(900, 14) })
 
 showDetail = function(id)
   local def = ClassConfig.Get(id)
@@ -932,14 +1107,62 @@ showDetail = function(id)
     row.Text.Text = a.Text
   end
 end
+local buyButton = Instance.new("TextButton")
+buyButton.Name = "BuyButton"
+buyButton.Visible = false
+buyButton.AnchorPoint = Vector2.new(1, 0)
+buyButton.Position = UDim2.fromOffset(Kit.W - 40, 586)
+buyButton.Size = UDim2.fromOffset(190, 30)
+buyButton.BackgroundColor3 = Color3.fromRGB(70, 150, 90)
+buyButton.BorderSizePixel = 0
+buyButton.Font = Enum.Font.Garamond
+buyButton.TextSize = 20
+buyButton.TextColor3 = Color3.new(1, 1, 1)
+buyButton.Text = "Buy"
+buyButton.Parent = mstage
+buyButton.Activated:Connect(function()
+  local id = buyButton:GetAttribute("ForClass")
+  if id then remote:FireServer("Buy", id) end
+end)
+buyButton.MouseEnter:Connect(function() leaveToken += 1 end)
+buyButton.MouseLeave:Connect(function()
+  local id = buyButton:GetAttribute("ForClass")
+  if id then leaveLocked(id) end
+end)
+local lockedHint
+local baseShowDetail = showDetail
+showDetail = function(id)
+  baseShowDetail(id)
+  if id == "TrueWarrior" and (player:GetAttribute("ChampionUnlocked") == true or workspace:GetAttribute("ForceChampion") == true) then
+    cname.Text = ClassConfig.Classes.TrueWarrior.ChampionName
+  end
+  local entry = Unlocks[id]
+  local state = unlockState(id)
+  if entry and state ~= "open" then
+    status.Text = state == "pending" and "Checking your unlocks..." or entry.Hint
+    lockedHint = status.Text
+    local pass = entry.Kind == "GamePass" and state == "locked"
+    buyButton.Visible = pass
+    buyButton.Text = (entry.Id or 0) > 0 and ("Buy  -  " .. tostring(entry.Price or "") .. " Robux") or "Coming soon"
+    buyButton:SetAttribute("ForClass", id)
+  else
+    buyButton.Visible = false
+    if lockedHint and status.Text == lockedHint then status.Text = "" end
+    lockedHint = nil
+  end
+end
 local function refreshMenu()
   local current = currentClass()
   local locked = workspace:GetAttribute("EncounterStarted") == true
   for id, plate in pairs(cards) do
     plate:Set(id == current, id == current and (locked and "Sealed" or "Chosen") or nil)
+    if plate.LockOverlay then plate.LockOverlay.Visible = unlockState(id) ~= "open" end
   end
   showDetail(preview or current)
 end
+player.AttributeChanged:Connect(function(name)
+  if name:sub(1, 14) == "ClassUnlocked_" then refreshMenu() end
+end)
 local function hideMenu()
   menu.Enabled = false
 end
@@ -970,6 +1193,16 @@ remote.OnClientEvent:Connect(function(kind, data)
     refreshMenu()
   elseif kind == "Move" then
     startMove(data)
+  elseif kind == "Leap" then
+    local c = character()
+    if c and data and typeof(data.Velocity) == "Vector3" and not controlLocked(c) then
+      local hum = c:FindFirstChildOfClass("Humanoid")
+      local root = c:FindFirstChild("HumanoidRootPart")
+      if hum and root then
+        if data.Velocity.Y > 0 then hum:ChangeState(Enum.HumanoidStateType.Freefall) end
+        root.AssemblyLinearVelocity = data.Velocity
+      end
+    end
   elseif kind == "MoveStop" then
     stopMove()
   elseif kind == "LaserStart" then
@@ -977,10 +1210,14 @@ remote.OnClientEvent:Connect(function(kind, data)
     task.delay((data and data.Duration or 5) + 0.5, function()
       lasering = false
     end)
+  elseif kind == "TwinStorm" then
+    twinStorm(data)
+  elseif kind == "TwinPath" then
+    startTwinPath(data)
   elseif kind == "Blink" then
     startBlink(data)
   elseif kind == "Cinema" then
-    cinema(data)
+    if (data and data.Mode == "End") or player:GetAttribute("DisableSkillCutscenes") ~= true then cinema(data) end
   elseif kind == "Waltz" then
      
     task.spawn(function()

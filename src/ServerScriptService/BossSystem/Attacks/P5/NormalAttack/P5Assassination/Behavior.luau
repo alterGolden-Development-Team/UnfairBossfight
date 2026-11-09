@@ -9,7 +9,8 @@ return function(actor)
 
 	 -- the draw over his victim: violet for a feint, red for the real cut
 	local function draw(victim, real)
-		local windup = c.Tell(real and S.Windup or S.FeintWindup)
+		 -- the real (red) draw is at least Windup on every difficulty: it can take lives
+		local windup = real and math.max(S.Windup, c.Tell(S.Windup)) or c.Tell(S.FeintWindup)
 		core.Face(victim)
 		core.Melee.Pose("Windup", 0.08)
 		actor:SetAttribute("AttackState", real and "Assassination: marked" or "Assassination: feint")
@@ -63,7 +64,7 @@ return function(actor)
 					return false
 				end
 			end
-			return c.Wait(0.2)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

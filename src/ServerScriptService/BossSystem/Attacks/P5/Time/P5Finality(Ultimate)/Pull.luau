@@ -11,7 +11,7 @@ local function steer(record,drift,acceleration)
   return false
  end
  local horizontal=root.AssemblyLinearVelocity*FLAT
- if horizontal.Magnitude>h.WalkSpeed*1.75+drift.Magnitude then
+ if horizontal.Magnitude>h.WalkSpeed*3.5+drift.Magnitude then  -- only a real dash slips it, for a moment
   record.Force.Enabled=false
   return false
  end

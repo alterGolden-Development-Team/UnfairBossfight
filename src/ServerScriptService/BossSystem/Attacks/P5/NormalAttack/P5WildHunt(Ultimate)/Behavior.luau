@@ -58,6 +58,13 @@ return function(actor)
 			last = p
 		end)
 	end
+	 -- every attack of the hunt starts with him blinking in next to his prey, a random side each time (false when there is no room)
+	local function blinkNear(target, distance)
+		if not target or not core.Alive(target) then
+			return false
+		end
+		return c.Blink(c.Beside(target, distance or S.BlinkDistance, math.random() * math.pi * 2))
+	end
 	local function onFloor(position)
 		local frame = Placement.Validate(actor, CFrame.new(position), { Margin = 7 })
 		return frame and frame.Position or position
@@ -73,12 +80,12 @@ return function(actor)
 		local done = core.Perform(target, S.Name, function()
 			 -- 1. two lunges: through the prey and on past, then straight back
 			actor:SetAttribute("AttackState", "Wild Hunt: the lunge")
-			local home = core.Root.Position
 			for pass = 1, 2 do
 				if not core.Alive(target) then target = core.Melee.GetTarget() end
 				if not target then return false end
+				blinkNear(target, S.LungeFrom)  -- each lunge comes out of a blink beside them, not from where he stood
 				local dir = flatTo(target)
-				local goal = pass == 1 and onFloor(target.HumanoidRootPart.Position + dir * S.LungeOvershoot) or home
+				local goal = onFloor(target.HumanoidRootPart.Position + dir * S.LungeOvershoot)
 				goal = Vector3.new(goal.X, core.Root.Position.Y, goal.Z)
 				local windup = c.Tell(S.LungeWindup)
 				for _, char in ipairs(c.Targets()) do  -- Tap Deflect: the shield shows on whoever is in the lunge's path
@@ -101,6 +108,7 @@ return function(actor)
 			for slice = 1, S.Slices do
 				if not core.Alive(target) then target = core.Melee.GetTarget() end
 				if not target then return false end
+				blinkNear(target, S.SliceFrom)  -- every cut is made from a fresh blink next to them
 				core.Face(target)
 				core.Melee.Pose(slice % 2 == 1 and "Slash1" or "Slash2", 0.05)
 				c.Send("HuntSlice", { Frame = aimAt(target), Index = slice })
@@ -113,6 +121,7 @@ return function(actor)
 			if not core.Alive(target) then target = core.Melee.GetTarget() end
 			if not target then return false end
 			actor:SetAttribute("AttackState", "Wild Hunt: the bite")
+			blinkNear(target, S.DragDistance)  -- he blinks in, then drags himself the rest of the way into the bite
 			local dir, dist = flatTo(target)
 			local goal = onFloor(core.Root.Position + dir * math.clamp(dist - 6, 4, S.DragDistance))
 			goal = Vector3.new(goal.X, core.Root.Position.Y, goal.Z)
@@ -141,6 +150,7 @@ return function(actor)
 			if not c.Wait(0.35) then return false end
 			 -- 4. he stops dead and everything around him explodes (Hold Deflect)
 			actor:SetAttribute("AttackState", "Wild Hunt: the burst")
+			blinkNear(target, S.BurstFrom)  -- the burst goes off right beside them
 			core.PoseAngles(ROAR, 0.1)
 			local brace = c.Tell(S.BurstWindup)
 			for _, char in ipairs(c.Targets()) do
@@ -169,7 +179,6 @@ return function(actor)
 		if not done then
 			return false
 		end
-		 -- 5. the Death Scythe
 		scythe = scythe or require(B.Attacks.P4[SCYTHE])(actor)
 		Cooldowns.Take(actor, SCYTHE)
 		if not core.Alive(target) then target = core.Melee.GetTarget() end

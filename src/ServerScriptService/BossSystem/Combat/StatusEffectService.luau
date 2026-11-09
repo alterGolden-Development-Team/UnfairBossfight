@@ -22,7 +22,7 @@ local NAMED_DEBUFFS = { "Electricified", "Flung" }
 local TICKED_EFFECTS = { "CardBurn", "CupRegenBoost", "Poison" }
 
 function Service.IsDebuffImmune(character)
-	return Observer.IsCharacter(character)
+	return Observer.IsCharacter(character) or require(script.Parent.DisorderWall).Protects(character)
 end
 
 local function staleToken(token)
@@ -898,6 +898,25 @@ local function tickAstralBurn(record,now)
  end
 end
 
+-- (Round AA) removes the single advanced debuff that would last longest; returns its name (nil when there is none).
+-- Used by the Supporter (Healing / Sanctuary aura) and the Reality Disorderer (Redact).
+function Service.RemoveOneDebuff(character)
+	local player = character and Players:GetPlayerFromCharacter(character)
+	local record = player and records[player]
+	if not record or record.character ~= character or not record.p3Effects then return nil end
+	local pick, pickDeadline
+	for name, entry in pairs(record.p3Effects) do
+		if table.find(ADVANCED_DEBUFFS, name) and type(entry) == "table" and entry.deadline then
+			if not pickDeadline or entry.deadline > pickDeadline then pick, pickDeadline = name, entry.deadline end
+		end
+	end
+	if not pick then return nil end
+	record.p3Effects[pick] = nil
+	refreshP3(record, Time.ActionNow(character))
+	refresh(record)
+	return pick
+end
+
 function Service.ApplyAdvancedDebuff(character, name, seconds, sourceActor, options)
 	assert(table.find(ADVANCED_DEBUFFS, name), "Unknown advanced debuff")
 	if Service.IsDebuffImmune(character) or sourceActor and sourceActor:GetAttribute("IsIllusion")
@@ -1051,7 +1070,7 @@ function Service.ClearFearFor(owner)
 end
 function Service.ClearGoldenBurnFor(owner)
  for _,record in pairs(records) do
-  local entry=record.p3Effects.GoldenBurn
+  local entry=record.p3Effects and record.p3Effects.GoldenBurn  -- not every record has P3 effects
   if entry and entry.source==owner then record.p3Effects.GoldenBurn=nil;publish(record,"GoldenBurnUntil",0);refreshBurn(record) end
  end
 end

@@ -51,14 +51,13 @@ local function bossPos(c)
  return c.LastPos
 end
 
- -- one cast -----------------------------------------------------------------------
 function P.Start(E,d)
  if casts[d.Token]then return end
  local g=E.Group("Polaris")
  local c={D=d,G=g,Subs={},Pulse=0,LastPos=d.Center,Seeds={},Chain={}}
  casts[d.Token]=c latest=c
  local T=d.Total
- local el=math.max(E.Net.Now()-d.T0,0)  -- late joiners start mid-cast
+ local el=math.max(E.Net.Now()-d.T0,0)
  local life=math.max(T-el,.5)
  local function k(keys)  -- shift beat keys by what already elapsed
   local s={}
@@ -109,7 +108,6 @@ function P.Start(E,d)
   -- one faint compass ring under the boss; the ground stays mostly clear
  circle("ring.compass",46,.7,WHITE,0,.3)
 
-  -- the star
  local star=E.Anchor(g,CFrame.new(center+Vector3.new(0,13,0)))
  c.Star=star
  local pin,pop=C-.35,C
@@ -184,7 +182,6 @@ function P.Start(E,d)
   c.Curtain[i]=cu
  end
 
-  -- constellation seeds
  local shots=d.Shots
  local domeC=center+Vector3.new(0,d.DomeLift,0)
  for i=1,shots do
@@ -205,7 +202,7 @@ function P.Start(E,d)
  end
 
   -- ending: the north star itself explodes just before the cast ends
- E.After(g,math.max(T-2.2-el,.1),function()P.Explode(E,c)end)  -- swell .55 s, burst at T-1.65
+ E.After(g,math.max(T-2.2-el,.1),function()P.Explode(E,c)end)
 
  E.Step(g,function(dt)
   local t=E.Net.Now()-d.T0
@@ -222,7 +219,7 @@ function P.Start(E,d)
   for i,cu in ipairs(c.Curtain)do
    local ang=cu.Ang
    local tangent=Vector3.new(-math.sin(ang),0,math.cos(ang))
-   local rr=r+math.sin(i*.9+t*.4)*10+math.sin(t*.7+i*2.1)*3  -- folds in the curtain
+   local rr=r+math.sin(i*.9+t*.4)*10+math.sin(t*.7+i*2.1)*3
    local bottom=Vector3.new(math.cos(ang)*rr,math.sin(t*.9+i*.6)*3+math.sin(t*.37+i*1.4)*2,math.sin(ang)*rr)
    local sway=tangent*(math.sin(t*.8+i*.5)*5)
    local u=smooth((t-cu.Delay)/1.4)*fade  -- unfurl upward, roll back down at the end
@@ -312,7 +309,6 @@ function P.Finale(E,d)
  end
 end
 
- -- per volley -----------------------------------------------------------------------
 function P.Telegraph(E,d)
  local c=casts[d.Token]or latest
  local g=E.Group("PolarisTelegraph")
@@ -360,7 +356,6 @@ function P.Decorate(E,part)
  E.Step(g,function(dt)
    -- the carrier replicates at server rate; ease toward it so the star glides
   if part.Parent then a.CFrame=a.CFrame:Lerp(part.CFrame,1-math.exp(-dt*28))return true end
-   -- the bolt is gone (hit, miss or expired): it shatters where it was instead of
    -- hanging in place and blinking out
   for _,b in ipairs(body)do b:Clear()end
   motes.Enabled=false
@@ -408,7 +403,6 @@ function P.Fizzle(E,d)
  E.After(g,1.6,function()g:Destroy()end)
 end
 
- -- Starfall ---------------------------------------------------------------------------
 function P.Starfall(E,d)
  local c=casts[d.Token]
  local g=E.Group("PolarisStarfall")
@@ -430,7 +424,7 @@ function P.Starfall(E,d)
  local t0=os.clock()
  E.Step(g,function()
   local u=math.clamp((os.clock()-t0)/warn,0,1)
-  if diver.Parent then diver.CFrame=CFrame.new(from:Lerp(d.To,u*u*u))end  -- hangs, then slams
+  if diver.Parent then diver.CFrame=CFrame.new(from:Lerp(d.To,u*u*u))end
   if u>=1 then return false end
  end)
  E.After(g,warn+.5,function()a0:Destroy()g:Destroy()end)
@@ -461,7 +455,6 @@ function P.StarfallHit(E,d)
  E.After(g,1,function()g:Destroy()end)
 end
 
- -- North Cross -------------------------------------------------------------------------
 local function blades(E,g,center,ang,len,fn)
  for k=0,3 do
   local a=ang+k*math.pi/2
@@ -544,9 +537,14 @@ function P.Explode(E,c)
    life={.9,1.5},speed={60,120},spread=180,drag=1.5,spin={-300,300}},40)
   E.Emit(a,{tex="dot",orient="velocity",squash={{0,2.8},{.6,1.2},{1,0}},size={{0,1.4},{1,0}},alpha={{0,0},{.75,0},{1,1}},
    color={{0,WHITE},{.4,ICE},{1,pal(c.D,2)}},life={.4,.8},speed={90,150},spread=180,drag=3},90)
-   -- afterglow: star dust drifting down
   E.Emit(a,{tex="star.twinkle",size={{0,2},{1,0}},life={1.4,2.2},speed={8,22},spread=180,drag=1.2,accel=Vector3.new(0,-4,0),color={{0,WHITE},{1,ICE}}},45)
   E.Light(g,a,ICE,90,8,.5)
+   -- the blast reaches across the whole map: a ring of light races out over the ground to the far corners
+  local fr=c.D.FinalRadius or 400
+  local ga=E.Anchor(g,CFrame.new((c.Ground or a.Position)+Vector3.new(0,.5,0)))
+  E.Sprite(ga,{tex="ring.thick",orient="flat",size={{0,20},{1,fr*2}},alpha={{0,.05},{.8,.3},{1,1}},color=WHITE},1.3)
+  E.Sprite(ga,{tex="ring.crisp",orient="flat",size={{0,10},{1,fr*2}},alpha={{0,0},{.6,.3},{1,1}},color=ICE},1.0)
+  E.Emit(ga,{tex="star.twinkle",size={{0,2.5},{1,0}},life={1,2},speed={60,140},spread=80,dir=Enum.NormalId.Top,drag=1.5,color={{0,WHITE},{1,ICE}}},60)
    -- the constellation stars pop in turn and their threads snap
   for i,sd in ipairs(c.Seeds)do
    E.After(g,.04*i,function()

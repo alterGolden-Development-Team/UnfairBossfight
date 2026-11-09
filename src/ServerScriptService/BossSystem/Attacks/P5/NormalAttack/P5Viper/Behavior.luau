@@ -136,7 +136,7 @@ return function(actor)
 				core.ScreenEffect("Shake", { Origin = root.Position, Radius = 90, Intensity = 0.5, Duration = 0.2 })
 			end
 			actor:SetAttribute("P5Vipers", (actor:GetAttribute("P5Vipers") or 0) + 1)
-			return c.Wait(0.3)
+			return c.Wait(0.1)
 		end)
 		releaseAll()
 		if not ok then

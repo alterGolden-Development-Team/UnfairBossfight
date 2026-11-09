@@ -4,10 +4,8 @@ return table.freeze({
  FistNames=table.freeze({"RightHand","Right Hand","Right Arm","RightArm","RightLowerArm"}),
  SummonTime=.8, ChaseDuration=9, ChaseSpeed=30,
  CatchRadius=5, CatchHeight=4.5, Charge=1.15, PunchDamage=80,
-  -- 2026-10-31: the punch summons swords (VFXEngine.Effects.ShadowSwords): a giant blade under the
   -- victim (SwordDamage on top of the punch, launches them) and rings of blades around it
  SwordDamage=40, LaunchSpeed=34, LaunchLift=34,
-  -- reworked 2026-10-30: the shadow blinks at its prey, the punch erupts in thorns that hit everyone
   -- around it, and a shadow that catches no one erupts where it stands instead of fading away
  BlinkInterval=2.4, BlinkMin=14, BlinkMax=42, BlinkShare=.6,
  ShockRadius=24, ShockDamage=42, FearSeconds=2.5,

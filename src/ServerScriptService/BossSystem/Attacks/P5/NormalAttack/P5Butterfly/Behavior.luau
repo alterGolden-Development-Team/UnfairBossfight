@@ -42,7 +42,7 @@ return function(actor)
 			c.Send("Wings", { Time = wingTime })
 			 -- spring backward up into the air
 			local start = root.CFrame
-			local rootHeight = math.clamp(start.Position.Y - c.Ground(start.Position).Y, 2, 6)  -- root above the floor
+			local rootHeight = math.clamp(start.Position.Y - c.Ground(start.Position).Y, 2, 6)
 			local landing = Placement.Validate(actor, start * CFrame.new(0, 0, S.BackDistance), { Margin = 6 }) or start
 			local apex = landing + Vector3.new(0, S.JumpHeight, 0)
 			if not c.Over(S.JumpTime, function(alpha)
@@ -82,7 +82,7 @@ return function(actor)
 			local from = root.Position
 			local flat = Vector3.new(destination.X - from.X, 0, destination.Z - from.Z)
 			local direction = flat.Magnitude > 0.1 and flat.Unit or root.CFrame.LookVector * Vector3.new(1, 0, 1)
-			if flat.Magnitude > S.ThrustRange then  -- it only reaches so far
+			if flat.Magnitude > S.ThrustRange then
 				destination = c.Ground(Vector3.new(from.X, destination.Y, from.Z) + direction * S.ThrustRange)
 			end
 			local finish = destination + Vector3.new(0, rootHeight, 0) + direction * S.Overshoot
@@ -121,7 +121,7 @@ return function(actor)
 				end
 			end
 			actor:SetAttribute("P5ButterflyDives", (actor:GetAttribute("P5ButterflyDives") or 0) + 1)
-			return c.Wait(0.25)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

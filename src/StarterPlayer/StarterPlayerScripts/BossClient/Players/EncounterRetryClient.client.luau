@@ -60,10 +60,19 @@ local function update()
 	local retrying = player:GetAttribute("EncounterRetrying") == true
 	local lost = player:GetAttribute("PermanentlyDefeated") == true
 	local available = workspace:GetAttribute("EncounterRetryAvailable") == true
+	 -- (P5SonicBlaster effect, local attributes FinalDefeatShow / FinalDefeatSpectate) instead of this panel. The panel stays
+	 -- away while it plays, and afterwards unless the whole group is down (then Retry is available and the panel is needed).
+	local cutscene = player:GetAttribute("FinalDefeatShow") == true
+	local spectate = player:GetAttribute("FinalDefeatSpectate") == true
+	local inFinal = workspace:GetAttribute("SonicBlasterActive") == true and workspace:GetAttribute("NothingDimension") == true
 	local visible = lost and not retrying and not pending and workspace:GetAttribute("BossEncounterWon") ~= true
+		and not cutscene and not ((spectate or inFinal) and not available)
 	local wasVisible = gui.Enabled
 	gui.Enabled = visible
-	if not lost then pending = false end
+	if not lost then
+		pending = false
+		if spectate then player:SetAttribute("FinalDefeatSpectate", nil) end
+	end
 	title.Text = "DEFEATED"
 	message.Text = available and "Reset the battle and return to the entrance." or "The other players are still fighting."
 	button.Text = (retrying or pending) and "RESTARTING..." or "RETRY"
@@ -87,10 +96,10 @@ end)
 remote.OnClientEvent:Connect(function(action, text)
 	if action == "RetryRejected" then pending = false; update(); message.Text = text end
 end)
-for _, name in ipairs({ "PermanentlyDefeated", "EncounterRetrying" }) do
+for _, name in ipairs({ "PermanentlyDefeated", "EncounterRetrying", "FinalDefeatShow", "FinalDefeatSpectate" }) do
 	player:GetAttributeChangedSignal(name):Connect(update)
 end
-for _, name in ipairs({ "EncounterRetryAvailable", "BossEncounterWon" }) do
+for _, name in ipairs({ "EncounterRetryAvailable", "BossEncounterWon", "SonicBlasterActive", "NothingDimension" }) do
 	workspace:GetAttributeChangedSignal(name):Connect(update)
 end
 update()

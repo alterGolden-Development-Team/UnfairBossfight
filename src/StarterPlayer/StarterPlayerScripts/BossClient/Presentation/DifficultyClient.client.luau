@@ -14,7 +14,6 @@ local gui, stage = screen.Gui, screen.Stage
 local subtitle = Kit.Header(stage, "The Trial of Golden", "Choose Your Trial")
 local close = Kit.Close(stage)
 
- -- severity numerals, hardest first
 local NUMERAL = { Hellaven = "V", TrueHardcore = "IV", Hardcore = "III", NerfedHardcore = "II", Easy = "I" }
 
 local plates, locked, pending, previewId = {}, false, false, nil
@@ -73,19 +72,6 @@ local pace = Kit.Gauge(stage, UDim2.fromOffset(GX, DETAIL_Y + 46), GW, "Attack p
 local density = Kit.Gauge(stage, UDim2.fromOffset(GX, DETAIL_Y + 88), GW, "Attack density")
 local lives = Kit.Pips(stage, UDim2.fromOffset(GX, DETAIL_Y + 130), GW, "Lives", 5)
 
-local ledger = Kit.Ledger(stage, "The full terms")
-local rulesButton = Instance.new("TextButton")
-rulesButton.Text = "Read the full terms  ›"
-rulesButton.FontFace = F.Caps
-rulesButton.TextSize = 15
-rulesButton.TextColor3 = C.Gold
-rulesButton.TextXAlignment = Enum.TextXAlignment.Right
-rulesButton.BackgroundTransparency = 1
-rulesButton.AnchorPoint = Vector2.new(1, 0)
-rulesButton.Position = UDim2.fromOffset(GX + GW, DETAIL_Y + 170)
-rulesButton.Size = UDim2.fromOffset(240, 22)
-rulesButton.Parent = stage
-
 local status = Kit.Text(stage, { FontFace = F.Italic, TextSize = 16, TextColor3 = C.Gold, TextXAlignment = Enum.TextXAlignment.Center,
 	AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 0, 586), Size = UDim2.fromOffset(820, 20) })
 Kit.Text(stage, { Text = Kit.Spaced("Hover to preview · Click to choose · One trial for the whole server"), FontFace = F.Caps, TextSize = 11,
@@ -105,16 +91,7 @@ show = function(id)
 	pace(frac(speed, 0.45, 1.3), string.format("× %.2f", speed), p.Color)
 	density(frac(p.Density or 1, 0.35, 1.3), string.format("× %.2f", p.Density or 1), p.Color)
 	lives(p.StartingLives, p.StartingLives == 1 and "one" or tostring(p.StartingLives), p.Color)
-	if ledger.Sheet.Visible then
-		local changes = Difficulty.Changes(id)
-		ledger.Fill({ { "The boss", changes.Boss }, { "Ultimates", changes.Ultimates or {} }, { "Signature skills", changes.Signature or {} },
-			{ "Mercy", changes.Mercy or {} }, { "Passives & debuffs", changes.Passives }, { "You", changes.You } }, p.Color, p.Name .. " — the full terms")
-	end
 end
-rulesButton.Activated:Connect(function()
-	ledger.Sheet.Visible = true
-	show(previewId or Difficulty.Id())
-end)
 
 local function refresh()
 	locked = workspace:GetAttribute("EncounterStarted") == true
@@ -128,7 +105,6 @@ local function refresh()
 end
 local function hide()
 	gui.Enabled = false
-	ledger.Sheet.Visible = false
 end
 screen.Backdrop.Activated:Connect(hide)
 close.Activated:Connect(hide)
@@ -150,7 +126,6 @@ remote.OnClientEvent:Connect(function(action, data)
 		pending = false
 		previewId = nil
 		status.Text = ""
-		ledger.Sheet.Visible = false
 		refresh()
 		screen.Resize()
 		gui.Enabled = true

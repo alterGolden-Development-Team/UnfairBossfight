@@ -6,6 +6,11 @@ return table.freeze({
     TrueHardcore = 2347131894818918,
     Hellaven = 1170331551749924,
   }),
+  -- awarded IN ADDITION to the normal badge when the win was a solo run (nobody else took part in the fight)
+  SoloBadgeIds = table.freeze({
+    TrueHardcore = 126477610981225,
+    Hellaven = 2914248639183662,
+  }),
   AwardAttempts = 3,
   RetryDelay = 2,
 })

@@ -37,7 +37,7 @@ return function(actor)
 				actor:SetAttribute("AttackState", ("Upper Cut: %d / %d"):format(strike, count))
 				local point = c.Ground((core.Root.CFrame * CFrame.new(0, 0, -S.Reach)).Position)
 				local windup = c.Tell(S.Windup)
-				c.Warn(victim, "Tap", windup + 0.1)  -- Tap Deflect
+				c.Warn(victim, "Tap", windup + 0.1)
 				c.Send("UpperTell", { Pos = point, Time = windup })
 				if not c.Wait(windup) then
 					return false
@@ -63,7 +63,7 @@ return function(actor)
 					return false
 				end
 			end
-			return c.Wait(0.25)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

@@ -38,7 +38,7 @@ return function(actor)
  end
 
  function api.Combo(target)
-  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"MoveSpeed","PullMinSpeed","PullMaxSpeed","PullSpeedLimit","ShockSpeed"},Tell={"HoldTime","ArmDelay"}})  -- difficulty knobs, this cast only
+  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"MoveSpeed","PullMinSpeed","PullMaxSpeed","PullSpeedLimit","ShockSpeed"},Tell={"HoldTime","ArmDelay"}})
   if not api.CanUse(target) then return false end
   return core.Perform(target,S.Name,function()
    Cooldowns.Start(actor,S.Name,S.Cooldown)
@@ -79,7 +79,7 @@ return function(actor)
     for char in pairs(forces)do release(char)end
     if visual then cosmetic(visual.Destroy)end
     if current==cast then current=nil end
-    if actor.Parent then  -- the hole is gone: same breather as the astral heavies
+    if actor.Parent then
      local breather=require(game.ReplicatedStorage.BossShared.Config.EncounterConfig).HeavyBreather or 1.2
      actor:SetAttribute("NextAttackAt",math.max(actor:GetAttribute("NextAttackAt")or 0,workspace:GetServerTimeNow()+breather))
      if actor:GetAttribute("Phase")==5 then actor:SetAttribute("FillerDebt",require(game.ReplicatedStorage.BossShared.Config.EncounterConfig).Phase5FillerBetween or 2)end

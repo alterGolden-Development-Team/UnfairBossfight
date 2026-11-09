@@ -385,7 +385,7 @@ local function resetEncounter()
     local character = player.Character
     if not character then
       task.spawn(function()
-        if player.Parent == Players and not player.Character then player:LoadCharacterAsync() end
+        if player.Parent == Players and not player.Character then Encounter.LoadCharacter(player) end
       end)
     end
     if character then
@@ -402,7 +402,7 @@ local function resetEncounter()
             and not started
             and workspace:GetAttribute("BossEntranceSequence") == sequence
           then
-            player:LoadCharacterAsync()
+            Encounter.LoadCharacter(player, true)
           end
         end)
       else

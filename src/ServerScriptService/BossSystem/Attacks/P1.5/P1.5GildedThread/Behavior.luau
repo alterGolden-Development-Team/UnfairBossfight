@@ -109,9 +109,13 @@ return function(actor)
 		core = core,
 	})
 
-	function api.Release(direction)
+	 -- options (the Phase 5 Enhanced Glided Thread): Origin starts the thread somewhere other than just in front of him,
+	 -- Damage scales its contact and sphere damage
+	function api.Release(direction, options)
+		options = options or {}
+		local damageScale = options.Damage or 1
 		local root = core.Root
-		local origin = root.Position + Vector3.new(0, 0.3, 0) + direction * 4
+		local origin = options.Origin or (root.Position + Vector3.new(0, 0.3, 0) + direction * 4)
 		local cast = Effects.NewCast(actor, "P1.5GildedThread", LIFETIME + THREAD_LIFETIME() + 0.3)
 		local anchor = part("GildedThreadPool", Vector3.new(0.1, 0.1, 0.1), GOLD, 1)
 		anchor.CFrame = CFrame.identity
@@ -231,7 +235,7 @@ return function(actor)
 		end
 
 		local function applyContact(character, amount)
-			local dealt = core.Damage(character, amount)
+			local dealt = core.Damage(character, amount * damageScale)
 			if dealt > 0 then
 				AttackDebuffs.Apply(actor,character,"Rupture",3,cast)
 			end

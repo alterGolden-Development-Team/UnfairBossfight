@@ -82,14 +82,14 @@ closeSettings.Size=UDim2.fromOffset(42,42)
 local musicToggle =
 	settingsButton("MusicMuteButton", settingsPanel, UDim2.new(1, -32, 0, 42), UDim2.fromOffset(16, 58), "")
 local autoAimToggle=settingsButton("AutoAimButton",settingsPanel,UDim2.new(1,-32,0,42),UDim2.fromOffset(16,104),"")
-local avatarToggle=settingsButton("AvatarAppearanceButton",settingsPanel,UDim2.new(1,-32,0,42),UDim2.fromOffset(16,150),"")
-local effectsToggle=settingsButton("EffectsQualityButton",settingsPanel,UDim2.new(1,-32,0,42),UDim2.fromOffset(16,196),"")
+local effectsToggle=settingsButton("EffectsQualityButton",settingsPanel,UDim2.new(1,-32,0,42),UDim2.fromOffset(16,150),"")
+local cutsceneToggle=settingsButton("SkillCutsceneButton",settingsPanel,UDim2.new(1,-32,0,42),UDim2.fromOffset(16,196),"")
 local function effectsChanged()
  effectsToggle.Text="Effects: "..Quality.Mode().." ("..Quality.Get().Name..")"
 end
 local function classSettingsChanged()
  autoAimToggle.Text=player:GetAttribute("ClassAutoAim")~=false and "Auto aim: On" or "Auto aim: Off"
- avatarToggle.Text=player:GetAttribute("UseAvatarAppearance")==true and "Appearance: My outfit" or "Appearance: Class outfit"
+ cutsceneToggle.Text=player:GetAttribute("DisableSkillCutscenes")==true and "Skill cutscenes: Off" or "Skill cutscenes: On"
 end
 local viewAsServerToggle
 if isOwner then
@@ -122,9 +122,9 @@ local function activateSetting(action)
 		SoundService:SetAttribute("BossMusicMuted", SoundService:GetAttribute("BossMusicMuted") ~= true)
 	elseif action=="ToggleAutoAim" then
   classControl:FireServer("Setting","ClassAutoAim",player:GetAttribute("ClassAutoAim")==false)
- elseif action=="ToggleAvatar" then
-  classControl:FireServer("ToggleAppearance")
- elseif action=="ToggleEffects" then
+ elseif action=="ToggleCutscenes" then
+   classControl:FireServer("Setting","DisableSkillCutscenes",player:GetAttribute("DisableSkillCutscenes")~=true)
+  elseif action=="ToggleEffects" then
    Quality.Cycle()
   elseif action == "ToggleViewAsServer" then
 		if viewAsServerRemote then
@@ -145,12 +145,12 @@ local settingsConnections = {
 		activateSetting("ToggleMusic")
 	end),
 	autoAimToggle.Activated:Connect(function() activateSetting("ToggleAutoAim") end),
- avatarToggle.Activated:Connect(function() activateSetting("ToggleAvatar") end),
+	cutsceneToggle.Activated:Connect(function() activateSetting("ToggleCutscenes") end),
+	player:GetAttributeChangedSignal("DisableSkillCutscenes"):Connect(classSettingsChanged),
  effectsToggle.Activated:Connect(function() activateSetting("ToggleEffects") end),
  Quality.Changed:Connect(effectsChanged),
  player:GetAttributeChangedSignal("EffectsQuality"):Connect(effectsChanged),
  player:GetAttributeChangedSignal("ClassAutoAim"):Connect(classSettingsChanged),
- player:GetAttributeChangedSignal("UseAvatarAppearance"):Connect(classSettingsChanged),
  player:GetAttributeChangedSignal("ViewAsServer"):Connect(viewAsServerChanged),
 	SoundService:GetAttributeChangedSignal("BossMusicMuted"):Connect(preferenceChanged),
 }
@@ -172,7 +172,6 @@ local function settingsLayout()
  local jumpTop,jumpBottom=TouchLayout.GetJumpBounds()
  if jumpTop then
   if size.X<size.Y then
-   -- Portrait has room above Jump and needs the lower left for player vitals.
    right=size.X-16
    bottom=jumpTop.Y-12
   else
@@ -380,6 +379,11 @@ bindBoss = function(boss)
 		"P4Enraged",
   "P4TrueSpirit",
   "P5God",
+  "P5Spacetrum",
+  "P5Verdant",
+  "P5Pastborn",
+  "P5Enraged",
+  "P5SuperEnraged",
   "P4Karmanation",
 		"P3GoldenMark",
   "P3Misdirection",
@@ -459,32 +463,39 @@ bindBoss = function(boss)
  debuffDock.Size=UDim2.new(.65,0,0,64)
  debuffDock.BackgroundTransparency=1 debuffDock.Parent=p
  local debuffLayout=Instance.new("UIGridLayout")
- debuffLayout.CellSize=UDim2.fromOffset(54,28) debuffLayout.CellPadding=UDim2.fromOffset(5,5)
+ debuffLayout.CellSize=UDim2.fromOffset(28,28) debuffLayout.CellPadding=UDim2.fromOffset(5,5)
  debuffLayout.SortOrder=Enum.SortOrder.LayoutOrder debuffLayout.Parent=debuffDock
  local definitions={
   {Id="BossStunned",Attributes={"ClassStunnedUntil","StunnedUntil"},Frame="ClassStunFrame"},
   {Id="BossTaunted",Attributes={"TauntedUntil"}},
   {Id="BossSlowed",Attributes={"SlowedUntil","SlowUntil","DecelerationUntil"}},
-  {Id="BossVulnerable",Attributes={"VulnerabilityUntil"}},
-  {Id="BossBleed",Attributes={"BleedUntil"}},
+  {Id="BossVulnerable",Attributes={"VulnerabilityUntil","DisorderDebuff_Vulnerability"}},
+  {Id="BossBleed",Attributes={"BleedUntil","DisorderDebuff_Bleed"}},
   {Id="BossPoison",Attributes={"PoisonUntil"}},
   {Id="BossBurn",Attributes={"GoldenBurnUntil","BurnUntil"}},
+  {Id="BossHolyFlame",Attributes={"HolyFlameUntil"},Tint=Color3.fromRGB(255,232,150)},
  }
+ for _,name in ipairs({"Hemorrhage","Rupture","Acid","Decay","Corruption","Frostbite","TemporalWound","ChainCurse","DeathMark","IllusionRot","Blur","Fear","JumpLock","CooldownIncrease","CooldownFreeze"}) do
+  table.insert(definitions,{Id=name,Attributes={"DisorderDebuff_"..name},Tint=Color3.fromRGB(255,120,235)})
+ end
  local debuffs={}
  for index,definition in ipairs(definitions) do
   local row=Instance.new("Frame") row.Name=definition.Id row.LayoutOrder=index
   row.BackgroundColor3=Color3.fromRGB(35,13,13) row.BackgroundTransparency=.12 row.BorderSizePixel=0 row.Visible=false row.Parent=debuffDock
-  local stroke=Instance.new("UIStroke") stroke.Color=Color3.fromRGB(224,108,103) stroke.Transparency=.2 stroke.Parent=row
-  Descriptions.CreateIcon(row,definition.Id,UDim2.fromOffset(20,20),UDim2.fromOffset(3,4),Color3.fromRGB(255,147,130))
+  local stroke=Instance.new("UIStroke") stroke.Color=definition.Tint or Color3.fromRGB(224,108,103) stroke.Transparency=.2 stroke.Parent=row
+  Descriptions.CreateIcon(row,definition.Id,UDim2.fromOffset(20,20),UDim2.fromOffset(3,4),definition.Tint or Color3.fromRGB(255,147,130))
   local timer=text(row,"Countdown",UDim2.new(1,-25,1,0),UDim2.fromOffset(25,0),"")
-  timer.TextSize=12 timer.TextColor3=Color3.fromRGB(255,198,178)
+  timer.TextSize=12 timer.TextColor3=Color3.fromRGB(255,198,178) timer.Visible=false
   Descriptions.AttachTooltip(row,definition.Id,function()
    return definition.Id=="BossTaunted" and ("Defender: "..tostring(boss:GetAttribute("TauntedBy") or "")) or ("Remaining: "..timer.Text)
   end)
   debuffs[definition.Id]={Row=row,Timer=timer,Definition=definition}
  end
+ local gateRowsVisible
  local function updateDebuffs()
   local now=workspace:GetServerTimeNow()
+  local below=gateRowsVisible and gateRowsVisible() or 0
+  debuffDock.Position=UDim2.new(0,0,1,12+below)
   for id,item in pairs(debuffs) do
    local deadline=0 for _,attribute in item.Definition.Attributes do deadline=math.max(deadline,boss:GetAttribute(attribute) or 0) end
    local held=item.Definition.Frame and boss:GetAttribute(item.Definition.Frame)~=nil
@@ -590,6 +601,11 @@ bindBoss = function(boss)
 		value.TextXAlignment = Enum.TextXAlignment.Right
 		gatePanels[index] = { Panel = panel, Title = title, Track = track, Value = value }
 	end
+	gateRowsVisible=function()
+		if clonePanel.Visible then return 92 end
+		for _,row in ipairs(gatePanels) do if row.Panel.Visible then return 66 end end
+		return 0
+	end
 	local active, values, connections = {}, {}, {}
 	local cleaned = false
 	local lastEnragedPulse = boss:GetAttribute("EnragedHUDPulseAt") or 0
@@ -679,7 +695,7 @@ bindBoss = function(boss)
 			end
 			local mode = phase >= 5 and boss:GetAttribute("P5Mode")
 			if type(mode) == "string" and mode ~= "" then
-				title = title .. "  ·  " .. mode  -- the Phase 5 mode (Space / Natural / Time)
+				title = title .. "  ·  " .. mode
 			end
 			p.Title.Text = title
 			for id, icon in pairs(passiveRows) do
@@ -758,7 +774,7 @@ bindBoss = function(boss)
 		end
 	end)
 	for _, name in ipairs({
-  "ClassStunnedUntil","ClassStunFrame","StunnedUntil","TauntedUntil","TauntedBy","SlowedUntil","SlowUntil","DecelerationUntil","VulnerabilityUntil","BleedUntil","PoisonUntil","GoldenBurnUntil","BurnUntil",
+  "ClassStunnedUntil","ClassStunFrame","StunnedUntil","TauntedUntil","TauntedBy","SlowedUntil","SlowUntil","DecelerationUntil","VulnerabilityUntil","BleedUntil","PoisonUntil","GoldenBurnUntil","BurnUntil","HolyFlameUntil",
 		"AccelerationActive",
 		"Phase",
 		"Shield",
@@ -783,6 +799,11 @@ bindBoss = function(boss)
 		"Passive_P4Enraged",
   "Passive_P4TrueSpirit",
   "Passive_P5God",
+  "Passive_P5Spacetrum",
+  "Passive_P5Verdant",
+  "Passive_P5Pastborn",
+  "Passive_P5Enraged",
+  "Passive_P5SuperEnraged",
   "P5Mode",
   "Passive_P4Karmanation",
 		"EnragedStacks",

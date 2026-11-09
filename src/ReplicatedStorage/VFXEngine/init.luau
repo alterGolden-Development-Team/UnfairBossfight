@@ -40,7 +40,6 @@ local function folder()
  return root
 end
 
- -- sequences -----------------------------------------------------------------
 local function nseq(v,scale)
  scale=scale or 1
  if typeof(v)=="NumberSequence"then
@@ -73,11 +72,9 @@ local function range(v,d)
 end
 E.NSeq,E.CSeq,E.Range=nseq,cseq,range
 
- -- colour helpers
 function E.Tint(c,a)return c:Lerp(WHITE,a)end
 function E.Shade(c,a)return c:Lerp(Color3.fromRGB(10,14,40),a)end
 
- -- groups ---------------------------------------------------------------------
 local Group={}
 Group.__index=Group
 function E.Group(name)
@@ -131,7 +128,6 @@ function E.Tween(inst,t,props,style,dir,delay)
  return tw
 end
 
- -- anchors --------------------------------------------------------------------
 function E.Anchor(g,cf)
  local p=Instance.new("Part")
  p.Name="Anchor"p.Anchored=true p.CanCollide=false p.CanQuery=false p.CanTouch=false
@@ -151,7 +147,6 @@ function E.Ground(pos,ignore)
  return hit and hit.Position or nil
 end
 
- -- particles ------------------------------------------------------------------
 local ORIENT={
  camera=Enum.ParticleOrientation.FacingCamera,
  flat=Enum.ParticleOrientation.VelocityPerpendicular,
@@ -231,7 +226,6 @@ function E.Stream(parent,s,rate,scale)
  return e
 end
 
- -- beams ----------------------------------------------------------------------
 function E.Beam(g,a0,a1,s)
  local b=Instance.new("Beam")
  b.Attachment0=a0 b.Attachment1=a1
@@ -263,7 +257,6 @@ function E.Attach(part,cf)
  return a
 end
 
- -- lights ---------------------------------------------------------------------
 function E.Light(g,parent,color,range,brightness,life)
  local l=Instance.new("PointLight")
  l.Color=color l.Range=range l.Brightness=brightness l.Shadows=false

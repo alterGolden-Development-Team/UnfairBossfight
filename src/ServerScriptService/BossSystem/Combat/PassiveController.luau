@@ -23,6 +23,11 @@ local hudPassives = {
  Passive_P4TrueSpirit="P4TrueSpirit(Passive)",
 	Passive_P3GoldenMark = "P3GoldenMark(Passive)",
 	Passive_P5God = "P5God(Passive)",
+	Passive_P5Spacetrum = "P5Spacetrum(Passive)",
+	Passive_P5Verdant = "P5Verdant(Passive)",
+	Passive_P5Pastborn = "P5Pastborn(Passive)",
+	Passive_P5Enraged = "P5Enraged(Passive)",
+	Passive_P5SuperEnraged = "P5SuperEnraged(Passive)",
 }
 function api.Start(actor, getTarget)
 	if records[actor] then
@@ -32,6 +37,11 @@ function api.Start(actor, getTarget)
 	pcall(function() require(script.Parent.DifficultyPassive).Start(actor) end)
 	local god = Registry.For(actor, "P5God(Passive)")
 	god.Tick()
+	local spacetrum = Registry.For(actor, "P5Spacetrum(Passive)")
+	local verdant = Registry.For(actor, "P5Verdant(Passive)")
+	local pastborn = Registry.For(actor, "P5Pastborn(Passive)")
+	local rage = Registry.For(actor, "P5Enraged(Passive)")
+	local superRage = Registry.For(actor, "P5SuperEnraged(Passive)")
 	local clone = Registry.For(actor, "P1.5Clone(Passive)")
 	local debt = Registry.For(actor, "P2HourDebt(Passive)")
 	local unstoppable = Registry.For(actor, "P1Unstoppable(Passive)")
@@ -62,6 +72,9 @@ function api.Start(actor, getTarget)
   Karma=karma,
 		Future = future,
 		Cast = cast,
+		Space = spacetrum,
+		Verdant = verdant,
+		Past = pastborn,
 		NextClone = now + Config.ClonePassiveInitialDelay,
 		NextShield = now + Config.UnstoppableInterval,
 	}
@@ -86,6 +99,11 @@ function api.Start(actor, getTarget)
   karma.Reset()
 		future.Reset()
 		god.Reset()
+		spacetrum.Reset()
+		verdant.Reset()
+		pastborn.Reset()
+		rage.Reset()
+		superRage.Reset()
 	end
 	local scan = 0
 	cast:Step(function(dt)
@@ -96,6 +114,16 @@ function api.Start(actor, getTarget)
 		scan = 0
 		enraged.Tick()
 		god.Tick()
+		do  -- Phase 5's mode and rage passives (each one only does anything in its own mode / state)
+			local okP, errP = pcall(function()
+				spacetrum.Tick()
+				verdant.Tick()
+				pastborn.Tick(getTarget)
+				rage.Tick()
+				superRage.Tick()
+			end)
+			if not okP then warn("[P5 passives] " .. tostring(errP)) end
+		end
 		if actor:GetAttribute("EncounterEnded") then
 			cast:Dispose()
 			return false
@@ -112,7 +140,12 @@ function api.Start(actor, getTarget)
 		for attribute, name in pairs(hudPassives) do
 			local available = Metadata.PassiveAvailable(name, phase) and Difficulty.Allowed(name, Metadata.Get(name), actor)
 			if name == "P4Regeneration(Passive)" then available = available and regeneration.Ready() end
-			if name == "P5God(Passive)" then available = available and god.IsActive() end  -- stripped by a TP break
+			if name == "P5God(Passive)" then available = available and god.IsActive() end
+			if name == "P5Spacetrum(Passive)" then available = available and spacetrum.IsActive() end
+			if name == "P5Verdant(Passive)" then available = available and verdant.IsActive() end
+			if name == "P5Pastborn(Passive)" then available = available and pastborn.IsActive() end
+			if name == "P5Enraged(Passive)" then available = available and rage.IsActive() end
+			if name == "P5SuperEnraged(Passive)" then available = available and superRage.IsActive() end
 			if actor:GetAttribute(attribute) ~= available then
 				actor:SetAttribute(attribute, available)
 			end
@@ -147,6 +180,9 @@ function api.Start(actor, getTarget)
 end
 function api.OnAttackStarted(actor, name, target)
 	local record = records[actor]
+	if record and not record.Cast.closed and (actor:GetAttribute("Phase") or 0) >= 5 then
+		pcall(record.Space.OnAttack, name, target)  -- the Space passive: every Space attack drops a Falling Star
+	end
  if record and not record.Cast.closed and Difficulty.Allowed("P3Misdirection(Passive)", Metadata.Get("P3Misdirection(Passive)"), actor) then record.Misdirection.Try(name,target) end
 	if
 		not record
@@ -193,6 +229,9 @@ function api.OnDamageDealt(actor, character, actualDamage, balance)
 		return false
 	end
 	local phase = actor:GetAttribute("Phase") or 1
+	if phase >= 5 and record.Verdant then
+		pcall(record.Verdant.Poison, character, balance)  -- the Natural passive: Natural attacks poison
+	end
  if not (balance and balance.IsStatusDamage) and Metadata.PassiveAvailable("P3.5Debuffer(Passive)", phase)
   and Difficulty.Allowed("P3.5Debuffer(Passive)", Metadata.Get("P3.5Debuffer(Passive)"), actor) then
   record.Debuffer.Apply(character)

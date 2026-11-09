@@ -50,9 +50,24 @@ function K.Start(S, player, char, st)
   setCount(char, st)
 end
 
+-- (Round AA) at the cap a new orb overwrites the OLDEST one instead of being lost
+local function removeOldest(S, st)
+  local oldest, index
+  for i, o in ipairs(st.Data.Orbs) do
+    if not oldest or (o.Born or 0) < (oldest.Born or 0) then oldest, index = o, i end
+  end
+  if oldest then
+    table.remove(st.Data.Orbs, index)
+    if oldest.Part and oldest.Part.Parent then
+      S.FX.Flash(oldest.Part.Position, PALE, 1.5, 0.15)
+      S.FX.Fade(oldest.Part, 0.2)
+      game:GetService("Debris"):AddItem(oldest.Part, 0.3)
+    end
+  end
+end
 local function spawnOrb(S, char, st, near)
   if #st.Data.Orbs >= D.OrbMax then
-    return
+    removeOldest(S, st)
   end
   local a = rng:NextNumber(0, math.pi * 2)
   local r = rng:NextNumber(4, 9)
@@ -62,7 +77,7 @@ local function spawnOrb(S, char, st, near)
   local l=Instance.new("PointLight")
   l.Color,l.Range,l.Brightness=PURPLE,7,1.2 l.Parent=orb
  end
-  table.insert(st.Data.Orbs, { Part = orb, Home = pos, Phase = rng:NextNumber(0, 6) })
+  table.insert(st.Data.Orbs, { Part = orb, Home = pos, Phase = rng:NextNumber(0, 6), Born = os.clock() })
   S.FX.Flash(pos, PURPLE, 2.5, 0.25)
   setCount(char, st)
 end
@@ -101,6 +116,16 @@ function K.OnHitBoss(S, char, st, target, tag)
       spawnOrb(S, char, st, target.HumanoidRootPart.Position)
     end
   end
+end
+
+-- Arcane Recoil: being hit summons orbs around the Mage, so there is always something to spend
+function K.OnDamaged(S, char, st, actual)
+  local t = os.clock()
+  if t - (st.Data.LastRecoil or 0) < D.RecoilInterval then return end
+  st.Data.LastRecoil = t
+  local root = char:FindFirstChild("HumanoidRootPart")
+  if not root then return end
+  for _ = 1, D.RecoilOrbs do spawnOrb(S, char, st, root.Position) end
 end
 
 local beginCloneCharge
@@ -175,7 +200,7 @@ local function summonClone(S,player,char,st,orbCount,source)
  local root=clone:FindFirstChild("HumanoidRootPart")
  if not hum or not root then clone:Destroy() return end
  hum.DisplayDistanceType=Enum.HumanoidDisplayDistanceType.None
- hum.MaxHealth=math.max(1,D.C.CloneHPPerOrb*orbCount) hum.Health=hum.MaxHealth
+ hum.MaxHealth=math.max(1,D.C.CloneHPPerOrb*orbCount*(workspace:GetAttribute("Phase5HealthMultiplier") or 1)) hum.Health=hum.MaxHealth
  hum.PlatformStand=false hum.Sit=false hum.AutoRotate=false hum.EvaluateStateMachine=false
  root.Anchored=true clone.PrimaryPart=root
  local desiredSpawn=char.HumanoidRootPart.CFrame*CFrame.new(5,0,2)
@@ -346,7 +371,8 @@ function K.Action(S, player, char, st, key, phase, aim)
      st.Data.CHeldAt=nil
      if #st.Data.Orbs==0 then return end
      S.Cooldown(char,"C",D.C.Cooldown)
-     local orbs=takeOrbs(char,st,#st.Data.Orbs)
+     local bombTarget = S.AimTarget(char, st.Aim, 240) or S.Boss()
+     local orbs=takeOrbs(char,st,math.ceil(D.C.TotalDamageCap/D.C.OrbDamage),bombTarget and bombTarget.HumanoidRootPart.Position or root.Position)
          
     local attack=S.NewAttack(char,"MageBombard")
     local spent=0

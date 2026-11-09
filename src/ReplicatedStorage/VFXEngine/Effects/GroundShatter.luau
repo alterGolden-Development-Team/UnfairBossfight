@@ -80,15 +80,16 @@ function GS.Erupt(E,d)
  local low=(E.Quality or 1)<.6
  local tall=d.Tall or 1
  local spikes={}
+ local sc=d.Scale or 1  -- Scale makes every spike thicker and longer (P5 Horrifying Ground)
  local function plant(pos,W,L,H,yaw,tilt,delay)
-  local s=spike(g,W,L,H)
+  local s=spike(g,W*sc,L*sc,H*sc)
   s.Base=CFrame.new(pos)*CFrame.Angles(0,yaw,0)*CFrame.Angles(tilt,0,0)
   s.Ground=pos s.Delay=delay
   s.Rise=.12 s.Hold=(d.Hold or .42)+rng:NextNumber(0,.1) s.Sink=.28
   spikes[#spikes+1]=s
  end
  for _,center in ipairs(d.Points or{})do
-  local k=math.max(R/8,1)  -- spikes grow with the circle
+  local k=math.max(R/8,1)
    -- Style (P5 Horrifying Ground gives every circle its own): crown (a heart and a ring around it), needle (one
    -- very tall heart and a few stubs), ring (no heart, spikes on the edge leaning out), scatter (spikes anywhere in
    -- the circle, leaning every way), fan (a heart and a half ring all leaning one way), twin (two hearts)

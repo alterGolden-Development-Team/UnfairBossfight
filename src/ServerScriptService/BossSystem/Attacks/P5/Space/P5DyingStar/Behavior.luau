@@ -12,7 +12,7 @@ return function(actor)
  local api={Cooldown=S.Cooldown,ManagesCooldown=true}
  function api.CanUse(target)return A.Ready(actor,S,current,target)end
  function api.Combo(target)
-  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"DiveSpeed"},Count={"Beams"},Tell={"SummonTime","ThrowDelay"}})  -- difficulty knobs, this cast only
+  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"DiveSpeed"},Count={"Beams"},Tell={"SummonTime","ThrowDelay"}})
    -- summon, beam volley, throw delay, flight budget, fuse, tail
   local TOTAL=S.SummonTime+(S.Beams-1)*S.BeamGap+S.ThrowDelay+S.OrbLife+S.Fuse+S.Tail+.75
   local HIT_RADIUS=S.BeamRadius+S.BeamHitPadding

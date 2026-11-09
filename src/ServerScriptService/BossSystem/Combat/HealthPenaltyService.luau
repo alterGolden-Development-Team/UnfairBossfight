@@ -26,6 +26,7 @@ function api.Cleanse(player, character)
 end
 
 function api.Apply(player, fraction)
+	if player.Character and require(script.Parent.DisorderWall).Protects(player.Character) then return nil end
 	if player:GetAttribute("ViewAsServer") == true then
 		return nil
 	end
@@ -40,6 +41,7 @@ function api.Apply(player, fraction)
 	fraction = Difficulty.Penalty(fraction)
 	local remaining = 1 - fraction
 	local maximum = previousMax * remaining
+	if character:GetAttribute("ClassStatus_LastStand") ~= nil then maximum = math.max(maximum, 1) end
 	local values =
 		{ HalvedStacks = stacks, HalvedBaseMaxHealth = base, HalvedHealthFraction = maximum / math.max(base, 1) }
 	for name, value in pairs(values) do

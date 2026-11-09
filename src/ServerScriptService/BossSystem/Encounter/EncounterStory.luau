@@ -138,16 +138,123 @@ for key in pairs(base) do
 	api[key] = nil
 end
  
-api.Variants = {}
+local function story(beginning, shieldBreak, identity, phase3, phase4, phase5)
+  return {
+    Beginning = {beginning}, ShieldBreak = {shieldBreak},
+    Phase2Identity = identity, Phase3After = {phase3},
+    Phase4After = {phase4}, Phase5After = {phase5},
+  }
+end
+api.Variants = {
+  Hellaven = {
+    Beginning = {"You have entered Hellaven. Leave your hope at the gate.", "The arena is mine, the rules are mine, and your fate is already written."},
+    Phase15Failure = {"Hellaven has no place for the unworthy."}, Phase15Success = {"So you survived the first judgment. Do not mistake that for mercy."},
+    ShieldBreak = {"The shield falls. Hellaven does not."}, ShieldGateChallenge = {"You broke through the gate. Now Hellaven tests what remains of you.", "Show me whether your classes can withstand Hellaven."},
+    Phase35 = {"Half my shield is gone, yet Hellaven still veils the truth.", "Look carefully. Hellaven's real illusion begins now."},
+    Phase45 = {"You have drawn blood in Hellaven. The arena will answer in kind.", "Let this field bloom with the price of your defiance."},
+    Phase2BeforeIdentity = {"You have earned one truth about Hellaven."}, Phase2Identity = {"I am alterGolden...", "The True Imaginator. Hellaven is my domain."},
+    Phase2Power = {"I imagine what Hellaven needs... and make it real."}, Phase2Art = {"Imagination Art...", "HELLAVEN: TIME."},
+    Phase2AfterTime = {"Now show me what you can do while Hellaven watches."}, Phase25 = {"You have impressed Hellaven. The real trial is still ahead."},
+    Phase3After = {"Illusion is the strongest spell in Hellaven.", "Let us see if your eyes can save you."},
+    Phase4After = {"The masks are gone. This is Hellaven's truth. Survive it."}, Phase5Before = {"...Enough.", "You have forced Hellaven to reveal its final shape."}, Phase5After = {"Behold. Hellaven, unbound."},
+  },
+  Easy = story("Easy mode? Then I will make this a lesson instead of an execution.", "Good. I will keep the next part gentle.", {"I am alterGolden...", "The True Imaginator. I will give you a fair chance."}, "Illusions can be confusing. Watch closely and you can still win.", "I will show you my true spirit, but I will leave you room to survive it.", "You made it to the end. That was no small thing."),
+  TrueHardcore = story("You chose True Hardcore. I will give you the honest fight you came for.", "My shield is gone. Now the real duel begins.", {"I am alterGolden...", "The True Imaginator. I will not hold back."}, "Illusion is the strongest spell. Keep your focus, or it will be your last mistake.", "No masks remain. Face my true spirit without hesitation.", "You endured every phase. Now face my final form."),
+  Hardcore = story("Hardcore, then. Every mistake will cost you, and I will make sure you remember each one.", "You broke my shield. Do not expect the fight to get easier.", {"I am alterGolden...", "The True Imaginator. You asked for this."}, "Illusion will punish every moment you look away.", "My true spirit is revealed. There will be no reprieve.", "You have reached the final phase. Prove you belong here."),
+  NerfedHardcore = story("Normal Mode, then. I will teach you the fight without giving away the victory.", "A good strike. I will give you a moment before the next test.", {"I am alterGolden...", "The True Imaginator. I will keep this fight within reach."}, "Illusion is still dangerous. Take your time and read the pattern.", "My true spirit emerges. Stay sharp and you can survive.", "You made it through. Finish the fight and claim your victory."),
+  TrueHardcoreEnraged = story("True Hardcore was only the beginning. The Enraged Gate opens now.", "You broke the shield. Now survive what was sealed behind it.", {"I am alterGolden...", "The True Imaginator. Enraged, and done holding back."}, "The illusion ends. The Enraged Gate has no mercy for hesitation.", "My true spirit is unbound. There is nowhere left to hide.", "This is the end of every path. I will make it final."),
+  NerfedHardcoreEnraged = story("Normal Mode is over. The Enraged Gate opens, and I stop holding back.", "You broke my shield. Now face what Normal Mode kept restrained.", {"I am alterGolden...", "The True Imaginator. The lesson is over. Now witness my rage."}, "Every illusion is dangerous now. Focus, or the lesson ends here.", "My true spirit is unbound. Even Normal Mode cannot soften this truth.", "You survived the lesson. Now survive the fury."),
+  HardcoreEnraged = story("Hardcore tested you. Enraged will finish the test.", "The shield is gone. So is my restraint.", {"I am alterGolden...", "The True Imaginator. Now witness my fury."}, "Every illusion is lethal now. Choose wrong and you fall.", "No masks. No mercy. Only my enraged spirit remains.", "You forced me this far. I will end this with everything I have."),
+  EasyEnraged = story("Even this easy fight has pushed me too far. The Enraged Gate is open.", "You broke the shield. I cannot keep holding back.", {"I am alterGolden...", "The True Imaginator. Forgive me, but the restraint is gone."}, "The illusions have grown wild. Stay close and watch carefully.", "My true spirit is enraged. I will try to keep you alive.", "You survived my rage. End this before it rises again."),
+  HellavenEnraged = story("Hellaven's final seal breaks. There will be no mercy beyond this gate.", "The shield falls, and Hellaven's wrath takes its place.", {"I am alterGolden...", "The True Imaginator. Hellaven, fully unbound."}, "Hellaven's illusions are no longer illusions. They are your end.", "Behold the truth Hellaven kept chained. Survive it.", "Hellaven has reached its final form. Your story ends here."),
+}
 setmetatable(api, {
 	__index = function(_, key)
-		local variant = api.Variants[Difficulty.Id()]
+
+		local id = Difficulty.Id()
+		local variant = Difficulty.Enraged() == true and api.Variants[id .. "Enraged"] or nil
+		variant = variant or api.Variants[id]
 		return variant and variant[key] or base[key]
 	end,
 })
  
+local difficultyLines = {
+  Hellaven = { "Hellaven? Then you chose to face me without mercy. Good. I will show you what that means." },
+  TrueHardcore = { "True Hardcore. No safety net, no second chances. Let us see if your courage survives your skill." },
+  Hardcore = { "Hardcore. You asked for a real fight. I will make every mistake count." },
+  NerfedHardcore = { "Normal Mode... a little room to breathe. Do not mistake patience for weakness." },
+  Easy = { "Easy mode? Then I will hold back. Try to enjoy the spectacle while it lasts." },
+}
 function api.PickLines(id)
-	local profile = Difficulty.Profiles[id]
-	return profile and profile.PickLines or {}
+  return difficultyLines[id] or (Difficulty.Profiles[id] and Difficulty.Profiles[id].PickLines) or {}
+end
+local ultimateLines = {
+  ["P1GildedCataclysm(Ultimate)"] = {"Kneel beneath the weight of everything I have built!", "The crown cracks, and the world comes down with it!"},
+  ["P1.5RoyalBow(Ultimate)"] = {"A royal decree needs no warning. Run.", "I have marked every path you could take. None lead out."},
+  ["P2GoldenClock(Ultimate)"] = {"Time itself will hold still while I decide your fate.", "Your final second has arrived. It will last forever."},
+  ["P2.5LastMinute(Ultimate)"] = {"One minute remains. Spend it wisely.", "I have taken your last minute. Now I take the rest."},
+  ["P3EtherealAcumen(Ultimate)"] = {"I can see every answer. You have none.", "All your futures end at my hand."},
+  ["P3PickThePupils(Ultimate)"] = {"Choose your pupil. Choose who falls first.", "The lesson is over. Now face the examiner."},
+  ["P3.5TrueIllusion(Ultimate)"] = {"Your eyes betrayed you long ago. Your body is next.", "There is no true world left to return to."},
+  ["P3.5MysteriousGuy(Ultimate)"] = {"You thought the mystery was the mask? Look closer.", "The stranger steps forward. Your escape disappears."},
+  ["P4.5HeavenlyDisciple(Ultimate)"] = {"The heavens have chosen their disciple. They chose me.", "Look up. Even the sky has turned against you."},
+  ["P4DeathScythe(Ultimate)"] = {"One clean cut. That is all the ending needs.", "I have harvested enough. Your turn."},
+  ["P4DeathRoars(Ultimate)"] = {"Hear the roar of everything you failed to stop!", "Let the final roar bury your defiance."},
+  ["P5Hyper-lasticBeam(Ultimate)"] = {"Space bends. Your last safe step is gone.", "I will fold the distance between us into nothing."},
+  ["P5Polaris(Ultimate)"] = {"Find the north star. It is already aimed at you.", "The stars have aligned around your grave."},
+  ["P5Finality(Ultimate)"] = {"This is the moment all moments were leading to.", "No next time. No next moment. Finality."},
+  ["P5WildHunt(Ultimate)"] = {"Run, little prey. I want to hear the chase begin.", "The hunt ends when I say it ends."},
+  ["P5NightTearer(Ultimate)"] = {"I will tear the night open and pull you through.", "Let the darkness remember what I did to you."},
+  ["P5SilentCut(Ultimate)"] = {"You will hear nothing until it is over.", "No warning. No sound. Only the cut."},
+  ["P5BlastBreath(Ultimate)"] = {"Breathe in. There will be no air left after this.", "The whole horizon is about to exhale."},
+  ["P5TheGreatStorm(Ultimate)"] = {"The storm has waited long enough.", "Every living thing will bow to this weather."},
+}
+local ultimateLines = {
+  ["P1GildedCataclysm(Ultimate)"] = {"Kneel beneath the weight of everything I have built!", "The crown cracks, and the world comes down with it!"},
+  ["P1.5RoyalBow(Ultimate)"] = {"A royal decree needs no warning. Run.", "I have marked every path you could take. None lead out."},
+  ["P2GoldenClock(Ultimate)"] = {"Time itself will hold still while I decide your fate.", "Your final second has arrived. It will last forever."},
+  ["P2.5LastMinute(Ultimate)"] = {"One minute remains. Spend it wisely.", "I have taken your last minute. Now I take the rest."},
+  ["P3EtherealAcumen(Ultimate)"] = {"I can see every answer. You have none.", "All your futures end at my hand."},
+  ["P3PickThePupils(Ultimate)"] = {"Choose your pupil. Choose who falls first.", "The lesson is over. Now face the examiner."},
+  ["P3.5TrueIllusion(Ultimate)"] = {"Your eyes betrayed you long ago. Your body is next.", "There is no true world left to return to."},
+  ["P3.5MysteriousGuy(Ultimate)"] = {"You thought the mystery was the mask? Look closer.", "The stranger steps forward. Your escape disappears."},
+  ["P4.5HeavenlyDisciple(Ultimate)"] = {"The heavens have chosen their disciple. They chose me.", "Look up. Even the sky has turned against you."},
+  ["P4DeathScythe(Ultimate)"] = {"One clean cut. That is all the ending needs.", "I have harvested enough. Your turn."},
+  ["P4DeathRoars(Ultimate)"] = {"Hear the roar of everything you failed to stop!", "Let the final roar bury your defiance."},
+  ["P5Hyper-lasticBeam(Ultimate)"] = {"Space bends. Your last safe step is gone.", "I will fold the distance between us into nothing."},
+  ["P5Polaris(Ultimate)"] = {"Find the north star. It is already aimed at you.", "The stars have aligned around your grave."},
+  ["P5Finality(Ultimate)"] = {"This is the moment all moments were leading to.", "No next time. No next moment. Finality."},
+  ["P5WildHunt(Ultimate)"] = {"Run, little prey. I want to hear the chase begin.", "The hunt ends when I say it ends."},
+  ["P5NightTearer(Ultimate)"] = {"I will tear the night open and pull you through.", "Let the darkness remember what I did to you."},
+  ["P5SilentCut(Ultimate)"] = {"You will hear nothing until it is over.", "No warning. No sound. Only the cut."},
+  ["P5BlastBreath(Ultimate)"] = {"Breathe in. There will be no air left after this.", "The whole horizon is about to exhale."},
+  ["P5TheGreatStorm(Ultimate)"] = {"The storm has waited long enough.", "Every living thing will bow to this weather."},
+}
+local hellavenUltimateLines = {
+  ["P1GildedCataclysm(Ultimate)"] = {"My throne will outlast your world.", "Hellaven burns away the last mercy. Be crushed beneath my crown!"},
+  ["P1.5RoyalBow(Ultimate)"] = {"By Hellaven's decree, there is nowhere left to run.", "The final arrow carries Hellaven's sentence. Do not look away."},
+  ["P2GoldenClock(Ultimate)"] = {"Hellaven has all the time in the world. You have none.", "I stop the clock, and Hellaven claims what remains."},
+  ["P2.5LastMinute(Ultimate)"] = {"Your last minute belongs to Hellaven now.", "Hellaven will remember you for exactly one more minute."},
+  ["P3EtherealAcumen(Ultimate)"] = {"I have seen every future Hellaven permits. You lose in all of them.", "The future is sealed. Hellaven has chosen your ending."},
+  ["P3PickThePupils(Ultimate)"] = {"Hellaven's lesson begins. Choose who learns it first.", "No more lessons. Hellaven gives only the final exam."},
+  ["P3.5TrueIllusion(Ultimate)"] = {"Hellaven is the truth behind every illusion.", "I will leave you with one final vision: your defeat."},
+  ["P3.5MysteriousGuy(Ultimate)"] = {"Hellaven has no need for masks. Remember that face.", "The mystery ends here. Hellaven stands before you."},
+  ["P4.5HeavenlyDisciple(Ultimate)"] = {"Even the heavens answer to Hellaven.", "I bring Hellaven's judgment down from above."},
+  ["P4DeathScythe(Ultimate)"] = {"Hellaven has gathered enough souls. Yours will complete the harvest.", "One final harvest for Hellaven. No soul escapes the blade."},
+  ["P4DeathRoars(Ultimate)"] = {"Let Hellaven hear your courage break.", "This roar is Hellaven's answer to your defiance."},
+  ["P5Hyper-lasticBeam(Ultimate)"] = {"Hellaven folds space until every road leads to me.", "No distance can shelter you from Hellaven now."},
+  ["P5Polaris(Ultimate)"] = {"Hellaven set that star in the sky to mark your end.", "The north star falls under Hellaven's command."},
+  ["P5Finality(Ultimate)"] = {"Hellaven is the last page. This is where your story stops.", "There is no after this. Hellaven has made certain of it."},
+  ["P5WildHunt(Ultimate)"] = {"Hellaven has released the hunt. I will enjoy the chase.", "No refuge, no finish line. Hellaven owns this hunt."},
+  ["P5NightTearer(Ultimate)"] = {"Hellaven will split the night and drag you into its heart.", "The dark belongs to Hellaven. You belong to the dark."},
+  ["P5SilentCut(Ultimate)"] = {"Hellaven needs no warning. Only silence.", "You will not hear Hellaven coming."},
+  ["P5BlastBreath(Ultimate)"] = {"Hellaven takes one breath. The whole sky answers.", "This is the last air Hellaven will allow you."},
+  ["P5TheGreatStorm(Ultimate)"] = {"Hellaven calls the storm, and the world obeys.", "Let the storm carry Hellaven's final word."},
+}
+function api.UltimateLine(actor, attackName)
+  local hellaven = Difficulty.Id(actor) == "Hellaven"
+  local pair = hellaven and hellavenUltimateLines[attackName] or ultimateLines[attackName]
+  if not pair then return nil end
+  return pair[Difficulty.Enraged() == true and 2 or 1]
 end
 return api

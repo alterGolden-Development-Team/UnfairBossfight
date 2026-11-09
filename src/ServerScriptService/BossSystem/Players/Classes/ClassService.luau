@@ -9,6 +9,9 @@ local Runtime=require(BossSystem.Combat.CombatRuntime)
 local Time=require(BossSystem.Mechanics.Time.TimeEffectController)
 local HitRules=require(BossSystem.Combat.PlayerHitRules)
 local BattleScaling=require(game.ReplicatedStorage.BossShared.Config.BattleScaling)
+local BadgeService = game:GetService("BadgeService")
+local Marketplace = game:GetService("MarketplaceService")
+local Unlocks = require(game.ReplicatedStorage.BossShared.Classes.ClassUnlocks)
 
 local S = { Config = ClassConfig, FX = FX }
 local states = setmetatable({}, { __mode = "k" })  
@@ -16,6 +19,8 @@ local stuns = setmetatable({}, { __mode = "k" })
 local cooldownKeys = { "M1", "F", "C", "V", "R" }
 local remote
 local Kits = {}
+local INPUT_BUFFER = 0.25
+local HOLD_SKILLS = { Tank = { F = true }, Mage = { C = true }, Duelist = { C = true }, Disorderer = { M1 = true, C = true, V = true } }
 
 local function now()
   return workspace:GetServerTimeNow()
@@ -45,10 +50,12 @@ end
 local EnemyTargets=require(game.ReplicatedStorage.BossShared.Classes.EnemyTargetRules)
  
 function S.Boss()
-  local boss = workspace:FindFirstChild("alterGolden, the Nothing")
-  if boss and S.Alive(boss) then
-    return boss
+  if workspace:GetAttribute("EncounterStarted") ~= true then
+    local training = workspace:FindFirstChild("ClassTrainingDummy")
+    if training and S.Alive(training) then return training end
   end
+  local boss = workspace:FindFirstChild("alterGolden, the Nothing")
+  if boss and S.Alive(boss) then return boss end
 end
  
 local targetCache, targetCachedAt = {}, 0
@@ -107,6 +114,7 @@ local MELEE = {
  WarriorM1 = true, WarriorSlam = true, WarriorConclusion = true,
  TankSlam = true, TankRampage = true, DuelistM1 = true, DuelistRiposte = true,
  DuelistFlash = true, DuelistCross = true, DuelistPhase = true, DuelistPhaseSlash = true, DuelistWaltz = true, DuelistWaltzOpener = true,
+ TwinbladeM1 = true, TwinbladeWhirl = true, TwinbladeSky = true, TrueWarriorM1 = true, TrueWarriorBash = true,
 }
 function S.TimeStopped(char)
  return Time.IsStopped() or workspace:GetAttribute("GoldenTimeStopped")==true
@@ -137,7 +145,7 @@ function S.CanAct(char)
   and not player:GetAttribute("ExecutionPending") and not player:GetAttribute("PermanentlyDefeated")
   and not S.TimeStopped(char)
   and not char:GetAttribute("ParryFrozen") and not char:GetAttribute("TimeFrozen")
-  and not char:GetAttribute("MovementLocked") and not char:GetAttribute("AbilitiesLocked")
+  and not char:GetAttribute("MovementLocked") and not char:GetAttribute("AbilitiesLocked") and not char:GetAttribute("FinalAttackLocked")
   and not char:GetAttribute("PickThePupilsCaptured")
   and not char.HumanoidRootPart.Anchored
   and not require(BossSystem.Combat.StatusEffectService).IsLocked(player)
@@ -202,6 +210,7 @@ end
 function S.ClearSight(char,target,token)
  local state=states[char]
  if not state or not token or not S.Alive(token.Source) then return false end
+ if token.IgnoreSight then return true end
  local params=state.SightParams
  if not params then params=RaycastParams.new() params.FilterType=Enum.RaycastFilterType.Exclude params.RespectCanCollide=true state.SightParams=params end
  if state.SightTarget~=target or state.SightSource~=token.Source then
@@ -234,6 +243,10 @@ function S.HitBoss(char,target,damage,tag,token)
  if not S.ResolveBossDefense(char,target,token) then return false end
  local beforeHealth = target.Humanoid.Health
  local beforeShield = target:GetAttribute("Shield") or 0
+ local attackerState = states[char]
+ if attackerState and attackerState.Class == "Warrior" and attackerState.Data.Mode == "Offensive" and beforeShield > 0 then
+  damage = damage * ClassConfig.Classes.Warrior.ShieldBonus
+ end
  local ok, accepted = pcall(function()
   return require(BossSystem.Combat.AttackRegistry).For(target,"BossDamageService").ApplyDamage(damage*ClassConfig.DamageMultiplier*BattleScaling.DamageMultiplier(),char,token)
  end)
@@ -247,6 +260,16 @@ function S.HitBoss(char,target,damage,tag,token)
     end
   end
   return dealt > 0
+end
+function S.DotBoss(char,target,damage,tag)
+ if type(damage)~="number" or damage~=damage or damage<=0 or damage==math.huge or not EnemyTargets.Available(target) then return false end
+ local st=states[char]
+ hitSerial+=1
+ local token={Direct=false,Kind="PlayerClass",Attacker=char,Class=st and st.Class,Skill=tag,Sequence=hitSerial,Melee=false,State=st,Revision=st and st.ActionRevision or 0,Source=char,IsStatusDamage=true}
+ local ok,accepted=pcall(function()
+  return require(BossSystem.Combat.AttackRegistry).For(target,"BossDamageService").ApplyDamage(damage*ClassConfig.DamageMultiplier*BattleScaling.DamageMultiplier(),char,token)
+ end)
+ return ok and accepted==true
 end
 function S.Allies(includeSelf, selfChar)
   local list = {}
@@ -482,6 +505,7 @@ function S.StopDefender(char)
  char:SetAttribute("TauntingUntil",nil)
  if active then
   S.Cooldown(char,"F",ClassConfig.Classes.Tank.F.Cooldown)
+  if Kits.Tank and Kits.Tank.OnDefenderEnd then pcall(Kits.Tank.OnDefenderEnd, S, char, st) end
   S.RemoveStatBuff(char,"Defender")
   S.Unbuff(char,"Taunt")
   char:SetAttribute("ClassHoldingSkill",nil)
@@ -577,7 +601,6 @@ function S.Apply(player, char)
  char:SetAttribute("ClassActionRevision",st.ActionRevision)
   states[char] = st
   char:SetAttribute("ClassId",id)
- char:SetAttribute("UseAvatarAppearance",player:GetAttribute("UseAvatarAppearance")==true)
  char:SetAttribute("ClassLifeToken",game:GetService("HttpService"):GenerateGUID(false))
   char:SetAttribute("ClassDashCost", def.DashCost)
   char:SetAttribute("ClassDashImmunity", ClassConfig.DashImmunity)
@@ -596,6 +619,7 @@ function S.Apply(player, char)
   end
   S.UpdateCooldowns(char)
   local kit = Kits[id]
+  char:SetAttribute("ChampionTier", S.ClassTier(player))
   local okModel, modelErr = pcall(require(script.Parent.ClassModels).Build, char, id)
   if not okModel then
     warn("Class model (" .. id .. "): " .. tostring(modelErr))
@@ -622,6 +646,7 @@ function S.Incoming(player, char, h, amount, balance)
   if not st or amount <= 0 then
     return amount
   end
+  if require(BossSystem.Combat.DisorderWall).Protects(char) then return 0 end
   if S.HasBuff(char, "Undying") or S.HasBuff(char, "Phasing") then
      
     if st.Class == "Duelist" and S.HasBuff(char, "Riposte") and not (balance and balance.IsStatusDamage) then
@@ -647,7 +672,7 @@ function S.Incoming(player, char, h, amount, balance)
       return 0
     end
   end
-  if not piercingDot then amount*=1-S.Defense(char) end
+  if not piercingDot then amount*=1-S.Defense(char) amount*=product(st,"Incoming") end
    
   local shield = char:GetAttribute("ClassShieldHP") or 0
   if shield>0 and not piercingDot then
@@ -663,6 +688,9 @@ function S.Incoming(player, char, h, amount, balance)
     end
   end
    
+  if S.HasBuff(char, "LastStand") and amount >= h.Health then
+    return math.max(0, h.Health - 1)
+  end
   if amount >= h.Health then
     local saver = char:GetAttribute("FateLinkedBy")
     if saver then
@@ -793,6 +821,7 @@ local function step(dt)
       end
     end
     local kit = Kits[st.Class]
+    if st.BlockLease and now() > st.BlockLease and S.HasBuff(char, "Blocking") then S.Unbuff(char, "Blocking") end
     if canAct and kit and kit.Step then
       local ok, err = pcall(kit.Step, S, st.Player, char, st, dt)
       if not ok then
@@ -808,14 +837,10 @@ local function step(dt)
      
     local r = ClassConfig.HealthRegen
     local fraction = st.Def.HealthRegenFraction
-    st.RegenAcc = st.RegenAcc or 0
-    if not S.TimeStopped(char) then st.RegenAcc += dt end
-    if st.RegenAcc >= r.Interval then
-      st.RegenAcc = 0
-      if fraction > 0 and not st.Def.NoRegen and not require(BossSystem.Combat.StatusEffectService).IsRegenBlocked(char,"HP")
-       and os.clock() - st.LastDamaged >= r.Delay and h.Health < h.MaxHealth then
-        h.Health = math.min(h.MaxHealth, h.Health + h.MaxHealth * fraction * r.Interval * product(st, "HealthRegen"))
-      end
+    if fraction > 0 and not st.Def.NoRegen and not S.TimeStopped(char) and h.Health < h.MaxHealth
+     and os.clock() - (st.LastDamaged or 0) >= r.Delay
+     and not require(BossSystem.Combat.StatusEffectService).IsRegenBlocked(char,"HP") then
+      h.Health = math.min(h.MaxHealth, h.Health + h.MaxHealth * fraction * dt * product(st, "HealthRegen"))
     end
   end
    
@@ -825,7 +850,53 @@ local function step(dt)
   end
 end
 
- 
+-- on every pick, so a badge earned this session works at once. A failed lookup never unlocks anything (fail closed).
+local function unlockBypass(player)
+  if workspace:GetAttribute("ForceClassLocks") == true then return false end
+  return Run:IsStudio() or (game.CreatorType == Enum.CreatorType.User and player.UserId == game.CreatorId)
+end
+local function ownsEntry(player, entry)
+  if entry.Kind == "Badge" then
+    local ok, has = pcall(BadgeService.UserHasBadgeAsync, BadgeService, player.UserId, entry.Id)
+    if ok then return has == true end
+  elseif entry.Kind == "GamePass" then
+    if type(entry.Id) ~= "number" or entry.Id <= 0 then return false end
+    local ok, has = pcall(Marketplace.UserOwnsGamePassAsync, Marketplace, player.UserId, entry.Id)
+    if ok then return has == true end
+  end
+  return nil
+end
+function S.CheckUnlock(player, id, attempts)
+  local entry = Unlocks[id]
+  if not entry then return true end
+  if unlockBypass(player) then
+    player:SetAttribute("ClassUnlocked_" .. id, true)
+    return true
+  end
+  local owned
+  for attempt = 1, attempts or 2 do
+    if player.Parent ~= Players then return nil end
+    owned = ownsEntry(player, entry)
+    if owned ~= nil then break end
+    if attempt < (attempts or 2) then task.wait(0.5 * attempt) end
+  end
+  if owned ~= nil then player:SetAttribute("ClassUnlocked_" .. id, owned) end
+  return owned
+end
+function S.ClassTier(player)
+  if workspace:GetAttribute("ForceChampion") == true then return 1 end
+  return player:GetAttribute("ChampionUnlocked") == true and 1 or 0
+end
+function S.RefreshUnlocks(player, attempts)
+  for id in pairs(Unlocks) do S.CheckUnlock(player, id, attempts or 3) end
+  local up = Unlocks.TrueWarrior and Unlocks.TrueWarrior.Upgrade
+  if up and player.Parent == Players then
+    local owned = ownsEntry(player, { Kind = "Badge", Id = up.Id })
+    if owned ~= nil then player:SetAttribute("ChampionUnlocked", owned) end
+  end
+  player:SetAttribute("ClassUnlocksChecked", true)
+end
+
 function S.Start()
   if remote then
     return
@@ -846,28 +917,28 @@ function S.Start()
   end
   local function settings(player)
    if player:GetAttribute("ClassAutoAim")==nil then player:SetAttribute("ClassAutoAim",true) end
-   if player:GetAttribute("UseAvatarAppearance")==nil then player:SetAttribute("UseAvatarAppearance",false) end
   end
-  for _,player in Players:GetPlayers() do settings(player) end
-  Players.PlayerAdded:Connect(settings)
+  for _,player in Players:GetPlayers() do settings(player) task.spawn(S.RefreshUnlocks, player) end
+  Players.PlayerAdded:Connect(function(player) settings(player) task.spawn(S.RefreshUnlocks, player) end)
+  Marketplace.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
+    if not purchased then return end
+    for id, entry in pairs(Unlocks) do
+      if entry.Kind == "GamePass" and entry.Id == passId then player:SetAttribute("ClassUnlocked_" .. id, true) end
+    end
+  end)
   local arena = workspace:FindFirstChild("GoldenGrasslandArena")
   local statue = arena and arena:FindFirstChild("ClassStatue")
   local prompt = statue and statue:FindFirstChild("ClassPrompt", true)
   if prompt then
     prompt.Triggered:Connect(function(player)
       remote:FireClient(player, "Open")
+      task.spawn(S.RefreshUnlocks, player, 2)
     end)
   end
   remote.OnServerEvent:Connect(function(player, action, a, b, c, d)
-    if action=="ToggleAppearance" then
-     action,a,b="Setting","UseAvatarAppearance",player:GetAttribute("UseAvatarAppearance")~=true
-    end
     if action=="Setting" then
-     if (a~="ClassAutoAim" and a~="UseAvatarAppearance") or type(b)~="boolean" then return end
+     if (a~="ClassAutoAim" and a~="DisableSkillCutscenes") or type(b)~="boolean" then return end
      player:SetAttribute(a,b)
-     if a=="UseAvatarAppearance" and S.Alive(player.Character) then
-      require(BossSystem.Players.PlayerR6Appearance).Request(player,player.Character)
-     end
     elseif action == "Select" then
       if type(a) ~= "string" or not ClassConfig.Classes[a] then
         return
@@ -876,11 +947,28 @@ function S.Start()
         remote:FireClient(player, "Result", { Message = "Classes are locked while the fight is running." })
         return
       end
+      if Unlocks[a] then
+        local owned = S.CheckUnlock(player, a, 2)
+        if owned ~= true then
+          local hint = Unlocks[a].Hint or "This class is locked."
+          remote:FireClient(player, "Result", { Message = owned == nil and "Could not verify your unlock right now. Try again in a moment." or ("Locked. " .. hint) })
+          return
+        end
+      end
       player:SetAttribute("PlayerClass", a)
       if player.Character then
         S.Apply(player, player.Character)
       end
-      remote:FireClient(player, "Result", { Message = "You are now a " .. ClassConfig.Classes[a].Name .. "." })
+      remote:FireClient(player, "Result", { Message = "" })
+    elseif action == "Buy" then
+      local entry = type(a) == "string" and Unlocks[a]
+      if entry and entry.Kind == "GamePass" then
+        if entry.Id > 0 then
+          pcall(Marketplace.PromptGamePassPurchase, Marketplace, player, entry.Id)
+        else
+          remote:FireClient(player, "Result", { Message = "This game pass is not on sale yet." })
+        end
+      end
     elseif action == "Action" then
       local char = player.Character
       local st = states[char]
@@ -904,8 +992,18 @@ function S.Start()
       end
       st.Aim = aim or st.Aim
       if a == "R" then
+        local guardOverride = Kits[st.Class] and Kits[st.Class].GuardAction
+        if guardOverride then
+          local ok, err = pcall(guardOverride, S, player, char, st, b)
+          if not ok then warn("Class guard (" .. st.Class .. "): " .. tostring(err)) end
+          return
+        end
         if b=="Begin" and S.CanBlock(char) then
-          S.Buff(char, "Blocking", nil, { Defense = ClassConfig.Block.Defense, Speed = ClassConfig.Block.SpeedMultiplier })
+          S.Buff(char, "Blocking", nil, { Defense = ClassConfig.Block.Defense, Speed = st.Def.GuardSpeed or ClassConfig.Block.SpeedMultiplier })
+          st.BlockLease = now() + 1.5
+          st.BlockStartedAt = now()
+          local guardKit = Kits[st.Class]
+          if guardKit and guardKit.OnGuard then pcall(guardKit.OnGuard, S, char, st) end
           local color = st.Def.Color or Color3.new(1, 1, 1)
           for _, arm in ipairs({ "Left Arm", "Right Arm" }) do
             local part = char:FindFirstChild(arm)
@@ -915,10 +1013,30 @@ function S.Start()
           end
           FX.HQ.Shockwave(CFrame.new(char.HumanoidRootPart.Position - Vector3.new(0, 2.7, 0)), 1, 4, 0.3, color, 0.3, 0.35)
           S.Sound(char, "GuardActivate")
+        elseif b == "Hold" then
+          if S.HasBuff(char, "Blocking") then st.BlockLease = now() + 1.5 end
         elseif b == "End" then
           S.Unbuff(char, "Blocking")
         end
         return
+      end
+      if b == "Begin" and (a == "M1" or a == "F" or a == "C" or a == "V")
+        and not (HOLD_SKILLS[st.Class] and HOLD_SKILLS[st.Class][a]) then
+        S.UpdateCooldowns(char)
+        local deadline = math.max(char:GetAttribute("ClassCD_" .. a) or 0, player:GetAttribute(cooldownAttribute(char, a)) or 0)
+        local remaining = deadline - now()
+        st.Buffered = st.Buffered or {}
+        if remaining > 0 and remaining <= INPUT_BUFFER and not st.Buffered[a] then
+          st.Buffered[a] = true
+          local revision = st.ActionRevision or 0
+          task.wait(remaining + 0.03)
+          st.Buffered[a] = nil
+          if states[char] ~= st or not S.Alive(char) or (st.ActionRevision or 0) ~= revision or not S.CanAct(char) then
+            return
+          end
+        elseif st.Buffered[a] then
+          return
+        end
       end
       if now() < (char:GetAttribute("ClassSealed_" .. a) or 0) then
         return

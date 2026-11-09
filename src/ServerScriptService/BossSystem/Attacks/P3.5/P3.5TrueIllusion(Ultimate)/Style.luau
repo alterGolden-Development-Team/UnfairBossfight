@@ -50,7 +50,6 @@ local BASE = table.freeze({
 		Ranks = { "10", "J", "Q", "K", "A" },
 		Deal = { Interval = 0.18, Flight = 0.45, Height = 26, Radius = 17, CardHeight = 16, Settle = 0.48 },
 		 
-		 -- buffed 2026-10-30 (it was far weaker than the clone barrage): each prison card closes two rings
 		 -- with separate gaps, slams spray cards, and the Ace beam leaves royal pillars along its path
 		Prison = { Waves = 2, Count = 26, Radius = 30, OuterRadius = 48, OuterCount = 34, Gap = 3, Telegraph = 0.65, Speed = 120, Damage = 28, BurstRadius = 3.5, WaveGap = 0.25, Dive = 0.35 },
 		 

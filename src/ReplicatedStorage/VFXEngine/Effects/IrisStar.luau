@@ -122,7 +122,7 @@ function I.Start(E,d)
    b.Glare.ImageTransparency=(onScreen and sp.Z>0)and 1-math.min(k*1.1,1)*.95 or 1
    b.Rays.Position=b.Glare.Position b.Rays.Size=UDim2.fromOffset(gs*1.7,gs*1.7)b.Rays.Rotation=t*8
    b.Rays.ImageTransparency=(onScreen and sp.Z>0)and 1-math.min(k,1)*.8 or 1
-   local wash=math.clamp((k-.35)/.65,0,1)*.88  -- whiteout only once you're close
+   local wash=math.clamp((k-.35)/.65,0,1)*.88
    if c.FlashAt then wash=math.max(wash,1-math.clamp((os.clock()-c.FlashAt)/1.4,0,1))end
    b.Wash.BackgroundTransparency=1-wash
    b.CC.Brightness=.3*k b.CC.Contrast=-.2*k b.CC.Saturation=-.35*k
@@ -143,7 +143,6 @@ function I.Collapse(E,d)
   c.Lid=u*u
   return u<1
  end)
-  -- light pours inward
  local shell=E.Anchor(g,CFrame.new(d.Eye))shell.Size=Vector3.one*90
  local inflow=E.Stream(shell,{tex="dot",orient="velocity",squash={{0,2.6},{1,.6}},size={{0,0},{.2,.8},{1,.2}},alpha={{0,1},{.2,0},{1,.2}},
   color={{0,IRIS},{1,WHITE}},life={1.2,1.4},speed={60,75},shape=Enum.ParticleEmitterShape.Sphere,

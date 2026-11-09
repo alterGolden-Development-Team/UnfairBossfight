@@ -16,7 +16,6 @@
 local Lib={}
 
 local E={
- -- stars and flares
  ["star.lens"]      ={id=14032952906,role="star",edge="soft",blend="add",tags={"4point","chromatic","polaris"}},
  ["star.glare"]     ={id=14198353638,role="star",edge="soft",blend="add",tags={"4point","long","glare"}},
  ["star.glare2"]    ={id=14197583306,role="star",edge="soft",blend="add",tags={"4point","chromatic"}},
@@ -32,7 +31,6 @@ local E={
  ["flare.streak"]   ={id=15267955654,role="streak",edge="soft",blend="add",tags={"anamorphic","lens"}},
  ["glow.soft"]      ={id=15267968986,role="glow",edge="soft",blend="add",tags={"orb"}},
  ["glow.rays"]      ={id=507021722  ,role="glow",edge="soft",blend="add",tags={"radial"}},
- -- rings and circles
  ["ring.compass"]   ={id=15268108437,role="ring",edge="soft",blend="add",tags={"spikes","north","polaris"}},
  ["ring.soft"]      ={id=15268062056,role="ring",edge="soft",blend="add",tags={"shockwave"}},
  ["ring.thick"]     ={id=15268066299,role="ring",edge="soft",blend="add",tags={"shockwave"}},
@@ -46,7 +44,6 @@ local E={
  ["orb.shaded"]     ={id=15268126916,role="glow",edge="hard",blend="add",tags={"sphere"}},
  ["disc.soft"]      ={id=8788474862 ,role="glow",edge="soft",blend="add",tags={"disc"}},
  ["vortex.soft"]    ={id=15268068246,role="swirl",edge="soft",blend="add",tags={"vortex"}},
- -- magic circles
  ["sigil.mandala"]  ={id=12403097047,role="sigil",edge="hard",blend="add",tags={"ornate","circle"}},
  ["sigil.mandala2"] ={id=12403075151,role="sigil",edge="hard",blend="add",tags={"ornate","lace"}},
  ["sigil.ring"]     ={id=12389948201,role="sigil",edge="hard",blend="add",tags={"ornate","thin"}},
@@ -55,7 +52,6 @@ local E={
  ["frost.flake"]    ={id=12389944487,role="sigil",edge="hard",blend="add",tags={"snowflake","frost","borealis"}},
  ["frost.flake2"]   ={id=14197923174,role="sigil",edge="soft",blend="add",tags={"snowflake","frost"}},
  ["sigil.lace"]     ={id=12403078255,role="sigil",edge="hard",blend="add",tags={"ornate","lace","frost"}},
- -- bursts and swirls
  ["burst.spiky"]    ={id=15268140795,role="burst",edge="hard",blend="add",tags={"impact","ring"}},
  ["burst.spiky2"]   ={id=15268142082,role="burst",edge="hard",blend="add",tags={"impact","ring"}},
  ["burst.ice"]      ={id=15268162583,role="burst",edge="hard",blend="add",tags={"impact","cyan","colored"}},
@@ -87,7 +83,9 @@ local E={
  ["wind.dash"]      ={id=134686613460761,role="streak",edge="soft",blend="add",tags={"dash","wind","cone"}},
  ["butterfly"]      ={id=11183559491,role="spark",edge="hard",blend="add",tags={"butterfly","white"}},
  ["butterfly.monarch"]={id=5832471245,role="spark",edge="hard",blend="alpha",tags={"butterfly","monarch"}},
- -- built-ins
+ -- glitch particles (Glitch Effect Particle Kit, Creator Store 107667004098957)
+ ["glitch.block"]   ={id=6888586040,role="spark",edge="hard",blend="add",tags={"glitch","blocks"}},
+ ["glitch.noise"]   ={id=8546937977,role="spark",edge="hard",blend="add",tags={"glitch","noise"}},
  ["dot"]            ={id="rbxasset://textures/whiteCircle.png",role="spark",edge="hard",blend="add",tags={"dot"}},
  ["sparkle"]        ={id="rbxasset://textures/particles/sparkles_main.dds",role="spark",edge="soft",blend="add",tags={}},
  ["smoke"]          ={id="rbxasset://textures/particles/smoke_main.dds",role="smoke",edge="soft",blend="alpha",tags={}},

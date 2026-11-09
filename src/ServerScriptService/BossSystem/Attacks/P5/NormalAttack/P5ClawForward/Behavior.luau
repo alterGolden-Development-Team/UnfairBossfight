@@ -70,7 +70,7 @@ return function(actor)
 				Count = S.FinalCount, Roll = math.rad(S.Roll), Damage = S.FinalDamage, HitHalfWidth = S.FinalHalfWidth,
 				HitHeight = S.FinalHeight, Final = true })
 			actor:SetAttribute("P5ClawForwardSwings", (actor:GetAttribute("P5ClawForwardSwings") or 0) + S.Swings + 1)
-			return c.Wait(0.3)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

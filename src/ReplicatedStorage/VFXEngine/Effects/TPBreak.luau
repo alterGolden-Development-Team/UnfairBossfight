@@ -25,7 +25,6 @@ function T.Shockwave(E,d)
  local ga=E.Anchor(g,CFrame.new(gp+Vector3.new(0,.5,0)))
  local a=E.Anchor(g,CFrame.new(d.Pos))
  flash(.55,.6)
-  -- the wave
  E.Sprite(a,{tex="flare.big",size={{0,10},{.15,90},{1,110}},alpha={{0,0},{.35,.2},{1,1}},color=WHITE},.6)
  E.Sprite(a,{tex="ring.crisp",size={{0,6},{1,160}},alpha={{0,0},{.6,.2},{1,1}},color=WHITE,rot={0,0}},.5)
  for k=0,2 do

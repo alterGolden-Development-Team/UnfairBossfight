@@ -31,39 +31,72 @@ local K = {}
 
 function K.Start(S, player, char, st)
   st.Data.Mode = "Offensive"
+  st.Data.Aegis, st.Data.AegisAt, st.Data.BreakDrainAt = 0, 0, -100
   char:SetAttribute("ClassMode", "Offensive")
+  char:SetAttribute("WarriorAegis", 0)
+end
+function K.Cleanup(S, char, st)
+  if char.Parent then
+    char:SetAttribute("WarriorAegis", nil)
+    char:SetAttribute("ClassStatus_Aegis", nil)
+    char:SetAttribute("ClassStatusText_Aegis", nil)
+  end
+end
+
+-- Aegis charges (0..AegisMax): built by guarding (R), spent by the Defensive Shield Charge and Aegis Burst
+local function setAegis(S, char, st, n)
+  n = math.clamp(n, 0, D.AegisMax)
+  st.Data.Aegis = n
+  char:SetAttribute("WarriorAegis", n)
+  char:SetAttribute("ClassStatus_Aegis", n > 0 and -1 or nil)
+  char:SetAttribute("ClassStatusText_Aegis", n > 0 and ("x" .. n) or nil)
+end
+function K.AddAegis(S, char, st, n)
+  setAegis(S, char, st, (st.Data.Aegis or 0) + n)
+  st.Data.AegisAt = os.clock()
+end
+function K.SpendAegis(S, char, st)
+  local n = st.Data.Aegis or 0
+  setAegis(S, char, st, 0)
+  return n
+end
+function K.Step(S, player, char, st, dt)
+  -- Offensive mode lets the charges fade; Defensive mode keeps them
+  if st.Data.Mode == "Offensive" and (st.Data.Aegis or 0) > 0 and os.clock() - (st.Data.AegisAt or 0) > D.AegisFade then
+    setAegis(S, char, st, 0)
+  end
 end
  
 function K.OnDamaged(S, char, st)
   S.StatBuff(char, "BattleHardened", D.PassiveDuration, { Attack = D.PassiveAttack, Defense = D.PassiveDefense })
 end
  
-function K.Incoming(S, char, st, amount)
-  if S.HasBuff(char, "ParryStance") then
-    st.Data.Parried = true
-    S.Unbuff(char, "ParryStance")
-    S.StatBuff(char, "PerfectParry", D.V.ParryBuff, { HealthRegen = 4, StaminaRegen = 2, Attack = 1.3 })
+-- Aegis Guard (R). Every hit it absorbs is a charge; a press just before the hit is a perfect guard (negated, 2 charges).
+function K.Incoming(S, char, st, amount, balance)
+  if S.HasBuff(char, "Blocking") and not (balance and balance.IsStatusDamage) then
     local p = char.HumanoidRootPart.Position
-    S.FX.Flash(p, Color3.fromRGB(255, 236, 150), 10, 0.35)
-    S.FX.Ring(p, GOLD, 9, 0.4)
-    S.FX.Text(p + Vector3.new(0, 3, 0), "PARRY!", GOLD)
-    S.Anim(char, "ParrySuccess")
-    S.Sound(char, "ParryContact")
-    S.FX.HQ.Glint(p + Vector3.new(0, 1, -1), Color3.new(1, 1, 1), 6, 0.3)
-    S.FX.HQ.Spikes(p - Vector3.new(0, 2.6, 0), 6, 4, 9, GOLD, Color3.new(1, 1, 1), 0.5)
-    S.FX.Hit(p, GOLD, 1.4, true)
-    S.FX.HQ.Shake(p, 40, 0.2, 0.4)
-    return 0
+    if S.Now() - (st.BlockStartedAt or 0) <= D.PerfectWindow then
+      K.AddAegis(S, char, st, D.PerfectGain)
+      S.FX.Flash(p, GOLD, 10, 0.3)
+      S.FX.Ring(p - Vector3.new(0, 2.5, 0), GOLD, 9, 0.35)
+      S.FX.Text(p + Vector3.new(0, 3, 0), "PERFECT GUARD", GOLD)
+      S.Sound(char, "ParryContact")
+      S.FX.HQ.Shake(p, 40, 0.2, 0.4)
+      return 0
+    end
+    K.AddAegis(S, char, st, 1)
+    S.FX.HQ.Glint(p + Vector3.new(0, 1, -1), GOLD, 4, 0.25)
+    S.Sound(char, "BlockImpact")
+    return amount
+  end
+  -- a boss attack that breaks the guard shatters the charges (at most once per BreakDrainCooldown)
+  if balance and balance.BreaksBlock == true and S.HasBuff(char, "GuardBroken")
+    and (st.Data.Aegis or 0) > 0 and os.clock() - (st.Data.BreakDrainAt or -100) >= D.BreakDrainCooldown then
+    st.Data.BreakDrainAt = os.clock()
+    setAegis(S, char, st, 0)
+    S.FX.Text(char.HumanoidRootPart.Position + Vector3.new(0, 4, 0), "AEGIS SHATTERED", Color3.fromRGB(255, 150, 90))
   end
   return amount
-end
-function K.OnBuffEnded(S, char, st, id)
-  if id == "ParryStance" and not st.Data.Parried then
-     
-    S.Buff(char, "ParryLocked", D.V.ParryFailLock)
-    S.Cooldown(char, "V", D.V.Cooldown - D.V.ParryWindow + D.V.ParryFailLock)
-    S.FX.Text(char.HumanoidRootPart.Position + Vector3.new(0, 3, 0), "PARRY FAILED", Color3.fromRGB(170, 170, 180))
-  end
 end
 
 function K.Action(S, player, char, st, key, phase, aim)
@@ -191,6 +224,7 @@ function K.Action(S, player, char, st, key, phase, aim)
        
        
       local attack = S.NewAttack(char, "WarriorSlam")
+      local charges = K.SpendAegis(S, char, st)
       S.Buff(char, "ShieldRaised", D.C.SlamDuration, { Defense = D.C.SlamDefense, Speed = D.C.SlamSpeed })
       S.Sound(char, "FallingCharge")
       S.FX.HQ.Glint(C.Hand(char, "Left"), GOLD, 4, 0.3)
@@ -211,7 +245,7 @@ function K.Action(S, player, char, st, key, phase, aim)
               return
             end
             if S.Alive(target) then  
-              S.HitBoss(char, target, D.C.SlamDamage, "WarriorSlam", attack)
+              S.HitBoss(char, target, D.C.SlamDamage + D.C.SlamPerCharge * charges, "WarriorSlam", attack)
             end
             local at = root.Position + dir * 3 + Vector3.new(0, 0.4, 0)
             S.FX.HQ.Flash(at, WHITE, 1.6, 0.18, 0)
@@ -281,10 +315,32 @@ function K.Action(S, player, char, st, key, phase, aim)
     else
        
       S.Cooldown(char, "V", D.V.Cooldown)
-      st.Data.Parried = false
-      S.Buff(char, "ParryStance", D.V.ParryWindow)
-      S.Sound(char, "ParryStance")
-      S.FX.HQ.Glint(C.Hand(char, "Left"), Color3.fromRGB(255, 236, 150), 4, D.V.ParryWindow)
+      -- Aegis Burst: spend every charge to heal yourself and your allies and boost everybody's attack
+      local n = K.SpendAegis(S, char, st)
+      if n <= 0 then
+        S.Cooldown(char, "V", 0)
+        S.FX.Text(root.Position + Vector3.new(0, 3, 0), "NO AEGIS", GOLD)
+        return
+      end
+      S.Cooldown(char, "V", D.V.BurstCooldown)
+      S.Anim(char, "Stance")
+      S.Sound(char, "GuardActivate")
+      local hum = char:FindFirstChildOfClass("Humanoid")
+      if hum and hum.Health > 0 then hum.Health = math.min(hum.MaxHealth, hum.Health + hum.MaxHealth * D.V.BurstSelfHeal * n) end
+      S.StatBuff(char, "AegisBurst", D.V.BurstDuration, { Attack = 1 + D.V.BurstAttack * n })
+      for _, ally in ipairs(S.Allies(false, char)) do
+        if (ally.HumanoidRootPart.Position - root.Position).Magnitude <= D.V.BurstRadius then
+          local ah = ally:FindFirstChildOfClass("Humanoid")
+          if ah and ah.Health > 0 then ah.Health = math.min(ah.MaxHealth, ah.Health + ah.MaxHealth * D.V.BurstAllyHeal * n) end
+          S.StatBuff(ally, "AegisBurst", D.V.BurstDuration, { Attack = 1 + D.V.BurstAttack * n })
+          S.FX.Beam(root.Position, ally.HumanoidRootPart.Position, GOLD, 0.4, 0.4)
+        end
+      end
+      local ground = root.Position - Vector3.new(0, 2.5, 0)
+      S.FX.Flash(root.Position, GOLD, 16, 0.5)
+      S.FX.Ring(ground, GOLD, D.V.BurstRadius, 0.6, 0.8)
+      S.FX.HQ.Spikes(ground, 5 + n, 5, 10 + n * 2, GOLD, WHITE, 0.6)
+      S.FX.Text(root.Position + Vector3.new(0, 3.5, 0), "AEGIS BURST x" .. n, GOLD)
     end
   end
 end

@@ -7,6 +7,7 @@ return function(actor)
    and not actor:GetAttribute("IsClone")
     -- a full-TP break (Combat/TPService) strips godmode for the rest of Phase 5
    and not actor:GetAttribute("GodStripped")
+    -- inside a mode his shield has to be breakable (Combat/P5ModeService)
  end
  function api.Tick() actor:SetAttribute("Passive_P5God",api.IsActive()) end
  function api.Reset() if actor.Parent then actor:SetAttribute("Passive_P5God",false) end end

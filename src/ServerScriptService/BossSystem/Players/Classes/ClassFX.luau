@@ -361,6 +361,15 @@ for _, name in ipairs({ "Shake", "Tint", "Crescent", "Impact", "Shockwave", "Rin
 end
 
  
+do
+	local Net = require(game.ReplicatedStorage.VFXEngine.Net)
+	local hotEdge = FX.HQ.Crescent
+	FX.HQ.Crescent = function(frame, radius, arc, thickness, color, core, duration, options)
+		local reverse = options and options.Reverse == true
+		Net.Send("ClassSlash", "Draw", { Frame = frame, Radius = radius, Arc = arc, Color = color, Core = core or Color3.new(1, 1, 1), Time = duration or 0.25, Reverse = reverse })
+		return hotEdge(frame, radius, arc, thickness * 0.5, color, core, duration, options)
+	end
+end
 function FX.Text(pos, text, color)
 	FX.HQ.Glint(pos, color or Color3.new(1, 1, 1), 3.2, 0.35)
 	FX.HQ.Light(pos, color or Color3.new(1, 1, 1), 3, 14, 0.3)

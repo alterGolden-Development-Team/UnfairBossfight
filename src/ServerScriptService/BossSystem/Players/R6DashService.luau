@@ -30,6 +30,7 @@ local function blocked(player, char, h, root)
 		or h.Sit
 		or Status.IsMovementLocked(player)
 		or char:GetAttribute("DashLocked")
+		or char:GetAttribute("FinalAttackLocked")
 		or char:GetAttribute("ShieldBreakDashLocked")
 		or char:GetAttribute("TimeFrozen")
 		or char:GetAttribute("ParryFrozen")

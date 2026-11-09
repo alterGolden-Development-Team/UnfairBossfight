@@ -10,12 +10,14 @@ local Config = require(Shared:WaitForChild("Config"):WaitForChild("EncounterConf
 local Time = require(BossSystem.Mechanics.Time.TimeEffectController)
 local Locomotion = require(BossSystem.Boss.BossLocomotion)
 local Modes = require(BossSystem.Combat.P5ModeService)
+local Finale = require(BossSystem.Combat.P5Finale)
 local api = {}
 local running = setmetatable({}, { __mode = "k" })
  -- the phase 5 rhythm: fast without a mode, calm inside one (P5ModeService)
 local function phase5Gap(actor)
-	local gap = Modes.Active(actor) and (Config.Phase5ModeAttackGap or 0.75) or (Config.Phase5NormalAttackGap or 0.35)
-	return gap * Difficulty.Get(actor).Recovery  -- the difficulty (and the Enraged Gate) sets the rhythm
+	local gap = Config.Phase5AttackGap or 0.15
+	 -- the difficulty (and the Enraged Gate) sets the rhythm; the frenzy and the final minute (Combat/P5Finale) quicken it
+	return gap * Difficulty.Get(actor).Recovery * Finale.GapScale(actor)
 end
  
 local function showOpening(actor, seconds)
@@ -86,9 +88,10 @@ function api.Start(actor)
 		while actor.Parent and h.Health > 0 and not actor:GetAttribute("EncounterEnded") do
 			require(BossSystem.Phases.PhaseController).Recover(actor)
 			Modes.Update(actor)  -- phase 5 mode rotation (Space / Natural / Time)
+			Finale.Update(actor)  -- phase 5's end: the frenzy, the final minute, the portal
 			 -- anything that disposed the passive record (a transition's CancelOwner, a stun) brings it back once
 			 -- the fight resumes; without this the Debuffer, Regeneration etc. stayed off for the rest of the fight
-			if not Passives.Running(actor) and actor:GetAttribute("AIEnabled") ~= false
+			if not Passives.Running(actor) and actor:GetAttribute("AIEnabled") ~= false and not Finale.Busy(actor)
 				and not actor:GetAttribute("PhaseTransitionInProgress") and not actor:GetAttribute("EncounterEnded") then
 				Passives.Start(actor, normal.GetTarget)
 			end
@@ -102,6 +105,7 @@ function api.Start(actor)
 				and not actor:GetAttribute("MysteriousGuyPunching")  -- the shadow caught someone; he is mid-punch
 				and not actor:GetAttribute("ExecutionLocked")
 				and not actor:GetAttribute("FutureSightDodging")
+				and not Finale.Busy(actor)  -- the finale's cinematic: he is done fighting
     and now>=(actor:GetAttribute("ClassStunnedUntil") or 0)
     and actor:GetAttribute("ClassStunFrame")==nil
 			then
@@ -128,6 +132,11 @@ function api.Start(actor)
 				if not actor:GetAttribute("AttackInProgress") and target and ready then
 					if not stopped then
 						target = normal.GetTarget(true)
+						 -- phase 5: with the target out of reach of his melee skills he blinks in beside them first (Combat/P5CloseIn)
+						if target and (actor:GetAttribute("Phase") or 0) >= 5 then
+							local okClose, errClose = pcall(function() return require(BossSystem.Combat.P5CloseIn).Try(actor, target) end)
+							if not okClose then warn("[P5CloseIn] " .. tostring(errClose)) end
+						end
 					end
 					if stopped then
 						 
@@ -148,7 +157,9 @@ function api.Start(actor)
 							end
 						end
 					else
-						local wanted = Selector.ComboCount(actor, nil, target)
+						 -- a broken mode's one-time last-stand ultimate goes before anything else (P5ModeService)
+						local stand = (actor:GetAttribute("Phase") or 0) >= 5 and Modes.LastStand(actor, attacks, target) or nil
+						local wanted = stand and 1 or Selector.ComboCount(actor, nil, target)
 						if wanted > 1 then
 							local available = Selector.ReadyCount(attacks, target, actor, "Combo")
 							 
@@ -156,7 +167,7 @@ function api.Start(actor)
 							local need = phaseNow < 5 and math.min(4, math.floor(phaseNow)) == 4 and 3 or 2
 							if available >= need then comboPlanned = math.min(wanted, available) end
 						end
-						chosen = Selector.Choose(
+						chosen = stand or Selector.Choose(
 							attacks,
 							target,
 							lastName,
@@ -219,6 +230,7 @@ function api.Start(actor)
 						end
 						local tuning = Metadata.Get(chosen.Name)
 						if tuning and tuning.UnscaledDifficulty then tell = 0 end
+						if (actor:GetAttribute("Phase") or 0) >= 5 then tell *= (Config.Phase5TellScale or 1) end
 						if tell > 0 then
 							if chosen.Skill.IsUltimate then
 								tell *= 1.6
@@ -244,7 +256,14 @@ function api.Start(actor)
 							actor:FindFirstChild("HumanoidRootPart")
 						)
 						lastWasUltimate = chosen.Skill.IsUltimate == true
-						local ok, result = xpcall(chosen.Skill.Combo, debug.traceback, target)
+            if chosen.Skill.IsUltimate then
+            	local line = require(BossSystem.Encounter.EncounterStory).UltimateLine(actor, chosen.Name)
+            	if line then
+            		require(BossSystem.Players.PlayerEncounter).Say(line, nil, { Duration = 2.8, ScreenOnly = true })
+            	end
+            end
+            local ok, result = xpcall(chosen.Skill.Combo, debug.traceback, target)
+            local ok, result = xpcall(chosen.Skill.Combo, debug.traceback, target)
 						if not ok then
 							warn(chosen.Name .. ": " .. tostring(result))
 						end
@@ -371,7 +390,7 @@ function api.Start(actor)
 			end
 			local remaining = (Time.IsGoldenHour(actor) and nextSetup or (actor:GetAttribute("NextAttackAt") or 0))
 				- workspace:GetServerTimeNow()
-			task.wait(remaining > 0 and math.min(0.1, remaining) or 0.1)
+			task.wait(remaining > 0 and math.min(0.1, remaining) or ((actor:GetAttribute("Phase") or 0) >= 5 and 0.03 or 0.1))
 		end
 		running[actor] = nil
 		Passives.Stop(actor)

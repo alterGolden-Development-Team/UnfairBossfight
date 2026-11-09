@@ -240,7 +240,6 @@ return function(actor)
 				if not waitFor(S.Aim) then return false end
 				dir, pitch = aimAt(target)
 				 -- Misdirection: the same volley also goes out at a decoy point, harmless; the real rounds flash
-				 -- just before they arrive
 				local decoy = misdirection.TryEmission and misdirection.TryEmission(NAME, target)
 				local turn, decoyDistance
 				if decoy then

@@ -416,7 +416,7 @@ local Baseline = table.freeze({
  P1ShieldGateBossInterval = 8,
   -- Ground Shatter: a warning circle at every player's feet, then gold spikes burst out of it
  P1GroundShatterWarning = 0.6,
- P1GroundShatterRadius = 14,  -- 2026-10-31: was 8
+ P1GroundShatterRadius = 14,
  P1GroundShatterDamage = 45,
  P1GroundShatterHeight = 11,
  P1GroundShatterLift = 38,
@@ -461,7 +461,7 @@ local Baseline = table.freeze({
  P1KnifeSpreadDegrees = 18,
  P1KnifeBackflipDistance = 9,
  P1KnifeBackflipDuration = 0.85,
- P1KnifeFlipHeight = 30,  -- 2026-10-31: a much higher leap before the knives fly
+ P1KnifeFlipHeight = 30,
 
 	ShieldGateCloneAppearanceDuration = 1.5,
 	ShieldGateJumpDuration = 1,
@@ -485,7 +485,28 @@ local Baseline = table.freeze({
 	RecentPenalty = table.freeze({ 0.3, 0.55, 0.8 }),  -- weight multipliers for the last 3 attacks
 	MeleeRange = 22,  -- sword attacks favoured inside this distance
 	FarRange = 50,  -- ranged/area attacks favoured beyond this distance
-	HeavyBreather = 1.2,  -- pause after the last lingering heavy attack ends (a punish window)
+	HeavyBreather = 0.4,  -- pause after the last lingering heavy attack ends (a punish window)
+	 -- Phase 5 close-range kit (AttackSelector + Combat/P5CloseIn): the melee-only skills are weighted up when they can be used,
+	 -- and when the target is farther than Phase5CloseInRange he blinks in beside them (at most every Phase5CloseInGap seconds,
+	 -- Phase5CloseInChance of the time, landing Phase5CloseInDistance studs away) so those skills actually come up
+	Phase5CloseAttacks = table.freeze({ P5LightJab = true, P5Slam = true, ["P5Golden-matterBeam"] = true, ["P5DoubleGolden-matterBeam"] = true, P5FireRing = true, P5ShotgunBlast = true, ["P5Fang-Dive"] = true,
+		["P5Fang-Cross"] = true, ["P5Fang-Pierce"] = true, P5EnhancedRipAndTear = true }),
+	Phase5CloseWeight = 3, Phase5CloseInRange = 38, Phase5CloseInChance = 0.75, Phase5CloseInGap = 2.5, Phase5CloseInDistance = 14,
+	 -- attacks with no deflect at all (Attacks/Shared/P5StrikeCore reads this: no shield cue, every hit lands) - the deflect had become busywork on these
+	P5BeamUseRange = 38,
+	 -- Phase5ShieldHold (1) when it is broken, and the mode lasts until its last-stand ultimate has gone off (Phase5LastStandWait
+	 -- seconds at most, then the mode ends and the ultimate stays owed)
+	Phase5ModeShields = table.freeze({ Space = 3500, Natural = 2000, Time = 5000 }),
+	Phase5ShieldHold = 1, Phase5LastStandWait = 25,
+	Phase5UnlimitedShield = 1000000000,
+	Phase5BaseShield = 5000,  -- the shield Phase 5 opens with, and the one he gets when his godmode is stripped
+	 -- mode passives (Passives/P5Spacetrum, P5Verdant, P5Pastborn) and the enraged ones (P5Enraged, P5SuperEnraged)
+	P5SpacetrumCooldown = 2,  -- Space: every attack of the mode drops a Falling Star, at most one every this many seconds
+	P5VerdantRegen = 15,  -- Natural: shield regained every second; every Natural attack that lands poisons
+	P5PastInterval = 5, P5PastRespawn = 6,
+	FinaleSuperFrenzyGapScale = 0.3,  -- the frenzy once godmode is stripped is FinaleFrenzyGapScale; on the Enraged Gate it is this  -- Golden-matter Beam and Double Golden-matter Beam: close range only
+	P5NoDeflect = table.freeze({ P5SwordDancer = true, P5UltraRed = true, P5GoldenEternity = true,
+		P5Overclock = true, P5ClawForward = true, P5Butterfly = true }),
 	Phase5FillerBetween = 0,  -- filler moves owed between two phase 5 heavies (0: phase 5 has no fillers)
 	 -- Phase 5 modes (Combat/P5ModeService): one mode folder at a time plus the normal attacks
 	Phase5ModeDuration = table.freeze({ 30, 30 }),  -- seconds a mode lasts
@@ -500,10 +521,36 @@ local Baseline = table.freeze({
 	 -- Deflect (E, Combat/DeflectService): a tap opens DeflectTapWindow; holding counts after DeflectHoldTime;
 	 -- the shield cue shows DeflectWarnLead before a deflectable hit lands
 	 -- the cue shows a little less long than a tap lasts, so pressing as soon as it appears always counts
-	DeflectTapWindow = 0.42, DeflectHoldTime = 0.5, DeflectTapCooldown = 0.45, DeflectWarnLead = 0.4,
+	DeflectTapWindow = 0.45, DeflectHoldTime = 0.2, DeflectTapCooldown = 0.4, DeflectWarnLead = 0.4,
+	DeflectHoldWindow = 1.6, DeflectReleaseGrace = 0.25, DeflectChain = 0.35,  -- see Combat/DeflectService
+	DeflectEarlyGrace = 0.15, DeflectLateGrace = 0.25,  -- a tap counts from just before the shield appears to just after
+	DeflectMashPresses = 3, DeflectMashLock = 0.6,  -- that many presses with no shield up inside a second lock deflect
+	DeflectTP = 0, DeflectCounterDamage = 150,
+	 -- Phase 5's end (Combat/P5Finale): a frenzy once godmode is stripped, then at 1 health a minute of everything
+	FinaleFrenzyGapScale = 0.45, FinaleFinalGapScale = 0.08, FinaleSurviveTime = 60,
+	FinaleClaimRange = 14, FinaleClaimHold = 1.5,  -- hold E this close to the fallen sword this long to win
+	FinaleLines = {
+		Final = "ENOUGH! Every power I have - all of it, at once!",
+		Time = "Time... I stopped it, bent it, broke it. And you still walked through.",
+		Natural = "Even the sky's own lights couldn't bury you.",
+		Space = "Every star up there answered me. Not one of them could stop you.",
+		Farewell = "Keep the blade. The Nothing always comes back for what it leaves behind.",
+	},
 	Phase5ModeAttackGap = 0.75,
-	Phase5NormalCombo = table.freeze({ Min = 5, Max = 6, Cooldown = 4, Range = 400, Height = 60 }),
-	Phase5ModeCombo = table.freeze({ Min = 2, Max = 4, Cooldown = 4, Range = 400, Height = 60 }),
+	Phase5NormalCombo = table.freeze({ Min = 6, Max = 8, Cooldown = 1.2, Range = 400, Height = 60 }),
+	P5NormalTellScale = 0.6,
+	Phase5TellScale = 0.5,
+	Phase5ModeCombo = table.freeze({ Min = 5, Max = 6, Cooldown = 2, Range = 400, Height = 60 }),
+	 -- Phase5ModeShield shield until it is broken; an attack every Phase5AttackGap either way
+	 -- Phase 5's reinforcement (PlayerEncounter.ApplyPhase5Buff): every class's HP times this, and this many more lives
+	Phase5HealthMultiplier = 10, Phase5BonusLives = 10,
+	Phase5AttackGap = 0.15, Phase5NormalSpan = 30, Phase5ModeShield = 2000,
+	Phase5ModeBreakLines = table.freeze({
+		Space = "My stars... fall silent? Then let them burn one last time!",
+		Natural = "Even the storm turns on me? Then drown in it!",
+		Time = "Time... slips through my fingers. Fine. I never needed it.",
+	}),
+	Phase5AllModesLine = "No more forms. No more borrowed power. Just me - and that's enough.",
 	Phase5ModeSkillWeight = 1.6,  -- the mode's own skills are picked this much more often than normal attacks
 	Phase5ModeLines = table.freeze({
 		Space = "Look up. Every star up there answers to me.",
@@ -515,7 +562,7 @@ local Baseline = table.freeze({
 	Phase5UltimateChain = true,  -- phase 5: right after an ultimate the boss chains straight into a phase 5 skill (no punish gap)
 	 -- phase 5 set follow-ups, chained with no gap: the follow-up runs off its own cooldown, with chance
 	 -- Phase5ComboChance x the difficulty's Density (Hellaven ~94%, True Hardcore 75%, Hardcore ~56%)
-	Phase5Combos = { P5BlackHole = "P5DyingStar", P5IrisStar = "P5Borealis", P5UpperCut = "P5GoldenPierce" },
+	Phase5Combos = { P5IrisStar = "P5Borealis", P5UpperCut = "P5GoldenPierce" },
 	Phase5ComboChance = 0.75,
 	 -- attacks whose effect keeps running after Combo returns; while any is active only
 	 -- normal attacks may start (no ultimates, no other heavy attacks)

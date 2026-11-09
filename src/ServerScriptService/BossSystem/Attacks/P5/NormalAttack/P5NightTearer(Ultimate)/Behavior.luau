@@ -33,7 +33,7 @@ return function(actor)
 		end
 		return core.Perform(target, S.Name, function()
 			 -- 1. he readies himself, turning with his prey
-			local ready, charge = c.Tell(S.Ready), c.Tell(S.Charge)
+			local ready, charge = c.Tell(S.Ready), S.Charge
 			core.Face(target)
 			core.PoseAngles(READY, 0.15)
 			actor:SetAttribute("AttackState", "Night Tearer: ready")
@@ -44,7 +44,7 @@ return function(actor)
 			end) then
 				return false
 			end
-			 -- 2. the charge: the lane is set now, marked red on the floor, and everyone is warned what it costs
+			 -- 2. the charge: the aim is set now; the gathering sphere shows which way it will fire
 			local root = c.Root
 			local ground = c.Ground(root.Position)
 			local look = core.Alive(target) and (target.HumanoidRootPart.Position - root.Position) * Vector3.new(1, 0, 1)
@@ -55,8 +55,8 @@ return function(actor)
 			core.PoseAngles(CHARGE, 0.2)
 			actor:SetAttribute("AttackState", "Night Tearer: charging")
 			local origin = (lane * CFrame.new(0, S.BeamHeight, -4)).Position
-			local wall = workspace:Raycast(origin, look * S.Range, core.Params())
-			local reach = wall and wall.Distance or S.Range
+			 -- no wall stops it: the beam crosses the whole map
+			local reach = S.Range
 			c.Send("TearerCharge", { Frame = lane, Origin = origin, Time = charge, Range = reach, HalfWidth = S.BeamRadius })
 			if not c.Wait(charge) then
 				return false
@@ -77,7 +77,7 @@ return function(actor)
 					local p = char.HumanoidRootPart.Position
 					if not hit[char] and segmentDistance(p, origin, tip) <= S.BeamRadius + 1 then
 						hit[char] = true
-						if c.Execute(char, S.LivesCost, p) then
+						if c.Execute(char, S.LivesCost, p, { IgnoreIFrames = true }) then
 							actor:SetAttribute("P5NightTearerKills", (actor:GetAttribute("P5NightTearerKills") or 0) + 1)
 						end
 					end
@@ -86,7 +86,7 @@ return function(actor)
 				return false
 			end
 			actor:SetAttribute("P5NightTears", (actor:GetAttribute("P5NightTears") or 0) + 1)
-			return c.Wait(0.5)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

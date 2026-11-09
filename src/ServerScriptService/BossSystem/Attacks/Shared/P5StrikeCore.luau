@@ -39,7 +39,7 @@ function api.Context(actor, name)
 	end
 	 -- windups and warnings stretch or shrink with the difficulty's Telegraph (the Enraged Gate's included)
 	function ctx.Tell(seconds)
-		return seconds * Difficulty.Get(actor).Telegraph
+		return seconds * Difficulty.Get(actor).Telegraph * (Config.P5NormalTellScale or 1)
 	end
 	 -- how many beams, slices or spikes for the difficulty's Density
 	function ctx.Count(n)
@@ -123,10 +123,21 @@ function api.Context(actor, name)
 		return ctx.Beside(char, distance, 0)
 	end
 	 -- a deflectable hit: true when the player turned it away (no damage then)
+	 -- EncounterConfig.P5NoDeflect lists the attacks with no deflect at all: no shield cue, and every hit lands
+	local function noDeflect()
+		return Config.P5NoDeflect ~= nil and Config.P5NoDeflect[name] == true
+	end
+	ctx.NoDeflect = noDeflect
 	function ctx.Deflected(char, kind)
+		if noDeflect() then
+			return false
+		end
 		return kind ~= nil and Deflect.TryDeflect(char, kind)
 	end
 	function ctx.Warn(char, kind, seconds)
+		if noDeflect() then
+			return
+		end
 		Deflect.Warn(char, kind, seconds)
 	end
 	 -- a flying claw (three or more blades, VFXEngine P5Strikes.Claw) along `frame`; o: Speed, Range, Width,
@@ -145,7 +156,7 @@ function api.Context(actor, name)
 				if math.abs(p.X) <= o.HitHalfWidth + 6 and math.abs(p.Y) <= o.HitHeight + 6 and -p.Z > 0 and -p.Z <= o.Range then
 					local eta = -p.Z / o.Speed
 					task.delay(math.max(0, eta - lead), function()
-						if not hit[char] then Deflect.Warn(char, o.Deflect, math.min(eta, lead) + 0.15) end
+						if not hit[char] then ctx.Warn(char, o.Deflect, math.min(eta, lead) + 0.15) end
 					end)
 				end
 			end
@@ -190,6 +201,15 @@ function api.Context(actor, name)
 		local face = Vector3.new(r.Position.X, spot.Y, r.Position.Z)
 		return (face - spot).Magnitude > 0.1 and CFrame.lookAt(spot, face) or CFrame.new(spot)
 	end
+	 -- fire left burning on the ground: straight through Encounter.Damage like the arena's ruin fires (no hit checks -
+	 -- standing in it always burns). It is status damage, so the difficulties' PostHitGrace can't eat the ticks; amount
+	function ctx.Burn(char, amount)
+		if not core.Alive(char) then
+			return 0
+		end
+		local ok, dealt = pcall(Encounter.Damage, char, amount or Config.ArenaFireDamage or 50, actor, nil, { Skill = name, IsStatusDamage = true })
+		return ok and dealt or 0
+	end
 	function ctx.Hit(char, amount, origin, options)
 		options = options or {}
 		if not core.CanHit(char, origin or ctx.Root.Position) then
@@ -201,8 +221,32 @@ function api.Context(actor, name)
 		end
 		return dealt
 	end
+	 -- a hit that goes through dash i-frames and ignores the target's defense (P5EnhancedJumpKick's kick); walls still stop it
+	function ctx.PierceHit(char, amount, origin, options)
+		options = options or {}
+		origin = origin or ctx.Root.Position
+		if not core.Alive(char) or not Encounter.CanReceiveHit(char, false, true) then
+			return 0
+		end
+		local ok, params = pcall(core.Params, char)
+		if ok and params and workspace:Raycast(origin, char.HumanoidRootPart.Position - origin, params) then
+			return 0
+		end
+		local dealt = Encounter.Damage(char, amount, actor, nil, { Skill = name, IgnoreIFrames = true, IgnoreDefense = true, BreaksBlock = options.BreaksBlock }) or 0
+		if dealt > 0 and options.Knock then
+			Runtime.Knockback(actor, char, options.Knock.Direction or Vector3.zAxis, options.Knock)
+		end
+		return dealt
+	end
 	 -- a hit that takes whole lives (the target dies and pays `lives`), like the Hyper-lastic Beam
-	function ctx.Execute(char, lives, origin)
+	 -- o.IgnoreIFrames: the dash, class invulnerability and Phasing can't save them (the Tearer beams)
+	function ctx.Execute(char, lives, origin, o)
+		if o and o.IgnoreIFrames then
+			if not core.Alive(char) then
+				return false
+			end
+			return Encounter.ExecuteHit(char, lives, name, nil, { IgnoreIFrames = true })
+		end
 		if not core.CanHit(char, origin or ctx.Root.Position) then
 			return false
 		end
@@ -225,7 +269,7 @@ function api.Context(actor, name)
 				if along > 0 and along <= o.Range and (rel - dir * along).Magnitude <= o.Radius + 5 then
 					local eta = along / o.Speed
 					task.delay(math.max(0, eta - lead), function()
-						if not hit[char] then Deflect.Warn(char, o.Deflect, math.min(eta, lead) + 0.15) end
+						if not hit[char] then ctx.Warn(char, o.Deflect, math.min(eta, lead) + 0.15) end
 					end)
 				end
 			end
@@ -290,8 +334,9 @@ function api.Context(actor, name)
 					local flat = Vector3.new(rel.X, 0, rel.Z)
 					if flat.Magnitude >= lo - o.Width and flat.Magnitude <= hi + o.Width and rel.Y <= (o.Height or 4) + 3.5 then
 						hit[char] = true
-						local knock = o.Knock and table.clone(o.Knock)
-						if knock then knock.Direction = flat.Magnitude > 0.1 and flat or Vector3.zAxis end
+						 -- every shockwave: a small shove and never a stun (the push lasts a blink, whatever the caller asked for)
+						local knock = { Direction = flat.Magnitude > 0.1 and flat or Vector3.zAxis, Speed = 22, Lift = 6,
+							Duration = 0.12, Sustain = 0.02, AllowPlayerControl = false, ContainsArena = true }
 						ctx.Hit(char, o.Damage, center + Vector3.new(0, 2, 0), { Knock = knock })
 					end
 				end
@@ -334,6 +379,230 @@ function api.Context(actor, name)
 			end
 		end
 		return true
+	end
+ -- seize a player: anchored and locked (no moving, dashing or attacking) until Release; Move places them
+	local Status = require(B.Combat.StatusEffectService)
+	local Time = require(B.Mechanics.Time.TimeEffectController)
+	local seized = {}
+	 -- force: take them even through i-frames (the Gravity Crush's orb)
+	function ctx.Seize(char, force)
+		if seized[char] or not (force and core.Alive(char) or core.CanHit(char, char.HumanoidRootPart.Position)) then
+			return false
+		end
+		local player = Players:GetPlayerFromCharacter(char)
+		local root = char.HumanoidRootPart
+		seized[char] = { Player = player, Root = root, Anchored = root.Anchored, Lock = { TransitionControl = true } }
+		pcall(function() require(B.Players.R6DashService).Cancel(player, name) end)
+		Status.SetLocked(player, seized[char].Lock, true)
+		Time.SetAnchored(root, true)
+		return true
+	end
+	function ctx.Move(char, frame)
+		local record = seized[char]
+		if record and record.Root.Parent then
+			record.Root.CFrame = frame
+		end
+	end
+	function ctx.Release(char)
+		local record = seized[char]
+		if not record then
+			return
+		end
+		seized[char] = nil
+		Status.SetLocked(record.Player, record.Lock, false)
+		record.Lock.closed = true
+		if record.Root.Parent then
+			Time.SetAnchored(record.Root, record.Anchored)
+		end
+	end
+	function ctx.ReleaseAll()
+		for char in pairs(seized) do
+			ctx.Release(char)
+		end
+	end
+	function ctx.Seized()
+		local list = {}
+		for char in pairs(seized) do
+			list[#list + 1] = char
+		end
+		return list
+	end
+	 -- root HIM to the spot for a cast where he stands and calls (Sword Dancer, Falling Star): anchored, so he can't walk, slide or be
+	 -- shoved until Unplant. Always pair it with Unplant when the cast ends, however it ends
+	local planted
+	function ctx.Plant()
+		if planted == nil and ctx.Root.Parent then
+			planted = ctx.Root.Anchored and not Time.IsStopped(actor)  -- (a time stop anchors everything: that is not his own lock)
+			ctx.Root.AssemblyLinearVelocity = Vector3.zero
+			Time.SetAnchored(ctx.Root, true)
+		end
+	end
+	function ctx.Unplant()
+		if planted ~= nil then
+			if ctx.Root.Parent then
+				Time.SetAnchored(ctx.Root, planted)
+			end
+			planted = nil
+		end
+	end
+	 -- the arena's middle, on the floor
+	function ctx.Center()
+		return ctx.Ground(Vector3.new(0, 20, 0))
+	end
+	function ctx.Fx(effect, stage, data)
+		data = data or {}
+		data.Boss = actor
+		Net.Send(effect, stage, data)
+	end
+	 -- a tall wall of force rolling out in a ring from `center` (P5Arsenal.RampageWall draws it): it can't be jumped -
+	 -- HOLD E as it reaches you (the shield cue comes up) or dash through it. o: Speed, Range, Height, Width, Damage, Knock
+	function ctx.WallWave(center, o)
+		ctx.Fx("P5Arsenal", "RampageWall", { Pos = center, Speed = o.Speed, Range = o.Range, Height = o.Height })
+		local cast = Effects.NewCast(actor, "P5WallWave", o.Range / o.Speed + 0.5)
+		cast.PersistsThroughEmitterStun = true
+		local hit, cued, radius = {}, {}, 0
+		local lead = (Config.DeflectHoldTime or 0.2) + 0.45
+		cast:Step(function(dt)
+			if actor:GetAttribute("Phase") ~= 5 then
+				cast:Dispose()
+				return false
+			end
+			local last = radius
+			radius = math.min(radius + o.Speed * dt, o.Range)
+			for _, char in ipairs(ctx.Targets()) do
+				if not hit[char] then
+					local rel = char.HumanoidRootPart.Position - center
+					local d = Vector3.new(rel.X, 0, rel.Z).Magnitude
+					if not cued[char] and d > radius and d - radius <= o.Speed * lead and d <= o.Range then
+						cued[char] = true
+						ctx.Warn(char, "Hold", (d - radius) / o.Speed + 0.1)
+					end
+					if d >= last - (o.Width or 6) and d <= radius + 1 and rel.Y <= (o.Height or 16) then
+						hit[char] = true
+						if o.Lethal then
+							if not ctx.Deflected(char, "Hold") then ctx.Execute(char, o.Lethal, center) end
+						elseif not ctx.Deflected(char, "Hold") then
+							local knock = o.Knock and table.clone(o.Knock)
+							if knock then knock.Direction = Vector3.new(rel.X, 0, rel.Z) end
+							ctx.Hit(char, o.Damage or 50, center + Vector3.new(0, 2, 0), { Knock = knock })
+						end
+					end
+				end
+			end
+			if radius >= o.Range then
+				cast:Dispose()
+				return false
+			end
+			return true
+		end)
+		return cast
+	end
+	 -- an explosion at `pos`: the P5Arsenal blast drawn (Look "Gold" by default, "Red" for the judgement blast) and
+	 -- everyone within `radius` (and under `height`) hit and thrown out
+	function ctx.Explode(pos, radius, damage, o)
+		o = o or {}
+		ctx.Fx("P5Arsenal", o.Look == "Red" and "JudgementBoom" or "RampageBlast", { Pos = pos, Radius = radius })
+		core.ScreenEffect("Shake", { Origin = pos, Radius = radius * 8, Intensity = o.Shake or 1.2, Duration = 0.4 })
+		local count = 0
+		for _, char in ipairs(ctx.Targets()) do
+			local rel = char.HumanoidRootPart.Position - pos
+			local flat = Vector3.new(rel.X, 0, rel.Z)
+			if flat.Magnitude <= radius and rel.Y <= (o.Height or 18) and not (o.Deflect and ctx.Deflected(char, o.Deflect)) then
+				if ctx.Hit(char, damage, pos + Vector3.new(0, 2, 0), { BreaksBlock = o.BreaksBlock, Knock = { Direction = flat.Magnitude > 0.1 and flat or Vector3.zAxis,
+					Speed = o.Push or 45, Lift = o.Lift or 22, Duration = 0.3, Sustain = 0.1, AllowPlayerControl = false, ContainsArena = true } }) > 0 then
+					count += 1
+				end
+			end
+		end
+		return count
+	end
+	 -- an INSTANT pull (The Wind, Great Wind): every player within o.Range of center() is dragged in until they are o.Distance
+	 -- from it, arriving within o.Time seconds, whatever class or dash they have (their root is placed, not pushed) - and kept
+	 -- there while Step(dt) is called each frame. Place it before the cut / the blast, not instead of it.
+	function ctx.Pull(center, o)
+		local pull = {}
+		local from, elapsed, last = {}, 0, os.clock()
+		local centerNow = center()
+		for _, char in ipairs(ctx.Targets()) do
+			local p = char.HumanoidRootPart.Position
+			local rel = (p - centerNow) * Vector3.new(1, 0, 1)
+			if rel.Magnitude <= o.Range and rel.Magnitude > o.Distance then
+				from[char] = p
+			end
+		end
+		function pull.Step(dt)
+			dt = dt or math.clamp(os.clock() - last, 0, 0.1)
+			last = os.clock()
+			elapsed += dt
+			local c0 = center()
+			local k = math.clamp(elapsed / math.max(o.Time or 0.2, 0.03), 0, 1)
+			local ease = 1 - (1 - k) ^ 2
+			for _, char in ipairs(ctx.Targets()) do
+				local root = char.HumanoidRootPart
+				local rel = (root.Position - c0) * Vector3.new(1, 0, 1)
+				local start = from[char]
+				if start then
+					local r0 = (start - c0) * Vector3.new(1, 0, 1)
+					local dir = r0.Magnitude > 0.1 and r0.Unit or Vector3.zAxis
+					local goal = Vector3.new(c0.X + dir.X * o.Distance, root.Position.Y, c0.Z + dir.Z * o.Distance)
+					local p = Vector3.new(start.X, root.Position.Y, start.Z):Lerp(goal, ease)
+					root.CFrame = CFrame.new(p) * root.CFrame.Rotation
+					root.AssemblyLinearVelocity = Vector3.zero
+					if k >= 1 then from[char] = nil end
+				elseif not o.Once and rel.Magnitude <= o.Range and rel.Magnitude > o.Distance + 2 then  -- held in (o.Once: one snap, then free): no walking back out
+					local dir = rel.Unit
+					root.CFrame = CFrame.new(c0.X + dir.X * o.Distance, root.Position.Y, c0.Z + dir.Z * o.Distance) * root.CFrame.Rotation
+					root.AssemblyLinearVelocity = Vector3.zero
+				end
+			end
+		end
+		pull.Update = function() pull.Step() end
+		function pull.Dispose() end
+		return pull
+	end
+	 -- a pull toward `center()` (a function, so it can follow him) for everyone within o.Range: a LinearVelocity in the
+	 -- ground plane with a force no class can out-run (o.Speed, o.Accel). Returns the cast; Update() each frame,
+	function ctx.PullField(o)
+		local cast = Effects.NewCast(actor, "P5PullField", o.Time or 10)
+		cast.PersistsThroughEmitterStun = true
+		local records = {}
+		local field = { Cast = cast }
+		function field.Update()
+			local center = o.Center()
+			for _, char in ipairs(ctx.Targets()) do
+				local r = char.HumanoidRootPart
+				local rec = records[char]
+				if not rec then
+					local at = cast:Add(Instance.new("Attachment"))
+					at.Name = "P5PullAttachment"
+					at.Parent = r
+					local f = cast:Add(Instance.new("LinearVelocity"))
+					f.Name = "P5Pull" f.Attachment0 = at f.RelativeTo = Enum.ActuatorRelativeTo.World
+					f.VelocityConstraintMode = Enum.VelocityConstraintMode.Plane
+					f.PrimaryTangentAxis = Vector3.xAxis f.SecondaryTangentAxis = Vector3.zAxis
+					f.ForceLimitsEnabled = true f.ForceLimitMode = Enum.ForceLimitMode.PerAxis
+					f.MaxPlanarAxesForce = Vector2.zero f.PlaneVelocity = Vector2.zero f.Enabled = false f.Parent = r
+					rec = { Force = f }
+					records[char] = rec
+				end
+				local d = (center - r.Position) * Vector3.new(1, 0, 1)
+				local mass = r.AssemblyMass
+				if d.Magnitude < (o.Stop or 9) or d.Magnitude > o.Range or mass <= 0 or not core.CanHit(char, center) then
+					rec.Force.Enabled = false
+				else
+					 -- full speed far away, easing off over the last stretch so a fast pull stops at o.Stop instead of flying past it
+					local gap = d.Magnitude - (o.Stop or 9)
+					local v = d.Unit * math.min(o.Speed or 45, math.max(gap * (o.Ease or 10), 6))
+					rec.Force.PlaneVelocity = Vector2.new(v.X, v.Z)
+					rec.Force.MaxPlanarAxesForce = Vector2.one * (mass * (o.Accel or 2500))
+					rec.Force.Enabled = true
+				end
+			end
+		end
+		function field.Dispose()
+			cast:Dispose()
+		end
+		return field
 	end
 	 -- inside a forward arc of the boss (a horizontal slash)
 	function ctx.InArc(frame, position, radius, halfAngle, height)

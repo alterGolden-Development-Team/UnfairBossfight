@@ -18,7 +18,31 @@ function K.Start(S, player, char, st)
   st.Data.LifeTimer = 0
 end
 
+-- removes one debuff from an ally (nothing happens when they have none)
+function K.Cleanse(S, ally)
+  local ok, name = pcall(function()
+    return require(script:FindFirstAncestor("BossSystem").Combat.StatusEffectService).RemoveOneDebuff(ally)
+  end)
+  if ok and name then
+    local p = ally.HumanoidRootPart.Position
+    S.FX.HQ.Glint(p + Vector3.new(0, 1, 0), PALE, 4, 0.3)
+    S.FX.Text(p + Vector3.new(0, 4, 0), "CLEANSED", GREEN)
+    return true
+  end
+  return false
+end
+
 function K.Step(S, player, char, st, dt)
+  st.Data.CleanseTimer = (st.Data.CleanseTimer or 0) + dt
+  if st.Data.CleanseTimer >= D.AuraCleanseEvery then
+    st.Data.CleanseTimer = 0
+    local auraRoot = char:FindFirstChild("HumanoidRootPart")
+    if auraRoot then
+      for _, ally in ipairs(S.Allies(true)) do
+        if (ally.HumanoidRootPart.Position - auraRoot.Position).Magnitude <= D.AuraRadius then K.Cleanse(S, ally) end
+      end
+    end
+  end
    
   local root = char.HumanoidRootPart
   for _, ally in ipairs(S.Allies(true)) do
@@ -123,6 +147,7 @@ function K.Action(S, player, char, st, key, phase, aim)
     S.Sound(char, "QTESuccess")
     local target = S.AimedAlly(char, aim, D.F.Range) or char
     heal(S, target, D.F.Heal)
+    K.Cleanse(S, target)
     S.StatBuff(target, "Healing", D.F.Buff, { StaminaRegen = D.F.BuffStamina, Attack = D.F.BuffAttack })
     S.FX.Beam(C.Hand(char), target.HumanoidRootPart.Position, GREEN, 0.5, 0.4)
     S.FX.Flash(target.HumanoidRootPart.Position, GREEN, 8, 0.4)

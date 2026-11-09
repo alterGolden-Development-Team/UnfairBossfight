@@ -144,6 +144,18 @@ function api.For(actor, name)
    end
   end
  end
+ -- pattern (it does nothing on any other difficulty). Outermost wrapper, so it sees the attack's final result.
+ if value.Combo and metadata and metadata.NativePhase == 5 and not metadata.Passive then
+  local baseCombo = value.Combo
+  value.Combo = function(...)
+   local result = table.pack(baseCombo(...))
+   if result[1] ~= false then
+    local ok, hell = pcall(require, BossSystem.Combat.P5Hellaven)
+    if ok and hell.Has(name) then pcall(hell.After, actor, name, (...)) end
+   end
+   return table.unpack(result, 1, result.n)
+  end
+ end
  record[name] = value
 	return value
 end

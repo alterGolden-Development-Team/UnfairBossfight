@@ -105,13 +105,13 @@ function BUILD.Time(folder, root)
 	part(folder, root, "ClockWeight", Vector3.new(0.75, 0.75, 0.75), CFrame.new(0, 0, 0.75), GOLD, FOIL, 0, Enum.PartType.Ball)
 	part(folder, root, "ClockGear", Vector3.new(0.25, 1.5, 1.5), CFrame.new(0, 0, -0.45) * CFrame.Angles(0, math.pi / 2, 0), GOLD, FOIL, 0, Enum.PartType.Cylinder)
 	part(folder, root, "ClockHub", Vector3.new(0.3, 0.55, 0.55), CFrame.new(0, 0, -0.45) * CFrame.Angles(0, math.pi / 2, 0), SHINE, NEON, 0, Enum.PartType.Cylinder)
-	for i = 0, 7 do  -- the gear's teeth
+	for i = 0, 7 do
 		local a = i / 8 * math.pi * 2
 		part(folder, root, "ClockTooth", Vector3.new(0.22, 0.28, 0.28), CFrame.new(0, math.cos(a) * 0.82, -0.45 + math.sin(a) * 0.82), GOLD, FOIL)
 	end
 	local hand = part(folder, root, "ClockBlade", Vector3.new(0.16, 0.42, 5.6), CFrame.new(0, 0, -3.5), GOLD, FOIL)
 	part(folder, root, "ClockLine", Vector3.new(0.18, 0.1, 5.4), CFrame.new(0, 0, -3.5), SHINE, NEON)
-	for _, s in ipairs({ -1, 1 }) do  -- the arrowhead
+	for _, s in ipairs({ -1, 1 }) do
 		part(folder, root, "ClockTip", Vector3.new(0.16, 0.5, 1.3), CFrame.new(0, s * 0.3, -6.5) * CFrame.Angles(s * math.rad(28), 0, 0), GOLD, FOIL)
 	end
 	sparkles(hand, GOLD, 12)

@@ -12,6 +12,9 @@ local oldGold = Color3.fromRGB(145, 130, 77)
 local moss = Color3.fromRGB(72, 92, 55)
 local cached, activation, holdStep, starStep
 local holds, connections, tweens = {}, {}, {}
+local buildInProgress = false
+local yieldDuringBuild = false
+local buildPartCount = 0
 local sight = RaycastParams.new()
 sight.FilterType = Enum.RaycastFilterType.Exclude
 sight.RespectCanCollide = true
@@ -29,6 +32,12 @@ local function part(parent, name, size, frame, color, material, collide, classNa
 	p.TopSurface = Enum.SurfaceType.Smooth
 	p.BottomSurface = Enum.SurfaceType.Smooth
 	p.Parent = parent
+	if yieldDuringBuild then
+		buildPartCount += 1
+		if buildPartCount % 32 == 0 then
+			task.wait()
+		end
+	end
 	return p
 end
 local function model(parent, name)
@@ -368,7 +377,7 @@ function api.Decorate()
 	decorate(arena)
 	return arena:FindFirstChild("ChronicleCourt")
 end
-function api.Build()
+local function buildInternal()
 	local arena = workspace:FindFirstChild("GoldenGrasslandArena")
 	assert(arena and arena:FindFirstChild("Grassland"), "Production arena floor is missing")
 	decorate(arena)
@@ -969,9 +978,29 @@ function api.Build()
 	cached = read(arena)
 	startStarMotion(cached)
 	if rebind then
-		api.BindActivation(activation)
+		local callback = activation
+		task.defer(function()
+			if callback then
+				api.BindActivation(callback)
+			end
+		end)
 	end
 	return cached
+end
+function api.Build()
+	while buildInProgress do
+		task.wait()
+	end
+	buildInProgress = true
+	yieldDuringBuild = true
+	buildPartCount = 0
+	local ok, result = xpcall(buildInternal, debug.traceback)
+	yieldDuringBuild = false
+	buildInProgress = false
+	if not ok then
+		error(result, 0)
+	end
+	return result
 end
 api.Ensure = api.Build
 function api.Contains(point, margin)

@@ -2,6 +2,7 @@ local B = script:FindFirstAncestor("BossSystem")
 local Strike = require(B.Attacks.Shared.P5StrikeCore)
 local Time = require(B.Mechanics.Time.TimeEffectController)
 local Encounter = require(B.Players.PlayerEncounter)
+local Difficulty = require(game.ReplicatedStorage.BossShared.Config.DifficultyConfig)
 local S = require(script.Parent.Style)
 
 local WIND = { RightShoulder = { 120, 0, 40 }, RightElbow = { 30, 0, 0 }, LeftShoulder = { 120, 0, -40 }, LeftElbow = { 30, 0, 0 },
@@ -30,6 +31,8 @@ return function(actor)
 			if not c.Wait(tell) then
 				return false
 			end
+			 -- the clock-hand shots fly far (ShotRange) and at the difficulty's ProjectileSpeed
+			local shotSpeed = S.ShotSpeed * (Difficulty.Get(actor).ProjectileSpeed or 1)
 			pcall(Time.AccelerateBoss, actor, S.Fast)
 			for _, char in ipairs(c.Targets()) do
 				pcall(Time.ApplyDeceleration, char, S.Slow)
@@ -44,7 +47,7 @@ return function(actor)
 					local to = char.HumanoidRootPart.Position - origin
 					for shot = 1, S.Shots do
 						local yaw = math.rad((shot - (S.Shots + 1) / 2) * S.Spread)
-						c.Bolt(origin, CFrame.Angles(0, yaw, 0):VectorToWorldSpace(to), { Speed = S.ShotSpeed, Range = S.ShotRange,
+						c.Bolt(origin, CFrame.Angles(0, yaw, 0):VectorToWorldSpace(to), { Speed = shotSpeed, Range = S.ShotRange,
 							Radius = S.ShotRadius, Damage = S.ShotDamage, Pierce = true, Deflect = "Tap", Look = "Gold" })
 					end
 				end
@@ -53,7 +56,7 @@ return function(actor)
 				end
 			end
 			actor:SetAttribute("P5Overclocks", (actor:GetAttribute("P5Overclocks") or 0) + 1)
-			return c.Wait(0.3)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

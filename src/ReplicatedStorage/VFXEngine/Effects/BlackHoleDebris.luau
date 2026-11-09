@@ -94,19 +94,16 @@ function B.Decorate(E,root)
     color={{0,WHITE},{.4,PALE},{1,VIOLET}},life={.6,1.1},speed={110,200},spread=180,drag=2.5},170)
    E.Emit(a,{tex="star.twinkle",size={{0,2.4},{1,0}},life={1.2,2.2},speed={20,50},spread=180,drag=2,color={{0,WHITE},{1,VIOLET}}},70)
    E.Light(g,a,PALE,170,16,.9)
-    -- light pillar through the hole
    local gy=A("GroundY",at.Y-14)
    local ga=E.Anchor(g,CFrame.new(at.X,gy+.5,at.Z))
    local top=E.Anchor(g,CFrame.new(at.X,gy+320,at.Z))
    local p0,p1=E.Attach(ga),E.Attach(top)
    local pil=E.Beam(g,p0,p1,{tex="beam.core",width=core*1.6,length=1,mode=Enum.TextureMode.Stretch,color={{0,WHITE},{1,VIOLET}},alpha={{0,0},{.7,.3},{1,1}},brightness=4,segments=2})
    E.Tween(pil,.8,{Width0=0,Width1=0},Enum.EasingStyle.Quint,Enum.EasingDirection.In)
-    -- ground shock and smoke
    E.Sprite(ga,{tex="ring.thick",orient="flat",size={{0,foot*2},{1,pull*2.6}},alpha={{0,0},{1,1}},color=VIOLET},1)
    E.Sprite(ga,{tex="ring.multi",orient="flat",size={{0,foot},{1,pull*2}},alpha={{0,0},{.5,.25},{1,1}},color=PALE},.9)
    E.Emit(ga,{tex="smoke",light=0,color=Color3.fromRGB(60,44,90),size={{0,5},{1,18}},alpha={{0,1},{.15,.45},{1,1}},
     life={1.4,2.2},speed={50,95},spread=85,dir=Enum.NormalId.Top,drag=3,rot={0,360}},34)
-    -- chunks flung back out
    for i=1,22 do
     local p=chunk(at,1+math.random()*2.6)
     p.CFrame=CFrame.new(at)
@@ -152,7 +149,7 @@ function B.Decorate(E,root)
     local a=arm.Phase+u*9
     arm.P.CFrame=CFrame.new(c+Vector3.new(math.cos(a)*rad,math.sin(a*.7+arm.Tilt)*rad*.35,math.sin(a)*rad))
    end
-   if u*6>rings then  -- pulses collapsing inward
+   if u*6>rings then
     rings+=1
     E.Sprite(hand,{tex="ring.inverse",size={{0,70},{1,2}},alpha={{0,.75},{1,.2}},color=VIOLET},.35)
    end
@@ -198,7 +195,7 @@ function B.Decorate(E,root)
     if r.P.Parent then r.P:Destroy()end
     table.remove(rocks,i)
    else
-    local e=u*u  -- slow lift, then sucked in
+    local e=u*u
     local swirl=r.Ang+u*math.pi*2.2
     local rad=r.Dist*(1-e)
     local p=Vector3.new(pos.X+math.cos(swirl)*rad,r.From.Y+(pos.Y-r.From.Y)*e,pos.Z+math.sin(swirl)*rad)

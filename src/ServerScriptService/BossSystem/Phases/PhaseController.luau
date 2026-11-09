@@ -155,7 +155,7 @@ local function shieldGatePerch(actor, ground)
     then
       local position = hit.Position + Vector3.new(0, standing + 0.12, 0)
       local center = bounds.Frame.Position
-      local direction = Vector3.new(center.X - position.X, 0, center.Z - position.Z)  -- face the arena
+      local direction = Vector3.new(center.X - position.X, 0, center.Z - position.Z)
       if direction.Magnitude < 0.01 then
         direction = Vector3.new(0, 0, -1)
       end
@@ -1100,7 +1100,7 @@ function api.BeginPhase45(actor)
   Effects.CancelOwner(actor, "Phase 4.5")
   Status.ClearProjectileDarknessFor(actor)
   clearShieldGateAttack(actor)
-  actor:SetAttribute("AttackState", "Phase 4.5: crimson bloom")
+  actor:SetAttribute("AttackState", "Phase 4.5: golden bloom")
   local root = actor.HumanoidRootPart
   local frame = root.CFrame
   local lines = Story.Phase45 or {}
@@ -1448,6 +1448,54 @@ function api.Recover(actor)
   return false
 end
 
+-- the encounter is won: everything of his stops, the selected difficulty's badge goes out and the victory screen comes
+ -- up. A death plays his death scene first; the Phase 5 finale (Combat/P5Finale) has already sent him off through his
+ -- portal, so its sword claim passes skipDeath
+function api.Defeat(actor, skipDeath)
+  if actor:GetAttribute("BossDefeatPresentationStarted") then
+    return false
+  end
+  actor:SetAttribute("BossDefeatPresentationStarted", true)
+  actor:SetAttribute("EncounterEnded", true)
+  Rewards.AwardEncounter(actor, skipDeath)
+  Clones.CancelAll(actor)
+  QTE.CancelForActor(actor, "Boss ended")
+  Phase25.Cancel(actor, "Boss ended")
+  Phase3Intro.Cancel(actor, "Boss ended")
+  Phase3Intro.ClearVisual(actor)
+  actor:SetAttribute("AIEnabled", false)
+  actor:SetAttribute("Invulnerable", true)
+  actor:SetAttribute("ParryActive", false)
+  actor:SetAttribute("PhaseGeneration", (actor:GetAttribute("PhaseGeneration") or 0) + 1)
+  actor:SetAttribute("MovementRevision", (actor:GetAttribute("MovementRevision") or 0) + 1)
+  require(BossSystem.Combat.PassiveController).Stop(actor)
+  require(BossSystem.Mechanics.Time.TimeEffectController).ClearOwner(actor)
+  Effects.CancelOwner(actor, "Boss defeated")
+  Registry.Release(actor)
+  require(BossSystem.Boss.BossLocomotion).Release(actor)
+  actor:SetAttribute("AttackInProgress", false)
+  actor:SetAttribute("ExecutionLocked", false)
+  actor:SetAttribute("PhaseTransitionInProgress", false)
+  actor:SetAttribute("AttackState", "Defeated")
+  local function victory()
+    local result = Difficulty.Victory(actor)
+    require(BossSystem.Combat.DamageTracker).Flush()
+    workspace:SetAttribute("BossVictoryTitle", result.Title)
+    workspace:SetAttribute("BossVictorySubtitle", result.Subtitle)
+    workspace:SetAttribute("BossVictoryDifficulty", Difficulty.Id(actor))
+    workspace:SetAttribute("BossEncounterWon", true)
+    local remote = game.ReplicatedStorage:FindFirstChild("BossCombatEffects")
+    if remote then
+      remote:FireAllClients("BossVictory",{Title=result.Title,Subtitle=result.Subtitle,Difficulty=actor:GetAttribute("EncounterDifficulty")})
+    end
+  end
+  if skipDeath then
+    victory()
+  else
+    require(BossSystem.Presentation.CharacterEffects).BossDeath(actor, victory)
+  end
+  return true
+end
 function api.Start(actor)
   if records[actor] then
     return
@@ -1468,43 +1516,7 @@ function api.Start(actor)
   end
   local function healthChanged()
     if actor.Humanoid.Health <= 0 then
-      if actor:GetAttribute("BossDefeatPresentationStarted") then
-        return
-      end
-      actor:SetAttribute("BossDefeatPresentationStarted", true)
-      actor:SetAttribute("EncounterEnded", true)
-      Rewards.AwardEncounter(actor)
-      Clones.CancelAll(actor)
-      QTE.CancelForActor(actor, "Boss ended")
-      Phase25.Cancel(actor, "Boss ended")
-      Phase3Intro.Cancel(actor, "Boss ended")
-      Phase3Intro.ClearVisual(actor)
-      actor:SetAttribute("AIEnabled", false)
-      actor:SetAttribute("Invulnerable", true)
-      actor:SetAttribute("ParryActive", false)
-      actor:SetAttribute("PhaseGeneration", (actor:GetAttribute("PhaseGeneration") or 0) + 1)
-      actor:SetAttribute("MovementRevision", (actor:GetAttribute("MovementRevision") or 0) + 1)
-      require(BossSystem.Combat.PassiveController).Stop(actor)
-      require(BossSystem.Mechanics.Time.TimeEffectController).ClearOwner(actor)
-      Effects.CancelOwner(actor, "Boss defeated")
-      Registry.Release(actor)
-      require(BossSystem.Boss.BossLocomotion).Release(actor)
-      actor:SetAttribute("AttackInProgress", false)
-      actor:SetAttribute("ExecutionLocked", false)
-      actor:SetAttribute("PhaseTransitionInProgress", false)
-      actor:SetAttribute("AttackState", "Defeated")
-      require(BossSystem.Presentation.CharacterEffects).BossDeath(actor, function()
-        local victory = Difficulty.Victory(actor)
-        require(BossSystem.Combat.DamageTracker).Flush()
-        workspace:SetAttribute("BossVictoryTitle", victory.Title)
-        workspace:SetAttribute("BossVictorySubtitle", victory.Subtitle)
-        workspace:SetAttribute("BossVictoryDifficulty", Difficulty.Id(actor))
-        workspace:SetAttribute("BossEncounterWon", true)
-        local remote = game.ReplicatedStorage:FindFirstChild("BossCombatEffects")
-        if remote then
-          remote:FireAllClients("BossVictory",{Title=victory.Title,Subtitle=victory.Subtitle,Difficulty=actor:GetAttribute("EncounterDifficulty")})
-        end
-      end)
+      api.Defeat(actor)
     elseif
       actor:GetAttribute("ShieldBroken")
       and actor.Humanoid.Health <= Config.Phase2HealthThreshold

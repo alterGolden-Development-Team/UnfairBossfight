@@ -17,7 +17,8 @@ return table.freeze({
   
   
   -- pull: the acceleration cap must beat the humanoid's grip or nobody moves
- PullRange=300, PullStart=12, PullEnd=26, PullAccelerationLimit=1600, PullSpeedLimit=26, SettleRadius=4,
+ PullRange=300, PullStart=12, PullEnd=26, PullAccelerationLimit=4200, PullSpeedLimit=40,
+ SettleRadius=4,
  PullSwirl=0.04,          
  PulseFloor=0.8,         
  PulseSharpness=3.2,     

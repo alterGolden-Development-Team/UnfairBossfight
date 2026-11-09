@@ -5,6 +5,8 @@
  -- fight burns the world outside the arena once the scythe is done (Encounter/ArenaRuin).
 return table.freeze({
 	Name = "P5WildHunt(Ultimate)", Cooldown = 60,
+	 -- every attack of the hunt begins with a blink next to the target: how far from them he lands
+	BlinkDistance = 12, LungeFrom = 18, SliceFrom = 13, BurstFrom = 8,
 	LungeWindup = 0.35, LungeTime = 0.2,  -- each lunge is Tap-deflectable; the burst is Hold-deflectable
 	BurstWindup = 0.75, LungeOvershoot = 10, LungeRadius = 6, LungeDamage = 35, LungePause = 0.15,
 	Slices = 12, SliceGap = 0.1, SliceSpeed = 420, SliceRange = 220, SliceWidth = 42, SliceSpread = 7,

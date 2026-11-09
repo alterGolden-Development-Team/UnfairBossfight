@@ -11,9 +11,9 @@ local RunService = game:GetService("RunService")
 local Quality=require(game.ReplicatedStorage.BossShared.Presentation.VisualQuality)
 
 local TAG = "TimeBulletVisual"
-local TIME = Color3.fromRGB(131, 232, 255)
+local TIME = Color3.fromRGB(255, 224, 70)
 local WHITE = Color3.fromRGB(255, 253, 188)
-local FROZEN = Color3.fromRGB(122, 160, 222)
+local FROZEN = Color3.fromRGB(214, 190, 110)
 local BASE_SIZE = 3.6  
 
 local TARGET_SPEED = { Summon = 0.6, Flying = 1, Cue = -3.2, Frozen = 0 }
@@ -75,7 +75,8 @@ end
 local visualElapsed=0
 step = function(dt)
  visualElapsed+=dt
- if visualElapsed<Quality.Get().Interval then return end
+ if visualElapsed<math.max(Quality.Get().Interval,1/30) then return end
+ local camPos=workspace.CurrentCamera and workspace.CurrentCamera.CFrame.Position
  dt=visualElapsed
  visualElapsed=0
 	local now = os.clock()
@@ -84,7 +85,9 @@ step = function(dt)
 			unbind(body)
 		else
 			local gui = data.Gui
-			if (not gui or not gui.Parent) and not resolve(body, data) then
+			if camPos and body:IsA("BasePart") and (body.Position-camPos).Magnitude>260 then
+				-- (too far to read: leave it as it is)
+			elseif (not gui or not gui.Parent) and not resolve(body, data) then
 				data.Gui = nil
 			else
 				local state = body:GetAttribute("TimeState") or "Summon"

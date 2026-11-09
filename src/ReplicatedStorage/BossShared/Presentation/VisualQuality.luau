@@ -52,10 +52,10 @@ if player then
  Run.Heartbeat:Connect(function(dt)
   if api.Mode()~="Auto" or dt>1 then return end
   sampled+=dt; frames+=1
-  if sampled<2 then return end
+  if sampled<1.5 then return end
   local average=sampled/math.max(frames,1)
   sampled=0; frames=0
-  if average>1/28 and autoTier>1 then autoTier-=1; refresh(false)
+  if average>1/40 and autoTier>1 then autoTier-=1; refresh(false)
   elseif average<1/55 and os.clock()-lastChange>20 and autoTier<baseTier() then autoTier+=1; refresh(false) end
  end)
 end

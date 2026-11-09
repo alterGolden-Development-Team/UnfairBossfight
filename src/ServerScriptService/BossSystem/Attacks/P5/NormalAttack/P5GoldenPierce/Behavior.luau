@@ -78,12 +78,12 @@ return function(actor)
 			end
 			if not c.Wait(math.max(S.BeamTime - S.Stagger, 0.1)) then return false end
 			if core.Alive(victim) then
-				fire(center, S.FinalRadius, S.FinalTime, S.FinalDamage)  -- the big circle's own beam
+				fire(center, S.FinalRadius, S.FinalTime, S.FinalDamage)
 				core.ScreenEffect("Shake", { Origin = center, Radius = 140, Intensity = 0.6, Duration = S.FinalTime })
 				if not c.Wait(S.FinalTime) then return false end
 			end
 			actor:SetAttribute("P5GoldenPierces", (actor:GetAttribute("P5GoldenPierces") or 0) + 1)
-			return c.Wait(0.15)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

@@ -8,11 +8,12 @@ local Geometry=require(game.ReplicatedStorage.BossShared.Classes.D20Geometry)
 local rng=Random.new()
 local GOLD=D.Color
 local K={}
-local function lose(S,char,st)
+local function lose(S,char,st,fraction)
  local h=char:FindFirstChildOfClass("Humanoid")
- if h and h.Health>0 then h.Health=1 st.LastDamaged=os.clock() char:SetAttribute("LastHealthDamageAt",S.Now())end
+ if h and h.Health>0 then h.Health=fraction and math.max(1,math.floor(h.MaxHealth*fraction)) or 1 st.LastDamaged=os.clock() char:SetAttribute("LastHealthDamageAt",S.Now())end
 end
 function K.Start(S,player,char,st)
+ st.Data.Luck=0 char:SetAttribute("GamblerLuck",0)
  st.Data.TrustedAmmo=0 char:SetAttribute("GamblerTrustedAmmo",0)
 end
 function K.OnBuffEnded(S,char,st,id)
@@ -29,12 +30,30 @@ function K.CancelActions(S,char,st,reason)
 end
 function K.Cleanup(S,char,st)
  K.CancelActions(S,char,st,"Cleanup")
+ if char.Parent then char:SetAttribute("GamblerLuck",nil) char:SetAttribute("ClassStatus_Luck",nil) char:SetAttribute("ClassStatusText_Luck",nil) end
+end
+-- Loaded Luck: a roll of 10 or lower (after Luck) grows the pity bonus; anything above 10 spends it
+function K.SetLuck(S,char,st,n)
+ st.Data.Luck=n
+ char:SetAttribute("GamblerLuck",n)
+ char:SetAttribute("ClassStatus_Luck",n>0 and -1 or nil)
+ char:SetAttribute("ClassStatusText_Luck",n>0 and ("x"..n) or nil)
+end
+function K.LuckyRoll(S,char,st,raw)
+ local luck=st.Data.Luck or 0
+ local eff=raw
+ if raw~=1 and raw~=20 then eff=math.min(19,raw+luck) end  -- a natural 1 stays a 1, a natural 20 stays a 20, luck alone never makes a "natural" 20
+ if eff<=10 then K.SetLuck(S,char,st,math.min(D.F.MaxLuck,luck+1)) else K.SetLuck(S,char,st,0) end
+ return eff
 end
 function K.ApplyRoll(S,char,st,roll)
  assert(roll>=1 and roll<=20 and roll%1==0,"D20 result")
  S.RemoveStatBuff(char,"GamblerDice")
+ S.Unbuff(char,"Exposed")
  local mods,text
- if roll==1 then lose(S,char,st)mods={Attack=.75,Speed=.8,StaminaRegen=0}text="NATURAL 1 · CRITICAL FAILURE"
+ if roll==1 then
+  if (workspace:GetAttribute("Phase5HealthMultiplier") or 1)>1 then S.Buff(char,"Exposed",D.F.Duration,{Incoming=1+D.F.Phase5Exposed}) else lose(S,char,st) end
+  mods={Attack=.75,Speed=.8,StaminaRegen=0}text="NATURAL 1 · CRITICAL FAILURE"
  elseif roll<=5 then mods={Attack=.9}text=roll.." · ATTACK DEBUFF"
  elseif roll<=10 then mods={Defense=.15}text=roll.." · DEFENSE BOOST"
  elseif roll<=15 then mods={Attack=1.25}text=roll.." · ATTACK BOOST"
@@ -90,7 +109,8 @@ function K.Action(S,player,char,st,key,phase,aim)
   S.Cooldown(char,"F",D.F.Cooldown)S.Anim(char,"Roll")S.Sound(char,"ThreadBounce")
   S.Buff(char,"Rolling")
   S.StatBuff(char,"GamblerRolling",nil,{Defense=D.F.RollDefense})
-  local roll=rng:NextInteger(1,20)
+  local raw=rng:NextInteger(1,20)
+  local roll=K.LuckyRoll(S,char,st,raw)
   local start=C.Hand(char,"Left")
   local aimLanding=root.Position+C.AimDir(char,aim)*9
   local ground=require(B.Encounter.ArenaPlacement).GroundPoint(aimLanding)
@@ -131,15 +151,20 @@ function K.Action(S,player,char,st,key,phase,aim)
  elseif key=="V"then
   if not S.Ready(char,"V")then return end
   S.Cooldown(char,"V",D.V.Cooldown)
-  if rng:NextNumber()<.5 then
+  local winChance=.5+D.F.JackpotLuck*(st.Data.Luck or 0)
+  if rng:NextNumber()<winChance then
+   K.SetLuck(S,char,st,0)
    h.Health=h.MaxHealth char:SetAttribute("Stamina",char:GetAttribute("MaxStamina") or D.Stamina)
    S.StatBuff(char,"GamblerJackpot",D.V.Duration,{Attack=3,Defense=.95,Speed=1.25,StaminaRegen=2})
    S.Anim(char,"Jackpot")S.Sound(char,"QTESuccess")
    S.FX.Flash(root.Position,GOLD,22,.8)S.FX.Text(root.Position+Vector3.new(0,4,0),"JACKPOT!",GOLD)
    char:SetAttribute("GamblerLastGamble","Jackpot")
   else
-   lose(S,char,st)S.Anim(char,"Bankrupt")S.Sound(char,"QTEFailure")
-   S.FX.Text(root.Position+Vector3.new(0,4,0),"HP: 1",Color3.fromRGB(220,80,75))
+   K.SetLuck(S,char,st,math.min(D.F.MaxLuck,(st.Data.Luck or 0)+1))
+   local p5=(workspace:GetAttribute("Phase5HealthMultiplier") or 1)>1
+   lose(S,char,st,p5 and .15 or nil)S.Anim(char,"Bankrupt")S.Sound(char,"QTEFailure")
+   S.Cooldown(char,"V",D.V.Cooldown*.5)
+   S.FX.Text(root.Position+Vector3.new(0,4,0),p5 and "HP: 15%" or "HP: 1",Color3.fromRGB(220,80,75))
    char:SetAttribute("GamblerLastGamble","Bankrupt")
   end
  end

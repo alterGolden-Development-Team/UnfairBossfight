@@ -99,9 +99,10 @@ local function bind(char)
 		fill(hp, h.Health, h.MaxHealth)
 		fill(stamina, char:GetAttribute("Stamina") or 100, char:GetAttribute("MaxStamina") or 100)
 		local phasingUntil=char:GetAttribute("ClassStatus_Phasing")
-		local duelistIFrames=char:GetAttribute("ClassId")=="Duelist" and type(phasingUntil)=="number"
+		local classId=char:GetAttribute("ClassId")
+		local classIFrames=(classId=="Duelist" or classId=="Twinblade" or classId=="TrueWarrior") and type(phasingUntil)=="number"
 			and (phasingUntil==-1 or workspace:GetServerTimeNow()<phasingUntil)
-		hp.Track.Fill.UIGradient.Color = (char:GetAttribute("Invulnerable") or duelistIFrames) and yellow or green
+		hp.Track.Fill.UIGradient.Color = (char:GetAttribute("Invulnerable") or classIFrames) and yellow or green
 	end
 	table.insert(connections, h.HealthChanged:Connect(update))
 	table.insert(connections, h:GetPropertyChangedSignal("MaxHealth"):Connect(update))

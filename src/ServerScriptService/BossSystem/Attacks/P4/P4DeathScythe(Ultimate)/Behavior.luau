@@ -32,7 +32,7 @@ return function(actor)
 	local current
 	function api.CanUse(target)
 		return not current and math.min(4, math.floor(actor:GetAttribute("Phase") or 0)) == 4 and core.Active() and core.Alive(target)
-			and not actor:GetAttribute("IsGoldenClone") and not actor:GetAttribute("PhaseTransitionInProgress")
+			and (not actor:GetAttribute("IsGoldenClone") or actor:GetAttribute("PastClone") == true) and not actor:GetAttribute("PhaseTransitionInProgress")
 			and not actor:GetAttribute("EncounterEnded") and not Time.IsStopped(actor)
 			 -- Forced: P5 Wild Hunt ends on this scythe from inside its own ultimate, so it skips the gating
 			and Placement.Contains(target.HumanoidRootPart.Position) and (api.Forced or Cooldowns.Ready(actor, NAME))
@@ -214,7 +214,7 @@ return function(actor)
 			for _, player in ipairs(Players:GetPlayers()) do
 				local character = player.Character
 				if not core.Alive(character) or not Placement.Contains(character.HumanoidRootPart.Position) then continue end
-				if ((character.HumanoidRootPart.Position - ground) * Vector3.new(1, 0, 1)).Magnitude > radius + 4 then continue end  -- beyond the blade
+				if ((character.HumanoidRootPart.Position - ground) * Vector3.new(1, 0, 1)).Magnitude > radius + 4 then continue end
 				local root, humanoid = character.HumanoidRootPart, character.Humanoid
 				local leg = humanoid.RigType == Enum.HumanoidRigType.R6 and character:FindFirstChild("Right Leg")
 				local standingHeight = root.Size.Y * 0.5 + humanoid.HipHeight + (leg and leg.Size.Y or 0)

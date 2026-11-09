@@ -29,7 +29,7 @@ function K.OnHitBoss(S, char, st, target, tag, actualDamage)
   if tag and tag:find("Duelist", 1, true) then
     local h = char:FindFirstChildOfClass("Humanoid")
     if h and h.Health > 0 and type(actualDamage) == "number" and actualDamage > 0 and actualDamage < math.huge then
-      h.Health = math.min(h.MaxHealth, h.Health + actualDamage * D.Lifesteal)
+      h.Health = math.min(h.MaxHealth, h.Health + actualDamage * D.Lifesteal * (workspace:GetAttribute("Phase5HealthMultiplier") or 1))
     end
     addTempo(S, char, st)
   end
@@ -69,9 +69,11 @@ local function counterSlash(S, player, char, st)
   local root = char.HumanoidRootPart
   char:SetAttribute("Stamina", math.min(char:GetAttribute("MaxStamina") or D.Stamina, (char:GetAttribute("Stamina") or 0) + D.C.CounterStamina))
   S.Cooldown(char, "C", D.C.SuccessCooldown)
+  local riposteHum = char:FindFirstChildOfClass("Humanoid")
+  if riposteHum and riposteHum.Health > 0 then riposteHum.Health = math.min(riposteHum.MaxHealth, riposteHum.Health + riposteHum.MaxHealth * D.RiposteHeal) end
   S.Anim(char, "RiposteStrike")
   S.Sound(char, "ParryContact")
-  local boss = S.Boss()
+  local boss = S.AimTarget(char, st.Aim, 40) or S.Boss()
   local dir = boss and C.AimDir(char, boss.HumanoidRootPart.Position) or C.AimDir(char, nil)
   local eye = root.Position + Vector3.new(0, 0.6, 0)
   S.FX.HQ.Glint(eye + dir * 1.5, WHITE, 7, 0.3)
@@ -219,7 +221,7 @@ local function phaseSlash(S, player, char, st)
     return
   end
   local root = char.HumanoidRootPart
-  local boss = S.Boss()
+  local boss = S.AimTarget(char, st.Aim, 40) or S.Boss()
   local dir = C.AimDir(char, st.Aim)
   local from = root.Position
   local distance, time = D.C.SlashDistance, 0.12
@@ -674,7 +676,7 @@ function K.Action(S, player, char, st, key, phase, aim)
       return
     end
     S.Cooldown(char, "V", D.V.Cooldown)
-    local boss = S.Boss()
+    local boss = S.AimTarget(char, st.Aim, D.V.TeleportRadius) or S.Boss()
     if boss and (boss.HumanoidRootPart.Position - root.Position).Magnitude <= D.V.TeleportRadius then
       task.spawn(runWaltz, S, player, char, st, boss, true)
     else

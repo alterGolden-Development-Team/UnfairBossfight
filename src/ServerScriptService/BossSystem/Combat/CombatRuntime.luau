@@ -146,6 +146,11 @@ function api.Knockback(actor, character, direction, options)
 	local lift = (options.Lift or 30) * push
 	local hold = options.Duration or 0.4
 	local sustain = options.Sustain or 0.22
+	-- Phase 5 knockbacks never stun: the server owns the player only for a blink and never cancels their dash
+	local skillName = actor and actor:GetAttribute("CurrentSkill")
+	local noStun = type(skillName) == "string" and string.sub(skillName, 1, 2) == "P5"
+	if noStun and Players:GetPlayerFromCharacter(character) then return end  -- Phase 5 never pushes or stuns players
+	if noStun then hold = math.min(hold, 0.1) sustain = math.min(sustain, 0.02) end
 	local r = character:FindFirstChild("HumanoidRootPart")
 	local h = character:FindFirstChildOfClass("Humanoid")
 	local player = Players:GetPlayerFromCharacter(character)
@@ -160,7 +165,7 @@ function api.Knockback(actor, character, direction, options)
 	if previous then
 		previous:Dispose()
 	end
-	if player and not options.AllowPlayerControl then
+	if player and not options.AllowPlayerControl and not noStun then
 		Dash.Cancel(player, "boss knockback")
 	end
 
@@ -176,7 +181,7 @@ function api.Knockback(actor, character, direction, options)
 	end
 	 
 	local tookOwnership = false
-	if not (player and options.AllowPlayerControl) then
+	if not (player and (options.AllowPlayerControl or noStun)) then
 		tookOwnership = pcall(function()
 			r:SetNetworkOwner(nil)
 		end)
@@ -319,9 +324,28 @@ function api.Knockback(actor, character, direction, options)
 	end
 	local velocity = away.Unit * speed + Vector3.new(0, lift, 0)
 	local mass = math.max(r.AssemblyMass, 0.001)
-	h:ChangeState(Enum.HumanoidStateType.Freefall)
-	r:ApplyImpulse((velocity - r.AssemblyLinearVelocity) * mass)
-	r.AssemblyLinearVelocity = velocity
+	if noStun and player then
+		-- no ownership swap and no state change: a short constraint shoves the player on their own client, so they never lose control
+		local att = Instance.new("Attachment")
+		att.Name = "KnockAttachment"
+		att.Parent = r
+		local lv = Instance.new("LinearVelocity")
+		lv.Name = "KnockShove"
+		lv.Attachment0 = att
+		lv.RelativeTo = Enum.ActuatorRelativeTo.World
+		lv.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
+		lv.VectorVelocity = velocity
+		lv.MaxForce = mass * 4000
+		lv.Parent = r
+		task.delay(math.max(hold, 0.08), function()
+			lv:Destroy()
+			att:Destroy()
+		end)
+	else
+		h:ChangeState(Enum.HumanoidStateType.Freefall)
+		r:ApplyImpulse((velocity - r.AssemblyLinearVelocity) * mass)
+		r.AssemblyLinearVelocity = velocity
+	end
 	local began = cast:Now()
 	cast:Step(function(dt, now)
 		if

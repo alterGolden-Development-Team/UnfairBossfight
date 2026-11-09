@@ -9,7 +9,7 @@ local CAS=game:GetService("ContextActionService")
 local player=Players.LocalPlayer
 local remote=game.ReplicatedStorage:WaitForChild("P5TPBreak",30)
 local MAX=100
-local LIFT=36  -- bar height plus spacing
+local LIFT=36
 local WHITE=Color3.new(1,1,1)
 local CREAM=Color3.fromRGB(244,239,215)
 
@@ -37,10 +37,10 @@ fill.Name="Fill"fill.Size=UDim2.fromScale(0,1)fill.BackgroundColor3=WHITE fill.B
 Instance.new("UICorner",fill).CornerRadius=UDim.new(0,3)
 local grad=Instance.new("UIGradient")grad.Color=ColorSequence.new(Color3.fromRGB(200,225,255),WHITE)grad.Parent=fill
 local glow=Instance.new("UIStroke")glow.Color=WHITE glow.Thickness=0 glow.Transparency=.2 glow.Parent=track
-local hint=Instance.new("TextButton")  -- clickable for touch screens
+local hint=Instance.new("TextButton")
 hint.Name="Break"hint.BackgroundTransparency=1 hint.AnchorPoint=Vector2.new(.5,0)hint.Position=UDim2.fromScale(.5,0)
 hint.Size=UDim2.new(.7,0,0,18)hint.Font=Enum.Font.GothamBold hint.TextSize=14 hint.TextColor3=WHITE hint.TextStrokeTransparency=.4
-hint.Text="Press Z - Break the godmode"hint.Visible=false hint.Parent=root
+hint.Text="Press Z - Break Unlimited HP"hint.Visible=false hint.Parent=root
 
 local function tp()return workspace:GetAttribute("P5TP")or 0 end
 local function active()return workspace:GetAttribute("P5TPActive")==true end
@@ -82,11 +82,11 @@ end
  -- works. It is the game talking, not the boss: italic serif in its own banner, separate from dialogue.
 local Kit=require(game.ReplicatedStorage.BossShared.Presentation.TrialMenuKit)
 local GUIDE={
- "Phase 5: his godmode is up. Nothing you land will hurt him yet.",
+ "Phase 5: he has Unlimited HP. Your hits won't matter yet.",
  "His skills sometimes drop white pearls, and ultimates always drop one to three. Walk near a pearl to take it.",
- "Every pearl fills the TP bar for the whole server. At 100%, anyone can press Z to shatter his godmode for good.",
- "One more thing: Deflect. When a gold shield appears on you, press E as the hit comes to turn it away.",
- "If the shield says HOLD, keep E held down for half a second instead. Mistimed presses do nothing.",
+ "Every pearl fills the TP bar for the whole server. At 100%, anyone can press Z to break Unlimited HP and drop his shield to 5,000.",
+ "One more thing: Deflect. When a white shield with E appears on you, press E as the hit comes to turn it away.",
+ "If the shield says HOLD, keep E held down for a moment instead. Mistimed presses do nothing.",
 }
 local LINE_TIME=4.6
 local banner=Instance.new("Frame")
@@ -163,7 +163,7 @@ local shown=0
 Run.RenderStepped:Connect(function(dt)
  local on=active()
  local vit,hp,hearts,music=stack()
- for obj in pairs(lifted)do if obj~=hearts and obj~=music then lifted[obj]=nil end end  -- respawned HUD
+ for obj in pairs(lifted)do if obj~=hearts and obj~=music then lifted[obj]=nil end end
  lift(hearts,on)
  lift(music,on)
  gui.Enabled=on and hp~=nil

@@ -2,7 +2,7 @@
  -- each client draws the fires (BossClient.Presentation.ArenaRuinClient) exactly where the server burns players who
  -- touch them (BossSystem.Encounter.ArenaRuin). The layout is seeded, so every machine builds the same ring.
 local api = {}
-api.Spacing = 40  -- studs between rim fires
+api.Spacing = 40
 api.Inset = 4  -- how far inside the floor's edge they stand
 api.SizeMin, api.SizeMax = 26, 34
 api.CatchAt = 1.2  -- seconds after the ruin before the first rim fire catches; the rest follow over CatchSpread

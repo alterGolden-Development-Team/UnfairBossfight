@@ -769,7 +769,7 @@ return function(actor)
 	end
 	function api.CanUse(character)
 		return (tonumber(actor:GetAttribute("Phase")) or 1) == api.UltimatePhase
-			and actor:GetAttribute("IsGoldenClone") ~= true
+			and (actor:GetAttribute("IsGoldenClone") ~= true or actor:GetAttribute("PastClone") == true)
 			and core.Active()
 			and core.Alive(character)
 	end

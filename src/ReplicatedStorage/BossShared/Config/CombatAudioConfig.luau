@@ -514,14 +514,21 @@ local aliases = table.freeze({
 local hellavenMusic=table.freeze({
  Hero="rbxassetid://130604287239693",ShieldBreak="rbxassetid://70762771235020",
  Phase2="rbxassetid://107416487460868",Phase3="rbxassetid://77498350812884",
- Phase4="rbxassetid://115642344211448",Phase5="rbxassetid://81728038354273",
+ Phase4="rbxassetid://132058286351091",Phase5="rbxassetid://81728038354273",
 })
 local function musicAsset(key,mode)
  if key=="Phase15" then key="Hero" end
+ if key=="SonicBlaster" then return "rbxassetid://108440513814741" end  -- Phase 5's final attack (Combat/P5SonicBlaster)
  return mode=="Hellaven" and hellavenMusic[key] or Assets[key]
 end
+ -- names shown in the HUD for tracks whose uploaded title is hidden (Roblox shows it as ####)
+local trackNames=table.freeze({
+ ["rbxassetid://70762771235020"]="Illusionary's Perfect Puppet",
+ ["rbxassetid://108440513814741"]="Sonic Blaster",
+})
 return table.freeze({
  HellavenMusic=hellavenMusic,
+ TrackNames=trackNames,
  MusicAsset=musicAsset,
 	Assets = Assets,
 	Cues = table.freeze(cues),
@@ -558,5 +565,6 @@ return table.freeze({
 		TrueIllusion = "Big Bang WITH LYRICS",
 		ShieldBreak = "Phase 1 Shield Break",
 		PickThePupils = "Pick The Pupils Gameshow",
+		SonicBlaster = "Sonic Blaster",
 	}),
 })

@@ -49,7 +49,6 @@ function Bo.Decorate(E,beacon)
  local a0,a1=E.Attach(ground),E.Attach(top)
  local guide=E.Beam(g,a0,a1,{tex="beam.dots",width=.6,length=10,scroll=-30,color={{0,WHITE},{1,SKY}},alpha={{0,.3},{1,.8}},brightness=2,segments=2})
 
-  -- beam layers
  local L={
   core={B=E.Beam(g,a0,a1,{tex="beam.core",width=0,length=1,mode=Enum.TextureMode.Stretch,color={{0,WHITE},{.5,Color3.fromRGB(220,255,245)},{1,CYAN}},brightness=5,segments=2,z=.3}),A={{0,0},{.6,.1},{1,1}},W0=.5,W1=.65},
   body={B=E.Beam(g,a0,a1,{tex="beam.streaks",width=0,length=40,scroll=-30,color={{0,CYAN},{.3,SKY},{1,VIOLET}},brightness=2.8,segments=2,z=.2}),A={{0,0},{.35,.15},{1,1}},W0=1.7,W1=2.3},
@@ -144,7 +143,7 @@ function Bo.Decorate(E,beacon)
   show+=(((opened and not ended)and 1 or 0)-show)*(1-math.exp(-dt*(ended and 3.5 or 8)))
   local boost=caughtAt>0 and not ended and 1.25 or 1
   local w=math.max(width,.05)
-  a0.Position=Vector3.yAxis*H*.95*r*r  -- the foot withdraws upward
+  a0.Position=Vector3.yAxis*H*.95*r*r
   for _,l in pairs(L)do
    l.B.Width0,l.B.Width1=w*l.W0*boost,w*l.W1*boost
    l.B.Transparency=alphaSeq(l.A,show)
@@ -156,7 +155,7 @@ function Bo.Decorate(E,beacon)
    for i,node in ipairs(st.Nodes)do
     local k=(i-1)/(NODES-1)
     local a=st.Phase+k*TAU*1.6-t*spin-r*4
-    node.Position=Vector3.new(math.cos(a)*hr*(1+r),k*helixH+r*r*H*.7,math.sin(a)*hr*(1+r))  -- unwinds upward
+    node.Position=Vector3.new(math.cos(a)*hr*(1+r),k*helixH+r*r*H*.7,math.sin(a)*hr*(1+r))
    end
    for _,sg in ipairs(st.Segs)do
     local sw=1.2-.8*sg.K

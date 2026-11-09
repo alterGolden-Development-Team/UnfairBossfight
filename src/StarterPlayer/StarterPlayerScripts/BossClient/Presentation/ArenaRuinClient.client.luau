@@ -1,6 +1,5 @@
 -- The burnt world (Encounter/ArenaRuin, after the first Wild Hunt's Death Scythe). While workspace ArenaRuinedAt is
 -- set, every castle wall, tree, spire and ruin outside the arena barriers is destroyed - a wave rolling outward from
--- the arena: each piece flashes with heat, topples, sinks and is gone - leaving bare ground with charred rubble and
 -- golden fires burning across it and all around the arena's edge. The arena itself is untouched. When the attribute
 -- clears (the encounter ended) everything is put back exactly as it was. All of it is local: every client builds the
 -- same ruin from the same attribute, so nothing has to replicate.
@@ -39,8 +38,8 @@ local saved,tweens,fx,tint={}, {},nil,nil
  -- Few, big fires: each one is a patch of tongues as wide as the fire, not a crowd of small ones.
 local FLAME_BODY="rbxassetid://17703378809"  -- "Recolorable Big Fire Flipbook" 4x4, greyscale
 local FLAME_TOON="rbxassetid://93253997872542"  -- stylized toon flame tongues 4x4, gold to orange
-local FLAME_GLOW="rbxassetid://15267968986"  -- VFXEngine glow.soft
-local function nseq(...)  -- time, value pairs
+local FLAME_GLOW="rbxassetid://15267968986"
+local function nseq(...)
  local k,v={...},{}
  for i=1,#k,2 do v[#v+1]=NumberSequenceKeypoint.new(k[i],k[i+1]) end
  return NumberSequence.new(v)
@@ -159,7 +158,6 @@ local function ruin(instant)
   local hit=workspace:Raycast(Vector3.new(pos.X,pos.Y+80,pos.Z),Vector3.new(0,-400,0),params)
   return hit and hit.Position or Vector3.new(pos.X,0,pos.Z)
  end
-  -- every piece: a flash of heat as the wave reaches it, then it topples, sinks and is gone
  for _,p in ipairs(list)do
   saved[p]={CFrame=p.CFrame,Color=p.Color,Material=p.Material,Transparency=p.Transparency,CanCollide=p.CanCollide,CanQuery=p.CanQuery}
   local beyond=math.max(math.abs(p.Position.X)-bx,math.abs(p.Position.Z)-bz,0)
@@ -203,7 +201,6 @@ local function ruin(instant)
    if fx and fx.Parent then fire(f.Position+Vector3.new(0,.5,0),f.Size)end
   end)
  end
-  -- the light turns to firelight
  tint=Instance.new("ColorCorrectionEffect")
  tint.Name="ArenaRuinTint" tint.TintColor=Color3.new(1,1,1) tint.Parent=Lighting
  Tween:Create(tint,TweenInfo.new(instant and 0 or 3),{TintColor=Color3.fromRGB(255,236,214),Brightness=-.06,Contrast=.2,Saturation=.05}):Play()
@@ -226,7 +223,7 @@ end
 local function sync(first)
  local at=workspace:GetAttribute("ArenaRuinedAt")
  if at then
-  ruin(first or workspace:GetServerTimeNow()-at>4)  -- joining late: already gone
+  ruin(first or workspace:GetServerTimeNow()-at>4)
  else
   restore()
  end

@@ -5,10 +5,11 @@ local Effects = require(BossSystem.Combat.EffectService)
 local Runtime = require(BossSystem.Combat.CombatRuntime)
 local Players = game:GetService("Players")
 
-local CRIMSON = Color3.fromRGB(196, 18, 48)
-local ROSE = Color3.fromRGB(255, 86, 120)
-local BLUSH = Color3.fromRGB(255, 214, 226)
-local GOLD = Color3.fromRGB(255, 205, 70)
+ -- CRIMSON = deep golden yellow (sigil, aura, main shock rings), ROSE = bright yellow, BLUSH = pale yellow-white, GOLD = amber.
+local CRIMSON = Color3.fromRGB(255, 190, 20)
+local ROSE = Color3.fromRGB(255, 226, 70)
+local BLUSH = Color3.fromRGB(255, 247, 200)
+local GOLD = Color3.fromRGB(255, 150, 25)
 local SPARK = "rbxasset://textures/particles/sparkles_main.dds"
 local SMOKE = "rbxasset://textures/particles/smoke_main.dds"
 

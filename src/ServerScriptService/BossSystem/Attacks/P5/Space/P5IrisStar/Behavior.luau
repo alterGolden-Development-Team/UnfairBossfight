@@ -18,7 +18,7 @@ return function(actor)
 	end
 
 	function api.Combo(target)
-		local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Tell={"Windup"},Rate={"TickInterval"}})  -- difficulty knobs, this cast only
+		local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Tell={"Windup"},Rate={"TickInterval"}})
 		if not api.CanUse(target) then
 			return false
 		end
@@ -42,7 +42,7 @@ return function(actor)
 			fx = Visuals.Build(ctx, root, S)
 			pcall(core.PoseAngles, { RightShoulder = { 150, 0, -30 }, LeftShoulder = { 150, 0, 30 }, Waist = { -12, 0, 0 } }, S.Windup * .7)
 
-			local lock -- star position frozen at collapse
+			local lock
 			local collapsed, exploded = false, false
 			local function star()
 				return lock or root.Position + Vector3.yAxis * S.Height

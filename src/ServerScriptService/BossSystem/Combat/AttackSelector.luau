@@ -42,7 +42,7 @@ local function rangeFactor(actor, target, metadata)
 	end
 	local d = ((targetRoot.Position - root.Position) * Vector3.new(1, 0, 1)).Magnitude
 	local near, far = Config.MeleeRange or 22, Config.FarRange or 50
-	local k = math.clamp((d - near) / math.max(far - near, 1), 0, 1) -- 0 close, 1 far
+	local k = math.clamp((d - near) / math.max(far - near, 1), 0, 1)
 	if metadata and metadata.SwordBased then
 		return 1.5 - 1.05 * k
 	end
@@ -135,7 +135,8 @@ function api.Choose(attacks, target, lastName, repeatCount, rng, phase, actor, c
 		else
 			weight = api.Weight(entry, phase)
 		end
-		if category == "Combo" and metadata and metadata.Ultimate then weight = 0 end
+		 -- (the Phase 5 final minute, Combat/P5Finale, chains ultimates too)
+		if category == "Combo" and metadata and metadata.Ultimate and not (actor and actor:GetAttribute("P5Stage") == "Final") then weight = 0 end
 		if heavyActive and isHeavy(entry.Name, metadata) and not canOverlap(actor, phase, metadata) then weight = 0 end -- no stacking on a lingering heavy
 		 -- phase 5: only the current mode's skills and the normal attacks; the mode's own skills lead
 		if weight > 0 and (phase or 0) >= 5 and actor then
@@ -152,6 +153,10 @@ function api.Choose(attacks, target, lastName, repeatCount, rng, phase, actor, c
 		if not filler and (phase or 0) >= 5 and isHeavy(entry.Name, metadata) and (actor and actor:GetAttribute("FillerDebt") or 0) > 0 then weight = 0 end
 		if weight > 0 and category ~= "GoldenHour" then
 			weight *= rangeFactor(actor, target, metadata) * recentFactor(actor, entry.Name)
+			 -- phase 5: the melee-only skills (they only pass CanUse with the target close) are picked far more often when they can run
+			if (phase or 0) >= 5 and Config.Phase5CloseAttacks and Config.Phase5CloseAttacks[entry.Name] then
+				weight *= Config.Phase5CloseWeight or 1
+			end
 		end
 		if phase == 2.5 and actor and actor:GetAttribute("LastMinuteActive") then
 			if metadata and metadata.Ultimate or entry.Name == "P2Acceleration" or entry.Name == "P2Deceleration" then

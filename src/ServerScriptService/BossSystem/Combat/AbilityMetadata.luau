@@ -154,23 +154,43 @@ for name, mode in pairs({
 	["P5Hyper-lasticBeam(Ultimate)"] = "Space", P5BlackHole = "Space", P5DyingStar = "Space", P5IrisStar = "Space",
 	["P5Polaris(Ultimate)"] = "Natural", P5Borealis = "Natural",
 	["P5Finality(Ultimate)"] = "Time", P5GoldenEternity = "Time", P5Overclock = "Time",  -- Time's P2 powers, enhanced
+	P5TimeBomb = "Time", P5Chronobreak = "Time", P5Stranglethorns = "Natural", P5AuroraCurtain = "Natural",
+	P5GravityCrush = "Space", P5StarShooter = "Space", P5EnhancedJumpKick = "Space",
+	P5EnhancedStarSlash = "Space", P5LightJab = "Space", P5Disgeneration = "Space", P5PlasmaBall = "Space", P5JumpKick = "Space",
+	P5EnragedShockwave = "Space", P5UltraRed = "Space", P5UltraBlue = "Space",
+	P5EnhancedFlowerField = "Natural", P5LightningDash = "Natural", P5TheWind = "Natural", P5GreatWind = "Natural",
+	P5EnhancedGildedCataclysm = "Natural",
+	P5EnhancedTimeBullets = "Time", P5EnhancedDirectShot = "Time",
 }) do
 	add(name, 5, { Ultimate = name:find("(Ultimate)", 1, true) ~= nil, CanClone = false, CanHourDebt = false,
 		ModuleFolder = "P5/" .. mode, P5Mode = mode })
 end
-local unarmed = { P5DistortedCounter = true, P5GoldenPierce = true, P5Slam = true }
+local unarmed = { P5DistortedCounter = true, P5GoldenPierce = true, P5Slam = true, P5ScarletRiver = true, P5ShotgunBlast = true,
+	["P5Golden-matterBeam"] = true, ["P5DoubleGolden-matterBeam"] = true, P5JudgementZone = true, P5NullifiedZone = true,
+	P5IntrusiveLunge = true, P5SwordDancer = true, P5GoldenBullets = true, P5EnhancedBurst = true, P5EnhancedGlidedThread = true }
 for _, name in ipairs({ "P5ClawForward", "P5Assassination", "P5UpperCut", "P5Butterfly", "P5DistortedCounter", "P5GoldenPierce",
-	"P5Slam", "P5Viper", "P5HorrifyingGround" }) do
+	"P5Slam", "P5Viper", "P5HorrifyingGround", "P5DeathRoar", "P5ScarletRiver", "P5FireRing", "P5ShotgunBlast", "P5PerfectVerticalSlash",
+	"P5Golden-matterBeam", "P5DoubleGolden-matterBeam", "P5JudgementZone", "P5NullifiedZone", "P5HellavanRampage",
+	"P5Fang-Dive", "P5Fang-Cross", "P5Fang-Pierce", "P5IntrusiveLunge", "P5NoonTearer", "P5EnhancedRipAndTear", "P5EnhancedBurst",
+	"P5GoldenBullets", "P5SwordDancer", "P5EnhancedGlidedThread" }) do
 	add(name, 5, { SwordBased = not unarmed[name], AnyRange = name ~= "P5ClawForward",
 		CanClone = false, CanHourDebt = false, ModuleFolder = "P5/NormalAttack", P5Mode = "Normal" })
 end
-for _, name in ipairs({ "P5WildHunt(Ultimate)", "P5NightTearer(Ultimate)" }) do
+for _, name in ipairs({ "P5WildHunt(Ultimate)", "P5NightTearer(Ultimate)", "P5SilentCut(Ultimate)" }) do
 	add(name, 5, { Ultimate = true, SwordBased = true, AnyRange = true, CanClone = false, CanHourDebt = false,
 		ModuleFolder = "P5/NormalAttack", P5Mode = "Normal" })
+end
+ -- each mode's last stand: owed once when that mode's shield breaks (P5ModeService.LastStand), never picked otherwise
+for name, mode in pairs({ ["P5BlastBreath(Ultimate)"] = "Space", ["P5TheGreatStorm(Ultimate)"] = "Natural" }) do
+	add(name, 5, { Ultimate = true, CanClone = false, CanHourDebt = false, ModuleFolder = "P5/" .. mode, P5Mode = "LastStand" })
 end
  -- the mode weapon's swing: only inside a mode, in place of the Normal Attack folder (P5ModeService)
 add("P5ModeWeapon", 5, { AnyRange = true, CanClone = false, CanHourDebt = false, ModuleFolder = "P5/Weapon", P5Mode = "Weapon" })
 add("P5God(Passive)", 5, { Passive = true, AllowedPhases = {5} })
+add("P5FallingStar", 5, { CanClone = false, CanHourDebt = false, ModuleFolder = "P5/Summoned", P5Mode = "Summoned" })
+for _, name in ipairs({ "P5Spacetrum(Passive)", "P5Verdant(Passive)", "P5Pastborn(Passive)", "P5Enraged(Passive)", "P5SuperEnraged(Passive)" }) do
+	add(name, 5, { Passive = true, AllowedPhases = { 5 } })
+end
 add("P4TargetingKnives", 4, { CanHourDebt = false, AllowedPhases = { 4, 4.5 } })
 add("P4RiftColumn", 4, { SwordBased = true, CanHourDebt = false })
 add("P4EnhancedRangedSlashes", 4, { SwordBased = true, CanHourDebt = false, AllowedPhases = { 4, 4.5 } })

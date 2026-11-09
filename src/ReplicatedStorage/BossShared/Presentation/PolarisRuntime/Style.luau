@@ -5,9 +5,11 @@ return table.freeze({
  Rise=.9,
  Charge=2,
  Hover=55,
- Shots=11,
+ Shots=16,
+ Duration=15,
+ FinalTail=2.5,
  HitDamage=22,
- ShotGap=.2,
+ ShotGap=.6533,
  ProjectileSpeed=56,
  TurnRate=3.4,
  ProjectileLife=6,
@@ -18,7 +20,7 @@ return table.freeze({
  Recovery=.7,
   -- damage beats: release shockwave under the boss, and the final star explosion
  ReleaseRadius=34, ReleaseDamage=20,
- FinalRadius=60, FinalDamage=35,
+ FinalRadius=400, FinalDamage=35,
  ScreenRange=260,
 
   

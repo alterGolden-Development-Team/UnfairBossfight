@@ -19,8 +19,134 @@ local function P(t)
 end
 local REST = P({})
 
+local function flipArm(a) return a and { a[1], -a[2], -a[3] } or nil end
+local function mirrorDef(d)
+  return { Root = flipArm(d.Root), Neck = flipArm(d.Neck), RS = flipArm(d.LS), LS = flipArm(d.RS), RH = d.LH, LH = d.RH }
+end
+local function TBK(frames, mirror)
+  local out = table.create(#frames)
+  for i, f in ipairs(frames) do
+    out[i] = { f[1], f[2] == false and REST or P(mirror and mirrorDef(f[2]) or f[2]) }
+  end
+  return out
+end
+
+local TB_DIAG = {
+  { 0, false },
+  { 0.05, { Root = { 6, -34, 0 }, Neck = { 0, 20, 0 }, RS = { 128, -30, 32 }, LS = { 62, -6, 8 }, RH = { -8, 0, 0 }, LH = { 10, 0, 0 } } },
+  { 0.10, { Root = { -6, 4, 0 }, Neck = { 0, 0, 0 }, RS = { 96, 8, 4 }, LS = { 62, -6, 8 }, RH = { 8, 0, 0 }, LH = { -6, 0, 0 } } },
+  { 0.15, { Root = { -14, 42, 0 }, Neck = { 0, -26, 0 }, RS = { 60, 62, -26 }, LS = { 58, -8, 8 }, RH = { 26, 0, 0 }, LH = { -16, 0, 0 } } },
+  { 0.24, { Root = { -12, 46, 0 }, Neck = { 0, -28, 0 }, RS = { 54, 68, -30 }, LS = { 58, -8, 8 }, RH = { 24, 0, 0 }, LH = { -14, 0, 0 } } },
+  { 0.40, false },
+}
+local TB_SWEEP = {
+  { 0, false },
+  { 0.05, { Root = { 0, -54, 0 }, Neck = { 0, 32, 0 }, RS = { 92, -60, 22 }, LS = { 70, -12, 10 }, RH = { -8, 0, 0 }, LH = { 10, 0, 0 } } },
+  { 0.10, { Root = { -4, 0, 0 }, Neck = { 0, 0, 0 }, RS = { 90, 0, 2 }, LS = { 68, -10, 10 }, RH = { 6, 0, 0 }, LH = { -4, 0, 0 } } },
+  { 0.16, { Root = { -8, 58, 0 }, Neck = { 0, -34, 0 }, RS = { 86, 76, -16 }, LS = { 64, -6, 12 }, RH = { 24, 0, 0 }, LH = { -16, 0, 0 } } },
+  { 0.25, { Root = { -8, 62, 0 }, Neck = { 0, -36, 0 }, RS = { 84, 82, -18 }, LS = { 64, -6, 12 }, RH = { 22, 0, 0 }, LH = { -14, 0, 0 } } },
+  { 0.42, false },
+}
+local TB_RISE = {
+  { 0, false },
+  { 0.05, { Root = { -16, -30, 0 }, Neck = { 10, 18, 0 }, RS = { 36, -24, 34 }, LS = { 60, -6, 8 }, RH = { 12, 0, 0 }, LH = { -6, 0, 0 } } },
+  { 0.10, { Root = { -4, 6, 0 }, Neck = { 0, 0, 0 }, RS = { 84, 14, 2 }, LS = { 62, -6, 8 }, RH = { 4, 0, 0 }, LH = { -2, 0, 0 } } },
+  { 0.16, { Root = { 8, 38, 0 }, Neck = { -8, -22, 0 }, RS = { 152, 36, -10 }, LS = { 66, -6, 8 }, RH = { 22, 0, 0 }, LH = { -16, 0, 0 } } },
+  { 0.25, { Root = { 10, 40, 0 }, Neck = { -8, -24, 0 }, RS = { 158, 38, -12 }, LS = { 66, -6, 8 }, RH = { 20, 0, 0 }, LH = { -14, 0, 0 } } },
+  { 0.42, false },
+}
+local TB_FINISH = {
+  { 0, false },
+  { 0.06, { Root = { 10, 0, 0 }, Neck = { -8, 0, 0 }, RS = { 112, -38, 52 }, LS = { 112, 38, -52 }, RH = { -16, 0, 0 }, LH = { 12, 0, 0 } } },
+  { 0.11, { Root = { -28, 0, 0 }, Neck = { 10, 0, 0 }, RS = { 74, 34, -34 }, LS = { 74, -34, 34 }, RH = { 36, 0, 0 }, LH = { -26, 0, 0 } } },
+  { 0.16, { Root = { -32, 0, 0 }, Neck = { 12, 0, 0 }, RS = { 64, 50, -40 }, LS = { 64, -50, 40 }, RH = { 38, 0, 0 }, LH = { -28, 0, 0 } } },
+  { 0.34, { Root = { -30, 0, 0 }, Neck = { 12, 0, 0 }, RS = { 62, 52, -42 }, LS = { 62, -52, 42 }, RH = { 36, 0, 0 }, LH = { -26, 0, 0 } } },
+  { 0.60, false },
+}
+local WHIRL_POSE = { Root = { -6, 0, 0 }, Neck = { 0, 0, 0 }, RS = { 0, 0, 96 }, LS = { 0, 0, -96 }, RH = { 6, 0, 0 }, LH = { -6, 0, 0 } }
+local TB_WHIRL = { { 0, false }, { 0.08, WHIRL_POSE }, { 1.42, WHIRL_POSE }, { 1.62, false } }
+
+local SKY_TOP = { Root = { 4, 0, 0 }, Neck = { -10, 0, 0 }, RS = { 150, 36, -18 }, LS = { 150, -36, 18 }, RH = { 14, 0, 0 }, LH = { 6, 0, 0 } }
+local SKY_DIVE = { Root = { -36, 0, 0 }, Neck = { 16, 0, 0 }, RS = { 28, 34, -28 }, LS = { 28, -34, 28 }, RH = { 22, 0, 0 }, LH = { -18, 0, 0 } }
+local TB_SKYRISE = {
+  { 0, false },
+  { 0.06, { Root = { -26, 0, 0 }, Neck = { 14, 0, 0 }, RS = { 20, 0, 12 }, LS = { 20, 0, -12 }, RH = { 26, 0, 0 }, LH = { -14, 0, 0 } } },
+  { 0.16, { Root = { 8, 0, 0 }, Neck = { -14, 0, 0 }, RS = { 172, 0, 44 }, LS = { 172, 0, -44 }, RH = { -18, 0, 0 }, LH = { -26, 0, 0 } } },
+  { 0.34, { Root = { 6, 0, 0 }, Neck = { -10, 0, 0 }, RS = { 160, 30, -12 }, LS = { 160, -30, 12 }, RH = { -10, 0, 0 }, LH = { -22, 0, 0 } } },
+  { 0.55, SKY_TOP },
+  { 0.95, SKY_TOP },
+}
+local TB_SKYDIVE = { { 0, SKY_TOP }, { 0.06, SKY_DIVE }, { 0.60, SKY_DIVE } }
+local TB_SKYLAND = {
+  { 0, SKY_DIVE },
+  { 0.05, { Root = { -42, 0, 0 }, Neck = { 26, 0, 0 }, RS = { 14, 42, -34 }, LS = { 14, -42, 34 }, RH = { 44, 0, 0 }, LH = { -38, 0, 0 } } },
+  { 0.22, { Root = { -40, 0, 0 }, Neck = { 24, 0, 0 }, RS = { 16, 44, -34 }, LS = { 16, -44, 34 }, RH = { 44, 0, 0 }, LH = { -38, 0, 0 } } },
+  { 0.44, { Root = { -10, 0, 0 }, Neck = { -6, 0, 0 }, RS = { 64, 0, 58 }, LS = { 64, 0, -58 }, RH = { 16, 0, 0 }, LH = { 6, 0, 0 } } },
+  { 0.72, false },
+}
+local TB_SUMMON = {
+  { 0, false },
+  { 0.12, { Root = { -8, 0, 0 }, Neck = { 4, 0, 0 }, RS = { 82, 42, -30 }, LS = { 82, -42, 30 }, RH = { 10, 0, 0 }, LH = { -10, 0, 0 } } },
+  { 0.28, { Root = { 12, 0, 0 }, Neck = { -20, 0, 0 }, RS = { 164, -10, 56 }, LS = { 164, 10, -56 }, RH = { -8, 0, 0 }, LH = { -14, 0, 0 } } },
+  { 0.50, { Root = { 14, 0, 0 }, Neck = { -22, 0, 0 }, RS = { 168, -12, 60 }, LS = { 168, 12, -60 }, RH = { -8, 0, 0 }, LH = { -14, 0, 0 } } },
+  { 0.66, { Root = { -4, 0, 0 }, Neck = { 0, 0, 0 }, RS = { 72, -8, 14 }, LS = { 72, 8, -14 } } },
+  { 0.90, false },
+}
+local TB_RECOVER = { { 0, { RS = { 56, -6, 8 }, LS = { 56, 6, -8 } } }, { 0.2, false } }
+
+
  
+local SKY_THROW = { Root = { 8, -24, 0 }, Neck = { -6, 18, 0 }, RS = { 104, 10, 8 }, LS = { 60, -20, 10 }, RH = { 10, 0, 0 }, LH = { -6, 0, 0 } }
+local SKY_FLY = { Root = { -62, 0, 0 }, Neck = { 34, 0, 0 }, RS = { 118, 30, -20 }, LS = { 118, -30, 20 }, RH = { 18, 0, 0 }, LH = { -8, 0, 0 } }
+local TB_SKYTHROW = { { 0, SKY_TOP }, { 0.07, SKY_THROW }, { 0.7, SKY_THROW } }
+local TB_SKYFLY = { { 0, SKY_THROW }, { 0.08, SKY_FLY }, { 0.7, SKY_FLY } }
+
 local ANIMS = {
+  TB_Cut1 = TBK(TB_DIAG),
+  TB_Cut2 = TBK(TB_DIAG, true),
+  TB_Cut3 = TBK(TB_SWEEP),
+  TB_Cut4 = TBK(TB_RISE, true),
+  TB_Finish = TBK(TB_FINISH),
+  TB_Whirl = TBK(TB_WHIRL),
+  TB_SkyRise = TBK(TB_SKYRISE),
+  TB_SkyDive = TBK(TB_SKYDIVE),
+  TB_SkyLand = TBK(TB_SKYLAND),
+  TB_Summon = TBK(TB_SUMMON),
+  TB_Recover = TBK(TB_RECOVER),
+  TB_SkyThrow = TBK(TB_SKYTHROW),
+  TB_SkyFly = TBK(TB_SKYFLY),
+  CounterStance = { Hold = P({ Root = { -4, -18, 0 }, Neck = { 4, 14, 0 }, RS = { 96, 10, -16 }, LS = { 84, 0, 40 }, RH = { 12, 0, 0 }, LH = { -10, 0, 0 } }) },
+  TW_Counter = { { 0, P({ Root = { -4, -18, 0 }, RS = { 96, 10, -16 }, LS = { 84, 0, 40 } }) },
+    { 0.06, P({ Root = { -12, 42, 0 }, RS = { 30, 58, -30 }, LS = { 60, 0, 20 }, RH = { 22, 0, 0 }, LH = { -16, 0, 0 } }) },
+    { 0.13, P({ Root = { -16, -46, 0 }, RS = { 26, -44, 26 }, LS = { 40, 0, 20 }, RH = { -14, 0, 0 }, LH = { 26, 0, 0 } }) },
+    { 0.3, P({ Root = { -12, -40, 0 }, RS = { 28, -38, 22 }, LS = { 40, 0, 20 } }) }, { 0.52, REST } },
+  TruthCast = { Hold = P({ Root = { -8, -30, 0 }, Neck = { 6, 22, 0 }, LS = { 92, 26, 16 }, RS = { 22, 0, 30 }, RH = { 28, 0, 0 }, LH = { -22, 0, 0 } }), Shake = 0.7 },
+  TW_Throw = { { 0, REST },
+    { 0.07, P({ Root = { 6, 42, 0 }, Neck = { 0, -26, 0 }, LS = { 34, -30, -62 }, RS = { 46, 0, 18 }, RH = { -8, 0, 0 }, LH = { 12, 0, 0 } }) },
+    { 0.13, P({ Root = { -20, -38, 0 }, Neck = { 6, 20, 0 }, LS = { 92, 24, 18 }, RS = { 20, 0, 34 }, RH = { 34, 0, 0 }, LH = { -26, 0, 0 } }) },
+    { 0.3, P({ Root = { -16, -32, 0 }, LS = { 88, 20, 14 }, RS = { 22, 0, 30 }, RH = { 28, 0, 0 }, LH = { -22, 0, 0 } }) }, { 0.56, REST } },
+  VowCharge = { Hold = P({ Root = { -14, 46, 0 }, Neck = { 6, -28, 0 }, RS = { 22, 58, -26 }, LS = { 86, 0, 30 }, RH = { 26, 0, 0 }, LH = { -20, 0, 0 } }), Shake = 0.9 },
+  TW_VowRelease = { Blend = 0.02, { 0, P({ Root = { -14, 46, 0 }, RS = { 22, 58, -26 }, LS = { 86, 0, 30 }, RH = { 26, 0, 0 }, LH = { -20, 0, 0 } }) },
+    { 0.05, P({ Root = { -34, -6, 0 }, RS = { 34, 0, 0 }, LS = { -30, 0, -28 }, RH = { 46, 0, 0 }, LH = { -38, 0, 0 } }) },
+    { 0.11, P({ Root = { -34, -60, 0 }, Neck = { 10, 34, 0 }, RS = { 26, -44, 26 }, LS = { -36, 0, -28 }, RH = { 44, 0, 0 }, LH = { -38, 0, 0 } }) },
+    { 0.5, P({ Root = { -30, -54, 0 }, Neck = { 10, 30, 0 }, RS = { 28, -40, 24 }, LS = { -30, 0, -26 }, RH = { 40, 0, 0 }, LH = { -34, 0, 0 } }) }, { 0.85, REST } },
+  TW_LastCharge = { { 0, REST },
+    { 0.22, P({ Root = { 4, 0, 0 }, Neck = { -10, 0, 0 }, RS = { 92, 0, -8 }, LS = { 58, 0, 38 }, RH = { 6, 0, 0 }, LH = { -4, 0, 0 } }) },
+    { 0.82, P({ Root = { 7, 0, 0 }, Neck = { -18, 0, 0 }, RS = { 94, 0, -6 }, LS = { 60, 0, 40 }, RH = { 8, 0, 0 }, LH = { -6, 0, 0 } }) },
+    { 1.12, P({ Root = { -24, 72, 0 }, Neck = { 10, -48, 0 }, RS = { 12, 74, -34 }, LS = { 74, 0, 34 }, RH = { 38, 0, 0 }, LH = { -30, 0, 0 } }) },
+    { 1.9, P({ Root = { -28, 78, 0 }, Neck = { 12, -52, 0 }, RS = { 10, 80, -36 }, LS = { 76, 0, 36 }, RH = { 42, 0, 0 }, LH = { -34, 0, 0 } }) } },
+  TW_LastSpin = { Blend = 0.02, { 0, P({ Root = { -28, 40, 0 }, RS = { 6, 40, 40 }, LS = { 30, 0, -40 }, RH = { 42, 0, 0 }, LH = { -34, 0, 0 } }) },
+    { 0.05, P({ Root = { -22, 0, 0 }, RS = { 6, 0, 96 }, LS = { 8, 0, -80 }, RH = { 40, 0, 0 }, LH = { -30, 0, 0 } }) },
+    { 0.34, P({ Root = { -22, 0, 0 }, RS = { 6, 0, 96 }, LS = { 8, 0, -80 }, RH = { 40, 0, 0 }, LH = { -30, 0, 0 } }) },
+    { 0.7, P({ Root = { -12, -18, 0 }, RS = { 24, -30, 40 }, LS = { 14, 0, -40 }, RH = { 18, 0, 0 }, LH = { -14, 0, 0 } }) }, { 1.0, REST } },
+  TW_KingCharge = { { 0, REST },
+    { 0.25, P({ Root = { 8, 0, 0 }, Neck = { -18, 0, 0 }, RS = { 150, 0, -22 }, LS = { 150, 0, 22 }, RH = { -6, 0, 0 }, LH = { 8, 0, 0 } }) },
+    { 0.55, P({ Root = { 10, 0, 0 }, Neck = { -30, 0, 0 }, RS = { 176, 0, -18 }, LS = { 176, 0, 18 }, RH = { -8, 0, 0 }, LH = { 10, 0, 0 } }) },
+    { 2.5, P({ Root = { 14, 0, 0 }, Neck = { -34, 0, 0 }, RS = { 180, 0, -18 }, LS = { 180, 0, 18 }, RH = { -10, 0, 0 }, LH = { 12, 0, 0 } }) } },
+  TW_KingSwing = { Blend = 0.02, { 0, P({ Root = { 14, 0, 0 }, Neck = { -34, 0, 0 }, RS = { 180, 0, -18 }, LS = { 180, 0, 18 }, RH = { -10, 0, 0 }, LH = { 12, 0, 0 } }) },
+    { 0.2, P({ Root = { 18, 0, 0 }, Neck = { -30, 0, 0 }, RS = { 186, 0, -16 }, LS = { 186, 0, 16 }, RH = { -12, 0, 0 }, LH = { 14, 0, 0 } }) },
+    { 0.36, P({ Root = { -48, 0, 0 }, Neck = { 22, 0, 0 }, RS = { 52, 0, -22 }, LS = { 52, 0, 22 }, RH = { 58, 0, 0 }, LH = { -46, 0, 0 } }) },
+    { 1.2, P({ Root = { -44, 0, 0 }, Neck = { 20, 0, 0 }, RS = { 48, 0, -22 }, LS = { 48, 0, 22 }, RH = { 54, 0, 0 }, LH = { -42, 0, 0 } }) }, { 1.6, REST } },
    
   Block = { Hold = P({ Root = { -6, 0, 0 }, RS = { 100, 0, -42 }, LS = { 100, 0, 42 }, Neck = { 8, 0, 0 }, RH = { 12, 0, 0 }, LH = { -10, 0, 0 } }) },
    
@@ -188,13 +314,34 @@ local ANIMS = {
   LaserCharge = { Hold = P({ Root = { -8, 0, 0 }, RS = { 14, 0, 0 }, LS = { 58, 0, -42 }, RH = { 16, 0, 0 }, LH = { -16, 0, 0 } }), Shake = 2.5 },
   LaserFire = { Hold = P({ Root = { -16, 0, 0 }, RS = { 10, 0, 0 }, LS = { 62, 0, -46 }, RH = { 26, 0, 0 }, LH = { -26, 0, 0 } }), Shake = 1.2 },
    
-  Bash = { { 0, REST }, { 0.08, P({ Root = { 0, 26, 0 }, LS = { 38, 0, -38 }, RS = { 20, 0, 20 }, RH = { -10, 0, 0 } }) },
-    { 0.14, P({ Root = { -24, -22, 0 }, LS = { 90, 0, 6 }, RS = { -22, 0, 30 }, RH = { 48, 0, 0 }, LH = { -36, 0, 0 } }) },
-    { 0.32, P({ Root = { -20, -18, 0 }, LS = { 88, 0, 4 }, RH = { 40, 0, 0 }, LH = { -30, 0, 0 } }) }, { 0.6, REST } },
-  Defender = { Hold = P({ Root = { -16, -12, 0 }, LS = { 85, 0, 62 }, RS = { 75, 0, -28 }, RH = { 28, 0, 14 }, LH = { 28, 0, -14 }, Neck = { 6, 0, 0 } }) },
-  Rampage = { Hold = P({ Root = { -34, -10, 0 }, LS = { 90, 0, 58 }, RS = { 30, 0, 30 }, RH = { 48, 0, 0 }, LH = { -42, 0, 0 } }) },
-  Almighty = { { 0, REST }, { 0.2, P({ Root = { 10, 0, 0 }, LS = { 178, 0, -8 }, RS = { 160, 0, 20 }, Neck = { -24, 0, 0 } }) },
-    { 0.42, P({ Root = { -20, 0, 0 }, LS = { 70, 0, -10 }, RS = { 40, 0, 20 }, RH = { 30, 0, 0 }, LH = { -20, 0, 0 } }) }, { 0.9, REST } },
+
+  Bash = { { 0, REST },
+    { 0.07, P({ Root = { 5, 30, 0 }, Neck = { 4, 0, 0 }, LS = { 28, 0, -42 }, RS = { 72, 0, 14 }, RH = { -14, 0, 0 }, LH = { 16, 0, 0 } }) },
+    { 0.13, P({ Root = { -26, -26, 0 }, Neck = { 9, 0, 0 }, LS = { 92, 0, 8 }, RS = { 6, 0, 30 }, RH = { 50, 0, 0 }, LH = { -38, 0, 0 } }) },
+    { 0.20, P({ Root = { -31, -29, 0 }, Neck = { 11, 0, 0 }, LS = { 97, 0, 13 }, RS = { -4, 0, 34 }, RH = { 52, 0, 0 }, LH = { -40, 0, 0 } }) },
+    { 0.32, P({ Root = { -22, -18, 0 }, Neck = { 7, 0, 0 }, LS = { 88, 0, 6 }, RS = { 14, 0, 24 }, RH = { 40, 0, 0 }, LH = { -30, 0, 0 } }) },
+    { 0.46, P({ Root = { -8, -6, 0 }, LS = { 66, 0, 32 }, RS = { 46, 0, 12 }, RH = { 14, 0, 0 }, LH = { -10, 0, 0 } }) },
+    { 0.62, REST } },
+
+  Defender = { Hold = P({ Root = { -18, -14, 0 }, Neck = { 8, 0, 0 }, LS = { 88, 0, 58 }, RS = { 64, 0, -14 }, RH = { 28, 0, 14 }, LH = { 28, 0, -14 } }) },
+
+  Release = { { 0, REST },
+    { 0.06, P({ Root = { 10, 0, 0 }, Neck = { -14, 0, 0 }, LS = { 138, 0, 22 }, RS = { 112, 0, 8 }, RH = { -6, 0, 0 }, LH = { 8, 0, 0 } }) },
+    { 0.12, P({ Root = { -36, 0, 0 }, Neck = { 14, 0, 0 }, LS = { 42, 0, 24 }, RS = { 40, 0, 12 }, RH = { 40, 0, 0 }, LH = { -32, 0, 0 } }) },
+    { 0.24, P({ Root = { -40, 0, 0 }, Neck = { 16, 0, 0 }, LS = { 38, 0, 26 }, RS = { 36, 0, 14 }, RH = { 42, 0, 0 }, LH = { -34, 0, 0 } }) },
+    { 0.48, P({ Root = { -10, 0, 0 }, LS = { 62, 0, 34 }, RS = { 46, 0, 12 }, RH = { 12, 0, 0 }, LH = { -8, 0, 0 } }) },
+    { 0.66, REST } },
+
+  Rampage = { Hold = P({ Root = { -38, -14, 0 }, Neck = { 10, 0, 0 }, LS = { 92, 0, 54 }, RS = { 12, 0, 34 }, RH = { 50, 0, 0 }, LH = { -44, 0, 0 } }) },
+
+  Almighty = { { 0, REST },
+    { 0.12, P({ Root = { 14, -6, 0 }, Neck = { -6, 0, 0 }, LS = { 50, 0, 30 }, RS = { 40, 0, 22 }, RH = { -8, 0, 0 }, LH = { 10, 0, 0 } }) },
+    { 0.22, P({ Root = { 12, 0, 0 }, Neck = { -26, 0, 0 }, LS = { 80, 0, 36 }, RS = { 118, 0, 6 }, RH = { -6, 0, 0 }, LH = { 10, 0, 0 } }) },
+    { 0.34, P({ Root = { 14, 0, 0 }, Neck = { -30, 0, 0 }, LS = { 82, 0, 38 }, RS = { 122, 0, 8 }, RH = { -6, 0, 0 }, LH = { 10, 0, 0 } }) },
+    { 0.46, P({ Root = { -26, -10, 0 }, Neck = { 10, 0, 0 }, LS = { 96, 0, 28 }, RS = { 22, 0, 8 }, RH = { 36, 0, 0 }, LH = { -28, 0, 0 } }) },
+    { 0.56, P({ Root = { -30, -12, 0 }, Neck = { 12, 0, 0 }, LS = { 98, 0, 26 }, RS = { 14, 0, 12 }, RH = { 38, 0, 0 }, LH = { -30, 0, 0 } }) },
+    { 0.72, P({ Root = { -12, -4, 0 }, LS = { 70, 0, 34 }, RS = { 40, 0, 12 }, RH = { 14, 0, 0 }, LH = { -10, 0, 0 } }) },
+    { 1.0, REST } },
    
   Sweep = { { 0, REST }, { 0.09, P({ Root = { 0, 32, 0 }, RS = { 105, 0, 62 }, LS = { 30, 0, -25 } }) },
     { 0.19, P({ Root = { -8, -32, 0 }, RS = { 30, 0, -52 }, RH = { 18, 0, 0 } }) }, { 0.28, P({ Root = { -6, -40, 0 }, RS = { 22, 0, -62 } }) }, { 0.52, REST } },
@@ -212,11 +359,13 @@ local ANIMS = {
 }
  
 local IDLES = {
-  Warrior = P({ RS = { 72, -10, 8 }, LS = { 45, 0, 30 } }),  
+  Warrior = P({ Root = { -3, -12, 0 }, Neck = { 2, 10, 0 }, RS = { 56, -16, 10 }, LS = { 74, 0, 62 }, RH = { 10, 0, 0 }, LH = { -8, 0, 0 } }),  
   Mage = P({ RS = { 72, 0, 8 }, LS = { 8, 0, -10 } }),
-  Tank = P({ LS = { 55, 0, 42 }, RS = { 12, 0, 12 } }),  
+  Tank = P({ Root = { -2, -8, 0 }, Neck = { 2, 6, 0 }, LS = { 88, 0, 58 }, RS = { 52, -10, 8 }, RH = { 8, 0, 0 }, LH = { -6, 0, 0 } }),
+  Twinblade = P({ RS = { 58, -6, 8 }, LS = { 58, 6, -8 } }),  
   Supporter = P({ RS = { 70, 0, 6 }, LS = { 10, 0, -8 } }),
   Gambler = P({ RS = { 18, 0, 6 }, LS = { 24, 0, -8 } }),
+  TrueWarrior = P({ Root = { -4, -10, 0 }, Neck = { 2, 8, 0 }, RS = { 70, -12, 10 }, LS = { 60, 0, 38 }, RH = { 10, 0, 0 }, LH = { -8, 0, 0 } }),
   Duelist = P({ RS = { 32, 0, 14 }, LS = { -28, 0, -12 } }),  
 }
  
@@ -225,6 +374,7 @@ local HOLDS = {
   { "ClassStatus_ParryStance", "Parry" }, { "MageLasering", "LaserFire" }, { "ClassStatus_LaserCharge", "LaserCharge" },
   { "ClassStatus_WaltzCharge", "WaltzCharge" }, { "ClassStatus_PhaseCharge", "PhaseCharge" },
   { "ClassStatus_Riposte", "RiposteStance" },
+  { "ClassStatus_CounterStance", "CounterStance" }, { "ClassStatus_HolyStance", "CounterStance" }, { "ClassStatus_VowCharge", "VowCharge" }, { "ClassStatus_TruthCast", "TruthCast" },
   { "MageCloneCharging", "CloneCharge" },
   { "ClassStatus_Blocking", "Block" },
 }
@@ -316,6 +466,33 @@ Run.PreSimulation:Connect(function(dt)
     if not h or h.Health <= 0 or not char:GetAttribute("ClassId") then
       continue
     end
+    local vanished=char:GetAttribute("TwinbladeVanished")==true
+    if vanished or entry.vanished then
+      for _,d in char:GetDescendants() do
+        if d:IsA("BasePart") or d:IsA("Decal") then d.LocalTransparencyModifier=vanished and 1 or 0 end
+      end
+      entry.vanished=vanished
+    end
+    local spinT
+    local spinEnd=char:GetAttribute("TwinbladeSpinEnd")
+    if spinEnd and spinEnd>now then
+      spinT=math.clamp(1-(spinEnd-now)/(char:GetAttribute("TwinbladeSpinDur") or 1.4),0,1)
+    end
+    if spinT or entry.spinning then
+      local gear=char:FindFirstChild("ClassGear")
+      local motorR=gear and gear:FindFirstChild("BladeSpinR",true)
+      local motorL=gear and gear:FindFirstChild("BladeSpinL",true)
+      local a=spinT and math.rad(2520*spinT) or 0
+      if motorR then motorR.Transform=CFrame.Angles(a,0,0) end
+      if motorL then motorL.Transform=CFrame.Angles(-a,0,0) end
+      if spinT then
+        entry.spinning=true
+      else
+        entry.spinning=false
+        local rj=entry.joints.RootJoint
+        if rj then rj.joint.Transform=identity end
+      end
+    end
     local hold
     for _, pair in ipairs(HOLDS) do
       if char:GetAttribute(pair[1]) then
@@ -397,6 +574,11 @@ Run.PreSimulation:Connect(function(dt)
        elseif name=="RootJoint" and not poseA then
         target=angles(record,{walking and -5 or 0,0,0}) weight=1
        elseif name=="Neck" and not poseA then target=identity weight=1 end
+      end
+      if name=="RootJoint" and spinT then
+        local yaw=math.rad((char:GetAttribute("ClassSpinDegrees") or 1080)*smooth(spinT))
+        record.joint.Transform=record.inverseBasis*CFrame.Angles(0,yaw,0)*record.basis*(target or identity)
+        continue
       end
       if target and weight > 0 then
          

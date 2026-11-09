@@ -5,7 +5,8 @@ local circleImage = "rbxasset://textures/whiteCircle.png"
 local kinds = {
  ClassAttackSpeedBoost="sword", ClassAttackDebuff="sword", ClassSlow="slow", ClassStaminaRegenBlock="sealed",
  P5God = "divinity",
- BossStunned="stunStars", BossTaunted="taunt", BossSlowed="slow", BossVulnerable="brokenHeart", BossBleed="drop", BossPoison="drop", BossBurn="flame",
+ P5Spacetrum = "star", P5Verdant = "heart", P5Pastborn = "clock", P5Enraged = "flame", P5SuperEnraged = "flame",
+ BossStunned="stunStars", BossTaunted="taunt", BossSlowed="slow", BossVulnerable="brokenHeart", BossBleed="drop", BossPoison="drop", BossBurn="flame", BossHolyFlame="flame",
 	Vulnerability = "brokenHeart", CooldownIncrease = "clock", CooldownFreeze = "sealed",
 	ChainCurse = "chain", TemporalWound = "clock", Acid = "drop",
 	DeathMark = "star", JumpLock = "sealed", Blur = "eye",
@@ -46,6 +47,9 @@ local kinds = {
  P4TrueSpirit="spirit",
  P4Karmanation="karma",
  ClassUndying="star",
+ ClassUnbroken="star", ClassLastStand="shield", ClassCounterStance="sword", ClassHiddenReady="sword", ClassHolyStance="sword", ClassTruthCast="star", ClassAegis="shield", ClassLuck="star", ClassStored="shield", ClassTwinFlow="sword", ClassWhirling="wind", ClassTwinSpirits="spirit", ClassFinalReady="sword",
+ ClassDisorderLaserSlow="energy", ClassDisorderCharge="energy", ClassMisplaceReady="swap",
+ ClassGlitch="copies", ClassRedacted="shield", ClassOverwrite="energy", ClassCheckpoint="clock",
  ClassDamageBoost="sword", ClassDefenseBoost="shield", ClassHPRegen="heart", ClassStaminaRegen="energy", ClassSpeedBoost="wind", ClassUninterrupted="shield",
  ClassRampage="wind",
  ClassTaunt="taunt",
@@ -63,6 +67,8 @@ local kinds = {
  ClassSkillStolen="sealed",
  ClassTempo="energy",
  ClassDuelistGuard="shield",
+ ClassDefenderGuard="shield",
+ ClassExposed="sealed",
  ClassRiposte="sword",
  ClassPhasing="wind",
  ClassFlashstepReady="wind",
@@ -76,6 +82,7 @@ local kinds = {
  DiffHardcore="swap",
  DiffNerfedHardcore="eye",
  DiffEasy="heart",
+ LogoWarrior="logoWarrior", LogoMage="logoMage", LogoTank="logoTank", LogoSupporter="logoSupporter", LogoGambler="logoGambler", LogoDuelist="logoDuelist", LogoTwinblade="logoTwinblade", LogoTrueWarrior="logoTrueWarrior", LogoDisorderer="logoDisorderer",
  Fear="sealed",
 	Deceleration = "clock",
 	GoldenMark = "star",
@@ -167,6 +174,52 @@ local function draw(root, kind, color)
   outline(root,{{.18,.15},{.5,.07},{.82,.15},{.78,.56},{.5,.87},{.22,.56}},color,true,.075)
   outline(root,{{.34,.64},{.34,.36},{.5,.53},{.66,.36},{.66,.64}},color,false,.08)
   line(root,.12,.72,.06,.5,color,.06) line(root,.88,.72,.94,.5,color,.06)
+ elseif kind=="logoWarrior" then
+  outline(root,{{.2,.22},{.5,.12},{.8,.22},{.76,.6},{.5,.92},{.24,.6}},color,true,.075)
+  line(root,.5,.06,.5,.66,color,.11)
+  outline(root,{{.43,.12},{.5,.0},{.57,.12}},color,true,.06)
+  line(root,.3,.44,.7,.44,color,.09)
+  circle(root,.5,.74,.12,.12,color)
+ elseif kind=="logoMage" then
+  local halo=ring(root,.5,.52,.72,color) halo:FindFirstChildOfClass("UIStroke").Thickness=3
+  circle(root,.5,.52,.34,.34,color)
+  circle(root,.5,.16,.12,.12,color) circle(root,.85,.7,.12,.12,color) circle(root,.15,.7,.12,.12,color)
+  line(root,.84,.08,.84,.26,color,.055) line(root,.75,.17,.93,.17,color,.055)
+ elseif kind=="logoTank" then
+  outline(root,{{.1,.14},{.5,.03},{.9,.14},{.85,.6},{.5,.97},{.15,.6}},color,true,.1)
+  outline(root,{{.28,.3},{.5,.23},{.72,.3},{.69,.56},{.5,.77},{.31,.56}},color,true,.06)
+  line(root,.5,.23,.5,.77,color,.07)
+  line(root,.28,.42,.72,.42,color,.06)
+ elseif kind=="logoSupporter" then
+  local halo=ring(root,.5,.5,.86,color) halo:FindFirstChildOfClass("UIStroke").Thickness=3
+  line(root,.5,.24,.5,.76,color,.14) line(root,.24,.5,.76,.5,color,.14)
+  circle(root,.5,.05,.08,.08,color) circle(root,.5,.95,.08,.08,color) circle(root,.05,.5,.08,.08,color) circle(root,.95,.5,.08,.08,color)
+ elseif kind=="logoGambler" then
+  outline(root,{{.5,.04},{.88,.27},{.88,.73},{.5,.96},{.12,.73},{.12,.27}},color,true,.07)
+  outline(root,{{.5,.27},{.74,.66},{.26,.66}},color,true,.06)
+  line(root,.5,.27,.5,.04,color,.05) line(root,.5,.27,.12,.27,color,.05) line(root,.5,.27,.88,.27,color,.05)
+  line(root,.74,.66,.88,.73,color,.05) line(root,.74,.66,.5,.96,color,.05)
+  line(root,.26,.66,.12,.73,color,.05) line(root,.26,.66,.5,.96,color,.05)
+ elseif kind=="logoDuelist" then
+  line(root,.12,.88,.86,.14,color,.065) line(root,.88,.88,.14,.14,color,.065)
+  line(root,.17,.61,.39,.83,color,.075) line(root,.61,.83,.83,.61,color,.075)
+  circle(root,.1,.9,.1,.1,color) circle(root,.9,.9,.1,.1,color)
+ elseif kind=="logoTrueWarrior" then
+  outline(root,{{.2,.26},{.5,.16},{.8,.26},{.76,.62},{.5,.94},{.24,.62}},color,true,.07)
+  line(root,.5,.0,.5,.7,color,.12)
+  line(root,.3,.4,.7,.4,color,.09)
+  outline(root,{{.3,.12},{.36,.02},{.43,.1},{.5,.0},{.57,.1},{.64,.02},{.7,.12}},color,false,.05)
+  circle(root,.5,.78,.1,.1,color)
+ elseif kind=="logoTwinblade" then
+  line(root,.3,.92,.3,.12,color,.09) line(root,.7,.92,.7,.12,color,.09)
+  outline(root,{{.24,.14},{.3,.04},{.36,.14}},color,true,.05) outline(root,{{.64,.14},{.7,.04},{.76,.14}},color,true,.05)
+  line(root,.12,.68,.48,.68,color,.07) line(root,.52,.68,.88,.68,color,.07)
+  outline(root,{{.5,.2},{.58,.4},{.5,.58},{.42,.4}},color,true,.05)
+ elseif kind=="logoDisorderer" then
+  outline(root,{{.5,.06},{.84,.25},{.84,.66},{.5,.85},{.16,.66},{.16,.25}},color,true,.07)
+  line(root,.5,.46,.5,.85,color,.06) line(root,.5,.46,.16,.25,color,.06) line(root,.5,.46,.84,.25,color,.06)
+  line(root,.06,.5,.36,.5,color,.05) line(root,.64,.62,.96,.62,color,.05)
+  rect(root,.82,.12,.1,.1,color,45) rect(root,.14,.86,.08,.08,color,45)
  elseif kind=="goldMimic" then
   person(root,color,.28,.64,.75) person(root,color,.73,.64,.75)
   outline(root,{{.29,.23},{.25,.07},{.4,.18},{.5,.04},{.6,.18},{.75,.07},{.71,.23}},color,false,.065)

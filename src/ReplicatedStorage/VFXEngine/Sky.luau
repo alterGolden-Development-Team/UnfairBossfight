@@ -37,7 +37,6 @@ local function tw(inst,t,props)
  local ok,tween=pcall(Tween.Create,Tween,inst,TweenInfo.new(t,Enum.EasingStyle.Sine,Enum.EasingDirection.InOut),props)
  if ok then tween:Play()end
 end
- -- dark dip used to hide the skybox swap
 local function blink(t,fn)
  dip=dip or effect("VFXSkyDip")
  dip.Enabled=true

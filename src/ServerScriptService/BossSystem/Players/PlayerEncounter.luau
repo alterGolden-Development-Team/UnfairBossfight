@@ -14,10 +14,13 @@ local Time = require(BossSystem.Mechanics.Time.TimeEffectController)
 local EncounterConfig = require(Shared:WaitForChild("Config"):WaitForChild("EncounterConfig"))
 local api = {}
 local Aim = require(BossSystem.Combat.AttackTargetContinuity)
+local DisorderWall = require(BossSystem.Combat.DisorderWall)
 local respawning = setmetatable({}, { __mode = "k" })
+local loadingCharacters = setmetatable({}, { __mode = "k" })
 local bound = setmetatable({}, { __mode = "k" })
 local damageStatuses, damagePassives
 local damageGates = setmetatable({}, { __mode = "k" })
+local DEATH_ROAR_SKILLS = table.freeze({ ["P4DeathRoars(Ultimate)"] = true, P5DeathRoar = true })
 function api.SetDamageGate(character, token, active)
   if active then
     if damageGates[character] and damageGates[character] ~= token then
@@ -120,9 +123,10 @@ end
 function api.BaseOutgoingDamageMultiplier(character)
   return require(BossSystem.Combat.StatusEffectService).P3DamageMultiplier(character)
 end
-local function duelistPhasing(char)
+local function classPhasing(char)
   local deadline = char and char:GetAttribute("ClassStatus_Phasing")
-  return char and char:GetAttribute("ClassId") == "Duelist" and type(deadline) == "number"
+  local classId = char and char:GetAttribute("ClassId")
+  return (classId == "Duelist" or classId == "Twinblade" or classId == "TrueWarrior" or classId == "Disorderer") and type(deadline) == "number"
     and (deadline == -1 or workspace:GetServerTimeNow() < deadline)
 end
 function api.CanReceiveHit(char, ignoreDashProtection, piercing)
@@ -131,7 +135,8 @@ function api.CanReceiveHit(char, ignoreDashProtection, piercing)
   if
     not h
     or h.Health <= 0
-    or duelistPhasing(char)
+    or classPhasing(char)
+    or DisorderWall.Protects(char)
     or char:GetAttribute("Invulnerable") and not ((ignoreDashProtection or piercing)
       and workspace:GetServerTimeNow() < (char:GetAttribute("DashInvulnerableUntil") or 0))
     or char:FindFirstChildOfClass("ForceField")
@@ -139,6 +144,7 @@ function api.CanReceiveHit(char, ignoreDashProtection, piercing)
     or workspace:GetServerTimeNow() < (char:GetAttribute("TimeThawProtectedUntil") or 0)
     or not ignoreDashProtection and not piercing and workspace:GetServerTimeNow() < (char:GetAttribute("DashInvulnerableUntil") or 0)
     or workspace:GetServerTimeNow() < (char:GetAttribute("RespawnInvulnerableUntil") or 0)
+    or workspace:GetAttribute("P5FinaleSafe") == true
   then
     return false
   end
@@ -150,6 +156,17 @@ function api.CanReceiveHit(char, ignoreDashProtection, piercing)
       or player:GetAttribute("ViewAsServer")
     )
 end
+local function canBeExecutedThroughIFrames(char)
+  char = Aim.Character(char)
+  local h = char and char:FindFirstChildOfClass("Humanoid")
+  if not h or h.Health <= 0 then return false end
+  local now = workspace:GetServerTimeNow()
+  return not (char:GetAttribute("TimeFrozen") and EncounterConfig.TimeStopDamageProtection)
+    and not DisorderWall.Protects(char)
+    and now >= (char:GetAttribute("TimeThawProtectedUntil") or 0)
+    and now >= (char:GetAttribute("RespawnInvulnerableUntil") or 0)
+    and workspace:GetAttribute("P5FinaleSafe") ~= true
+end
 function api.ExecuteHit(char, livesCost, reason, damageToken, options)
   if typeof(char)~="Instance" or not char:IsA("Model") then return false end
   local source=options and options.UnavoidableFrom
@@ -157,7 +174,12 @@ function api.ExecuteHit(char, livesCost, reason, damageToken, options)
   local finality=expectedSkill and typeof(source)=="Instance" and source:IsA("Model")
    and source:GetAttribute("Phase")==5 and source:GetAttribute("CurrentSkill")==expectedSkill
    and not source:GetAttribute("IsGoldenClone") and not source:GetAttribute("EncounterEnded")
-  if damageGates[char] and damageGates[char] ~= damageToken or not finality and not api.CanReceiveHit(char) then
+  if not finality and (char:GetAttribute("ClassStatus_LastStand") ~= nil or char:GetAttribute("TrueWarriorCinematic") == true) then
+    return false
+  end
+  local ignoreIFrames = options and options.IgnoreIFrames == true
+  local open = not DisorderWall.Protects(char) and (finality or (ignoreIFrames and canBeExecutedThroughIFrames(char)) or (not ignoreIFrames and api.CanReceiveHit(char)))
+  if damageGates[char] and damageGates[char] ~= damageToken or not open then
     return false
   end
   local player = Players:GetPlayerFromCharacter(char)
@@ -166,7 +188,7 @@ function api.ExecuteHit(char, livesCost, reason, damageToken, options)
     or api.IsDefeated(player) or player:GetAttribute("ExecutionPending") or player:GetAttribute("ViewAsServer") then
     return false
   end
-  char:SetAttribute("PendingDeathLifeCost", math.clamp(math.floor(livesCost or 1), 1, math.max(api.StartingLives, 999)))  -- Night Tearer costs 777
+  char:SetAttribute("PendingDeathLifeCost", math.clamp(math.floor(livesCost or 1), 1, math.max(api.StartingLives, 999)))
   char:SetAttribute("ExecutionHitReason", reason or "Execution hit")
   local before = h.Health
   h.Health = 0
@@ -216,10 +238,11 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
     or amount <= 0
     or amount == math.huge
     or not api.CanReceiveHit(char, balance and balance.IsStatusDamage == true and balance.Skill == "Rupture",
-      balance and balance.IgnoreIFrames == true and balance.Skill == "P4DeathRoars(Ultimate)"
+      balance and balance.IgnoreIFrames == true
+        and (DEATH_ROAR_SKILLS[balance.Skill] == true or balance.Skill == "P5EnhancedJumpKick")
         and (char:GetAttribute("ClassId") ~= nil or Difficulty.Mercy("AllowPierce", api.DamageOwner(sourceActor)) ~= false))
   then
-    if duelistPhasing(char) and type(amount) == "number" and amount == amount and amount > 0 and amount < math.huge
+    if classPhasing(char) and type(amount) == "number" and amount == amount and amount > 0 and amount < math.huge
       and not (balance and balance.IsStatusDamage) then
       local riposte = char:GetAttribute("ClassStatus_Riposte")
       local player = Players:GetPlayerFromCharacter(char)
@@ -258,6 +281,7 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
     return actual
   end
   amount=BossDamageBalance.Resolve(amount,sourceActor,balance)
+  if owner and workspace:GetServerTimeNow()<(owner:GetAttribute("DisorderWeakUntil") or 0) then amount*=owner:GetAttribute("DisorderWeakMult") or 1 end
   damageStatuses = damageStatuses or require(BossSystem.Combat.StatusEffectService)
  local tuning = balance and AbilityMetadata.Get(balance.Skill)
  local isStatus = balance and balance.IsStatusDamage == true
@@ -271,14 +295,18 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
  local resolvedEcho=balance and balance.Skill=="TemporalWound" and balance.IsStatusDamage==true
  if flatBurn then amount=2 end
    
-  local exact = balance and balance.ExactDamage == true and balance.Skill == "P4.5HeavenlyDisciple(Ultimate)"
+  local exact = balance and balance.ExactDamage == true
+    and (balance.Skill == "P4.5HeavenlyDisciple(Ultimate)" or balance.Skill == "P5DeathRoar")
+  local flatPercent = exact and balance.Skill == "P5DeathRoar"
   if owner and math.min(4, math.floor(owner:GetAttribute("Phase") or 0)) == 4 and not flatBurn and not resolvedEcho and not exact then
     damagePassives = damagePassives or require(BossSystem.Combat.PassiveController)
     amount *= damagePassives.DamageMultiplier(owner)
   end
-  local ignoresDefense = balance
+  local ignoresDefense = balance and balance.IgnoreDefense == true and balance.Skill == "P5EnhancedJumpKick" and owner and sourceActor
+    and not sourceActor:GetAttribute("IsGoldenClone") and (char:GetAttribute("ClassId") ~= nil or Difficulty.Mercy("AllowPierce", owner) ~= false)
+    or balance
     and balance.IgnoreDefense == true
-    and (balance.Skill == "P4EnhancedNormalSlashes" or balance.Skill == "P4DeathRoars(Ultimate)")
+    and (balance.Skill == "P4EnhancedNormalSlashes" or DEATH_ROAR_SKILLS[balance.Skill] == true)
     and owner
     and math.min(4, math.floor(owner:GetAttribute("Phase") or 0)) == 4
     and sourceActor
@@ -298,16 +326,16 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
     return 0
   end
  
- if not resolvedEcho then amount = Difficulty.Damage(amount, owner) end
+ if not resolvedEcho and not flatPercent then amount = Difficulty.Damage(amount, owner) end
   
- if not resolvedEcho then amount *= require(BossSystem.Combat.DifficultyPassive).OutgoingMultiplier(owner) end
+ if not resolvedEcho and not flatPercent then amount *= require(BossSystem.Combat.DifficultyPassive).OutgoingMultiplier(owner) end
  if isUltimate and not resolvedEcho then amount *= Difficulty.Mercy("UltimateDamage", owner) or 1 end
   
 
- postGrace = char:GetAttribute("ClassId") and 0 or (Difficulty.Mercy("PostHitGrace", owner) or 0)
+ postGrace = Difficulty.Mercy("PostHitGrace", owner) or 0
  if postGrace > 0 and not isStatus and workspace:GetServerTimeNow() < (char:GetAttribute("MercyGraceUntil") or 0) then return 0 end
   
- local hitCap = not char:GetAttribute("ClassId") and Difficulty.Mercy("HitCap", owner)
+ local hitCap = Difficulty.Mercy("HitCap", owner)
  if hitCap then amount = math.min(amount, h.MaxHealth * hitCap) end
 
  end
@@ -365,9 +393,54 @@ function api.Damage(char, amount, sourceActor, damageToken, balance)
     if damagePassives.OnDamageDealt then
       damagePassives.OnDamageDealt(owner, char, actual, balance)
     end
+    -- (Round Y) Phase 5 attacks leave a debuff from the game's debuff list (Combat/P5Debuffs); status ticks never do
+    if not isStatus and balance and balance.Skill and (tonumber(owner:GetAttribute("Phase")) or 1) == 5 then
+      pcall(function()
+        require(BossSystem.Combat.P5Debuffs).OnHit(owner, char, balance.Skill)
+      end)
+    end
   end
   return actual
 end
+function api.LoadCharacter(player, force)
+  if not player or player.Parent ~= Players then
+    return false
+  end
+  if player.Character and not force then
+    return true
+  end
+  if loadingCharacters[player] then
+    return false
+  end
+
+  loadingCharacters[player] = true
+  local loaded = false
+  for attempt = 1, 3 do
+    if player.Parent ~= Players then
+      break
+    end
+    if player.Character and not force then
+      loaded = true
+      break
+    end
+
+    local ok, err = pcall(function()
+      player:LoadCharacterAsync()
+    end)
+    if ok then
+      loaded = true
+      break
+    end
+
+    warn("Character load attempt " .. attempt .. " failed for " .. player.Name .. ": " .. tostring(err))
+    if attempt < 3 then
+      task.wait(1)
+    end
+  end
+  loadingCharacters[player] = nil
+  return loaded
+end
+
 function api.ExhaustLives(player, reason)
   if api.IsDefeated(player) or player:GetAttribute("ViewAsServer") == true then
     return false
@@ -397,7 +470,7 @@ function api.ConsumeLife(player, char)
     char:SetAttribute("LifeConsumed", true)
     task.delay(Players.RespawnTime, function()
       if player.Parent == Players and player.Character == char then
-        player:LoadCharacterAsync()
+        api.LoadCharacter(player, true)
       end
     end)
     return true
@@ -420,7 +493,7 @@ function api.ConsumeLife(player, char)
       and not api.IsDefeated(player)
       and not player:GetAttribute("ExecutionPending")
     then
-      player:LoadCharacterAsync()
+      api.LoadCharacter(player, true)
     end
   end)
   return true
@@ -481,6 +554,28 @@ function api.BindCharacter(player, char)
     pcall(require(BossSystem.Players.Classes.ClassService).Apply, player, char)
   end)
 end
+function api.CheckpointRestore(player, snap)
+  if player.Parent ~= Players or player:GetAttribute("ViewAsServer") or player:GetAttribute("ExecutionPending") then
+    return nil
+  end
+  if api.IsDefeated(player) then
+    player:SetAttribute("PermanentlyDefeated", false)
+    player:SetAttribute("DefeatReason", nil)
+  end
+  if type(snap.Lives) == "number" and (player:GetAttribute("LivesRemaining") or 0) < snap.Lives then
+    player:SetAttribute("LivesRemaining", snap.Lives)
+  end
+  respawning[player] = true
+  if not api.LoadCharacter(player, true) then
+    return nil
+  end
+  local char = player.Character
+  local deadline = os.clock() + 6
+  while char and os.clock() < deadline and player.Character == char and not char:GetAttribute("ClassLifeToken") do
+    task.wait(0.05)
+  end
+  return player.Character == char and char or nil
+end
 function api.Start()
   if api.started then
     return
@@ -500,7 +595,7 @@ function api.Start()
     else
       task.spawn(function()
         if player.Parent == Players then
-          player:LoadCharacterAsync()
+          api.LoadCharacter(player)
         end
       end)
     end
@@ -511,6 +606,39 @@ function api.Start()
   end
 
 end
+function api.ApplyPhase5Buff()
+  if workspace:GetAttribute("Phase5HealthMultiplier") then
+    return false
+  end
+  local multiplier = EncounterConfig.Phase5HealthMultiplier or 10
+  workspace:SetAttribute("Phase5HealthMultiplier", multiplier)
+  for _, player in ipairs(Players:GetPlayers()) do
+    local lives = player:GetAttribute("LivesRemaining")
+    if type(lives) == "number" and lives > 0 and not api.IsDefeated(player) then
+      lives = math.floor(lives) + (EncounterConfig.Phase5BonusLives or 10)
+      player:SetAttribute("LivesRemaining", lives)
+      local char = player.Character
+      if char then
+        char:SetAttribute("LivesRemaining", lives)
+        local h = char:FindFirstChildOfClass("Humanoid")
+        if h and h.Health > 0 then
+          local halved = char:GetAttribute("HalvedBaseMaxHealth")
+          if halved then
+            char:SetAttribute("HalvedBaseMaxHealth", halved * multiplier)
+          end
+          h.MaxHealth = h.MaxHealth * multiplier
+          h.Health = h.MaxHealth
+        end
+      end
+    end
+  end
+  return true
+end
+workspace:GetAttributeChangedSignal("EncounterStarted"):Connect(function()
+  if not workspace:GetAttribute("EncounterStarted") then
+    workspace:SetAttribute("Phase5HealthMultiplier", nil)
+  end
+end)
 return setmetatable(api, { __index = function(_, key)
  if key == "StartingLives" then return Difficulty.GetStartingLives() end
 end })

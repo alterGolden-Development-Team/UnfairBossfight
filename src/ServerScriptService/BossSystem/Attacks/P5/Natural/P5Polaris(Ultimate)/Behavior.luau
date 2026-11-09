@@ -7,6 +7,9 @@ local Players=game:GetService("Players")
 local CollectionService=game:GetService("CollectionService")
 
 local Encounter=require(B.Players.PlayerEncounter)
+local Status=require(B.Combat.StatusEffectService)
+local BorealisStyle=require(script.Parent.Parent.P5Borealis.Style)
+local BorealisVisuals=require(script.Parent.Parent.P5Borealis.Visuals)
 local TAG="PolarisCaster"  
 
  
@@ -60,12 +63,29 @@ return function(actor)
  local api={Cooldown=S.Cooldown,ManagesCooldown=true,IsUltimate=true,UltimatePhase=5}
  function api.CanUse(target)return A.Ready(actor,S,current,target)end
  function api.Combo(target)
-  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"ProjectileSpeed"},Agile={"TurnRate"},Count={"Shots"},Tell={"Telegraph"}})  -- difficulty knobs, this cast only
+  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Speed={"ProjectileSpeed"},Agile={"TurnRate"},Count={"Shots"},Tell={"Telegraph"}})
   if not api.CanUse(target)then return false end
   local core=require(B.Combat.AttackRegistry).For(actor,"P1CombatCore")
   return core.Perform(target,S.Name,function()
+    -- he takes the middle of the map first: Polaris is always cast from the centre (blinks there, on his own floor height)
+   do
+    local ok,err=pcall(function()
+     local sc=require(B.Attacks.Shared.P5StrikeCore).Context(actor,S.Name)
+     local floor=sc.Ground(Vector3.new(0,20,0))
+     local lift=core.Root.Position.Y-sc.Ground(core.Root.Position).Y
+     local goal=CFrame.new(floor.X,floor.Y+lift,floor.Z)*core.Root.CFrame.Rotation
+     if((core.Root.Position-goal.Position)*Vector3.new(1,0,1)).Magnitude>3 then
+      if not sc.Blink(goal)then core.Root.CFrame=goal end
+     end
+    end)
+    if not ok then warnOnce("center","[Polaris] could not move to the centre: "..tostring(err))end
+   end
    A.StartCooldown(actor,S)
-   local total=S.Charge+(S.Shots-1)*S.ShotGap+S.ProjectileLife+#S.Burn*S.BurnInterval+S.Recovery
+    -- the stars are synced to the cast's timer: the cast lasts S.Duration and the volleys are spread over all of it, so
+    -- stars keep attacking until the time is up (the last one leaves FinalTail seconds before the end)
+   local gap=math.max((S.Duration-S.Charge-S.Recovery-S.FinalTail)/math.max(S.Shots-1,1),.1)
+   S=table.clone(S)S.ShotGap=gap  -- the visuals, sounds and clients read the real gap from this cast's style
+   local total=S.Charge+(S.Shots-1)*gap+S.FinalTail+S.Recovery
    local fx  
    local ctx
    ctx=A.Create(actor,S,total+.3,function()
@@ -134,7 +154,7 @@ return function(actor)
    local projectiles={}    
    local pending={}        
    local teleN,ci=0,1
-   local finaleT=S.Charge+(S.Shots-1)*S.ShotGap
+   local finaleT=S.Charge+(S.Shots-1)*gap
 
     
    local cues={
@@ -274,6 +294,94 @@ return function(actor)
     if fx then safe(Visuals.Fire,ctx,fx,p.From,p.Color,p.Volley,p.Final)end
    end
 
+   -- Borealis rains down while the stars fall: AU.Roaming beams wander the arena on their own (they follow no one) and
+    -- AU.Hunting beams follow a player. They use the beacon P5Borealis already draws, but just burn and chill whoever
+   do
+    local AU=require(script.Parent.Style).Aurora
+    if AU then
+     local BS=table.clone(BorealisStyle)
+     local spawnAt=S.Charge
+     BS.Windup=AU.Windup BS.Capture=0
+     BS.Chase=math.max(total-S.Recovery-spawnAt-AU.Windup-AU.Tail,1)
+     local endAt=spawnAt+AU.Windup+BS.Chase
+     local centre=groundAt(startPos)
+     local FLAT=Vector3.new(1,0,1)
+     local beams,spawned={},false
+     -- anywhere on the map: a random spot across the whole arena floor
+     local function anywhere()
+      local okB,bounds=pcall(function() return require(B.Encounter.ArenaPlacement).GetBounds() end)
+      if okB and bounds then
+       local x=(math.random()*2-1)*(bounds.HalfX-8)
+       local z=(math.random()*2-1)*(bounds.HalfZ-8)
+       return ctx.Ground(bounds.Frame:PointToWorldSpace(Vector3.new(x,0,z)))
+      end
+      local a,d=math.random()*math.pi*2,AU.Roam*math.sqrt(math.random())
+      return ctx.Ground(centre+Vector3.new(math.cos(a)*d,0,math.sin(a)*d))
+     end
+     local function roamGoal() return anywhere() end
+     local function addBeam(kind,index)
+      local rec={Kind=kind,Point=anywhere(),Inside={},NextTick=0,Token={name="PolarisBorealis"}}
+      if kind=="Roam" then rec.Goal=roamGoal()
+      else
+       local alive=living()
+       rec.Target=#alive>0 and alive[(index-1)%#alive+1] or nil
+      end
+      rec.Anchor=BorealisVisuals.Build(ctx,rec.Target,rec.Point,100+index,BS)
+      beams[#beams+1]=rec
+     end
+     ctx.Step(function(dt,t)
+      if t<spawnAt then return true end
+      if not spawned then
+       spawned=true
+       for i=1,AU.Roaming do addBeam("Roam",i) end
+       for i=1,AU.Hunting do addBeam("Hunt",i) end
+      end
+      for _,rec in ipairs(beams)do
+       if not rec.Done then
+        if t>=endAt then
+         BorealisVisuals.Finish(rec,false)
+        else
+         if rec.Kind=="Roam" then
+          local delta=(rec.Goal-rec.Point)*FLAT
+          if delta.Magnitude<3 then rec.Goal=roamGoal()
+          else rec.Point+=delta.Unit*math.min(delta.Magnitude,AU.RoamSpeed*dt)end
+         else
+          if not(rec.Target and ctx.Target(rec.Target))then
+           local alive=living()
+           rec.Target=#alive>0 and alive[math.random(1,#alive)] or nil
+          end
+          local r=rec.Target and rec.Target:FindFirstChild("HumanoidRootPart")
+          if r then
+           local delta=(r.Position-rec.Point)*FLAT
+           if delta.Magnitude>.01 then rec.Point+=delta.Unit*math.min(delta.Magnitude,AU.HuntSpeed*dt)end
+          end
+         end
+         rec.Anchor.Position=rec.Point
+         if t>=spawnAt+AU.Windup then
+          local tick=t>=rec.NextTick
+          if tick then rec.NextTick=t+BS.TickInterval end
+          for _,ch in ipairs(living())do
+           local p=ch.HumanoidRootPart.Position
+           local inside=((p-rec.Point)*FLAT).Magnitude<=BS.Radius and p.Y>=rec.Point.Y-3 and p.Y<=rec.Point.Y+BS.Height
+           if inside then
+            if not rec.Inside[ch] then
+             rec.Inside[ch]=true
+             Status.ApplySlow(ch,BS.FrostSlow,BS.FrostSeconds,"P5BorealisFrost")
+            end
+            if tick then ctx.Damage(ch,AU.TickDamage,true,rec.Point+Vector3.yAxis*3)end
+           else
+            rec.Inside[ch]=nil
+           end
+          end
+         end
+        end
+       end
+      end
+      return t<total
+     end)
+    end
+   end
+
    ctx.Step(function(dt,t)
      
     local h=S.Hover
@@ -290,11 +398,11 @@ return function(actor)
     end
 
      
-    while teleN<S.Shots and t>=S.Charge+teleN*S.ShotGap-S.Telegraph do
+    while teleN<S.Shots and t>=S.Charge+teleN*gap-S.Telegraph do
      teleN=teleN+1
      local v=teleN
      local final=v==S.Shots
-     local fireAt=S.Charge+(v-1)*S.ShotGap
+     local fireAt=S.Charge+(v-1)*gap
      local color=A.Palette[(v-1)%#A.Palette+1]
      for ti,char in ipairs(targets)do
       if ctx.Target(char)then

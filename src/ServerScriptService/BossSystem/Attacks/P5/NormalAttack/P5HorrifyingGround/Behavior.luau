@@ -38,7 +38,7 @@ return function(actor)
 				target = c.RandomTarget()
 			end
 			if not target then
-				return c.Wait(0.3)
+				return c.Wait(0.1)
 			end
 			 -- the ring of circles around them, every one its own size and style
 			local center = c.Ground(target.HumanoidRootPart.Position)
@@ -48,26 +48,34 @@ return function(actor)
 				local j = math.random(1, i)
 				styles[i], styles[j] = styles[j], styles[i]
 			end
-			for i = 1, S.Circles do
-				local a = spin + i * math.pi * 2 / S.Circles + (math.random() - 0.5) * 0.25
-				local radius = S.CircleMin + math.random() * (S.CircleMax - S.CircleMin)
-				circles[i] = {
-					Pos = c.Ground(center + Vector3.new(math.cos(a), 0, math.sin(a)) * (S.RingRadius + (math.random() - 0.5) * 3)),
-					Radius = radius, Style = styles[(i - 1) % #styles + 1], Tall = 1.2 + math.random() * 1.1,
-					Count = math.random(4, 9),
-				}
+			local function ring(count, distance, spikes, offset)
+				for i = 1, count do
+					local a = spin + offset + i * math.pi * 2 / count + (math.random() - 0.5) * 0.25
+					local radius = S.CircleMin + math.random() * (S.CircleMax - S.CircleMin)
+					circles[#circles + 1] = {
+						Pos = c.Ground(center + Vector3.new(math.cos(a), 0, math.sin(a)) * (distance + (math.random() - 0.5) * 3)),
+						Radius = radius, Style = styles[(#circles) % #styles + 1], Tall = S.Tall[1] + math.random() * (S.Tall[2] - S.Tall[1]),
+						Count = math.random(spikes[1], spikes[2]),
+					}
+				end
+			end
+			ring(S.Circles, S.RingRadius, S.Spikes, 0)
+			if S.OuterCircles > 0 then
+				ring(S.OuterCircles, S.OuterRadius, S.OuterSpikes, math.pi / S.OuterCircles)
 			end
 			local warn = c.Tell(S.Warn)
-			for _, circle in ipairs(circles) do
-				Net.Send("GroundShatter", "Warn", { Points = { circle.Pos }, Radius = circle.Radius, Time = warn })
+			local points, radii = {}, {}
+			for i, circle in ipairs(circles) do
+				points[i], radii[i] = circle.Pos, circle.Radius
 			end
+			c.Send("BigWarn", { Points = points, Radii = radii, Time = warn })
 			if not c.Wait(warn) then
 				return false
 			end
 			 -- they burst up together, and the ground shakes out a shockwave as they do
 			for _, circle in ipairs(circles) do
 				Net.Send("GroundShatter", "Erupt", { Points = { circle.Pos }, Radius = circle.Radius, Seed = math.random(1, 1e6),
-					Tall = circle.Tall, Count = circle.Count, Style = circle.Style, Hold = 0.8 })
+					Tall = circle.Tall, Count = circle.Count, Style = circle.Style, Hold = 0.8, Scale = S.SpikeScale })
 			end
 			c.Shockwave(center, { Speed = S.WaveSpeed, Range = S.WaveRange, Width = S.WaveWidth, Height = S.WaveHeight,
 				Damage = S.WaveDamage, Look = "Gold" })
@@ -83,7 +91,7 @@ return function(actor)
 				end
 			end
 			actor:SetAttribute("P5HorrifyingGrounds", (actor:GetAttribute("P5HorrifyingGrounds") or 0) + 1)
-			return c.Wait(0.5)
+			return c.Wait(0.1)
 		end)
 	end
 	function api.Dispose() end

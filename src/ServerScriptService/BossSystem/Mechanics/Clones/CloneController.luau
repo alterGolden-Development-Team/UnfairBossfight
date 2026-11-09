@@ -23,7 +23,32 @@ local api = {}
 local owners = {}
 local monitor
 local serial = 0
-local validModes = { Normal = true, Persistent = true, HourDebt = true, ShieldGate = true, Illusion = true }
+local validModes = { Normal = true, Persistent = true, HourDebt = true, ShieldGate = true, Illusion = true, Past = true }
+ -- anything from P1 to P4.5, ultimates included - as the era they come from (the clone's Phase is set to the attack's own while it
+ -- casts). The ones left out reach into the boss's own state (time stops, saves, illusions, the Phase 2.5 and 3.5 set pieces).
+local PAST_BANNED = {
+	P1GoldenParry = true, P1BlockGrab = true, P2Save = true, P2Load = true, P2Acceleration = true, P2Deceleration = true,
+	["P2GoldenClock(Ultimate)"] = true, ["P2.5StolenSecond"] = true, ["P2.5FalseFuture"] = true, ["P2.5MissingFrame"] = true,
+	["P2.5CircularBarrage"] = true, ["P2.5LastMinute(Ultimate)"] = true, P3Thief = true, P3Illusion = true, P3ControlDistortion = true,
+	P3Clone = true, P3PlayerClone = true, ["P3PickThePupils(Ultimate)"] = true, ["P3.5TrueIllusion(Ultimate)"] = true, ["P3.5MysteriousGuy(Ultimate)"] = true,
+	["P3.5IllusionBomb"] = true,
+}
+local pastPool
+local function buildPastPool()
+	if pastPool then
+		return pastPool
+	end
+	pastPool = {}
+	for _, name in ipairs(Metadata.ActiveNames) do
+		local e = Metadata.Get(name)
+		if e and e.NativePhase <= 4.5 and not e.Passive and not e.TimeStopOnly and not e.ShieldBreakOnly and not e.TriggerOnly
+			and not e.Linked and not PAST_BANNED[name] and Registry.Module(name) then
+			pastPool[#pastPool + 1] = name
+		end
+	end
+	return pastPool
+end
+api.PastPool = buildPastPool
 local cardRandom = Random.new()
 
 local function illusionCard(cast, index)
@@ -213,8 +238,12 @@ local function ownerValid(record)
 		or record.Mode == "Normal" and (phase >= 1.5 and phase < 3 or math.min(4, math.floor(phase)) == 4)
 		or record.Mode == "Persistent" and phase == 1.5
 		or record.Mode == "Illusion" and math.floor(phase) == 3
+		or record.Mode == "Past" and phase >= 5 and owner:GetAttribute("P5Mode") == "Time"
 end
 local function canCopy(record, name)
+	if record.Mode == "Past" then
+		return not PAST_BANNED[name]
+	end
 	if record.Mode == "ShieldGate" then
 		return require(BossSystem.Mechanics.Clones.ShieldGateAttacks).Allows(record.Role, name)
 	end
@@ -344,7 +373,7 @@ local function finishAttack(record, attackName, successful)
 		close(record)
 		return
 	end
-	if record.Mode == "Persistent" or record.Mode == "ShieldGate" or record.Mode == "Illusion" then
+	if record.Mode == "Persistent" or record.Mode == "ShieldGate" or record.Mode == "Illusion" or record.Mode == "Past" then
 		record.State = "Waiting"
 		local interval = record.Mode == "ShieldGate" and require(BossSystem.Attacks.Shared.ShieldBreakCombat).AttackInterval(record.Role)
 			or record.AttackInterval
@@ -405,6 +434,21 @@ local function attack(record)
 				if not skill.CanUse or skill.CanUse(target) then
 					chosen = { Name = record.AttackName, Skill = skill }
 				end
+			elseif record.Mode == "Past" then
+				 -- a random move from any era: cast as that era (a few tries for one that can go now)
+				local pool = buildPastPool()
+				for _ = 1, 12 do
+					local name = pool[cardRandom:NextInteger(1, #pool)]
+					local entry = Metadata.Get(name)
+					if entry and name ~= record.LastAttack then
+						record.Actor:SetAttribute("Phase", entry.NativePhase)
+						local okSkill, skill = pcall(Registry.For, record.Actor, name)
+						if okSkill and skill and skill.Combo and (not skill.CanUse or skill.CanUse(target)) then
+							chosen = { Name = name, Skill = skill }
+							break
+						end
+					end
+				end
 			else
 				if not record.Choices then
 					record.Choices = {}
@@ -443,7 +487,26 @@ local function attack(record)
 			if Audio.Attack then
 				Audio.Attack(record.Actor, attackName, "Cast", record.Actor:FindFirstChild("HumanoidRootPart"))
 			end
-			return chosen.Skill.Combo(target)
+			if record.Mode ~= "Past" then
+				return chosen.Skill.Combo(target)
+			end
+			 -- cast this move started has finished (at most 15s) before the clone may pick another.
+			local before = Effects.CastsOf(record.Actor)
+			local result = chosen.Skill.Combo(target)
+			local mine = {}
+			for cast in pairs(Effects.CastsOf(record.Actor)) do
+				if not before[cast] and cast ~= record.MovementCast and cast ~= record.AppearanceCast then mine[cast] = true end
+			end
+			local deadline = os.clock() + 15
+			while os.clock() < deadline and not record.Cancelled and not record.Closed do
+				local busy = false
+				for cast in pairs(mine) do
+					if not cast.closed and cast:Alive() then busy = true break end
+				end
+				if not busy then break end
+				task.wait(0.1)
+			end
+			return result
 		end, debug.traceback)
 		if not ok then
 			warn("Golden echo: " .. tostring(result))
@@ -693,6 +756,9 @@ function api.Create(owner, options)
 	if mode == "Persistent" and api.Count(owner, mode) >= 2 then
 		return nil
 	end
+	if mode == "Past" and (phase < 5 or api.Count(owner, mode) >= 1) then
+		return nil
+	end
 	if (mode == "ShieldGate" or mode == "Illusion") and api.Count(owner, mode) >= 2 then
 		return nil
 	end
@@ -735,6 +801,7 @@ function api.Create(owner, options)
 	clone:SetAttribute("CloneMode", mode)
 	clone:SetAttribute("CloneId", serial)
 	clone:SetAttribute("Phase", mode == "ShieldGate" and 1 or phase)
+	clone:SetAttribute("PastClone", mode == "Past")
 	clone:SetAttribute("PhaseTransitionInProgress", false)
 	if mode == "ShieldGate" then
 		clone:SetAttribute("ShieldBreakInProgress", false)

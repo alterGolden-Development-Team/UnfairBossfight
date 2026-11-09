@@ -41,21 +41,24 @@ return function(actor)
     return shield - absorbed, math.max(0, health - Damage.Resolve(amount - absorbed, defense))
   end
   function api.ApplyDamage(amount, attacker, attackToken)
+    local isStatus = type(attackToken) == "table" and attackToken.IsStatusDamage == true
     if actor:GetAttribute("EncounterEnded") or actor:GetAttribute("PhaseTransitionInProgress")
      or actor:GetAttribute("PhaseTransitionQueued")
      or require(Shared.Classes.EnemyTargetRules).IsOrdinaryClone(actor) then return false end
-    if attacker and actor:GetAttribute("ParryActive") and Registry.For(actor,"P1GoldenParry").TryCounter(attacker,attackToken) then return false end
+    if attacker and not isStatus and actor:GetAttribute("ParryActive") and Registry.For(actor,"P1GoldenParry").TryCounter(attacker,attackToken) then return false end
      -- P5 Distorted Counter: a hit while his counter circle is up is caught (no damage) and answered
-    if attacker and typeof(attacker) == "Instance" and workspace:GetServerTimeNow() < (actor:GetAttribute("CounterStanceUntil") or 0) then
+    if attacker and not isStatus and typeof(attacker) == "Instance" and workspace:GetServerTimeNow() < (actor:GetAttribute("CounterStanceUntil") or 0) then
       actor:SetAttribute("CounterStanceUntil", 0)
       actor:SetAttribute("CounterCaughtBy", attacker.Name)
       return false
     end
     if TemporalPhases.TryEvade(actor,attacker,attackToken) then return false end
-    if Registry.For(actor, "P5God(Passive)").IsActive() then return false end
+    local Finale = require(BossSystem.Combat.P5Finale)
+    if Finale.Untouchable(actor) then return false end  -- down to his last point of health: the final minute
      
     local DiffPassive = require(BossSystem.Combat.DifficultyPassive)
     amount *= DiffPassive.IncomingMultiplier(actor)
+    if workspace:GetServerTimeNow() < (actor:GetAttribute("DisorderVulnUntil") or 0) then amount *= actor:GetAttribute("DisorderVulnMult") or 1 end
     DiffPassive.OnBossHit(actor, attacker, function(seconds)
       local glow = Instance.new("Highlight")
       glow.Name = "DuelistStagger"
@@ -117,6 +120,9 @@ return function(actor)
     local phase = tonumber(actor:GetAttribute("Phase")) or 1
     local beforeHealth = h.Health
     local remaining = math.max(0, shield - amount)
+    if phase == 5 and actor:GetAttribute("P5Mode") and shield > 0 then
+      remaining = math.max(remaining, math.min(shield, Config.Phase5ShieldHold or 1))  -- a mode's shield is held at 1 until its last stand has gone off (Combat/P5ModeService)
+    end
     local hp = h.Health
     if
       not actor:GetAttribute("Phase15Triggered")
@@ -221,6 +227,8 @@ return function(actor)
         Phases.ShieldBroken(actor, attacker)
       end
     end
+    if phase == 5 then hp = Finale.HoldHealth(actor, hp) end  -- he can't be cut past 1; 1 starts the final minute
+    if phase == 5 and actor:GetAttribute("P5Mode") then hp = beforeHealth end  -- a mode's shield takes it all (P5ModeService)
     h.Health = hp
     actor:SetAttribute("BossHealth", hp)
     actor:SetAttribute("Defeated", hp <= 0)

@@ -202,6 +202,16 @@ end
  
  
  
+ -- the casts an actor has running right now (CloneController waits for a Past clone's own casts before its next move)
+function api.CastsOf(actor)
+	local list = {}
+	for cast in pairs(casts) do
+		if cast.actor == actor and not cast.closed then
+			list[cast] = true
+		end
+	end
+	return list
+end
 function api.CancelEmitter(actor,reason,predicate)
 	local selected = {}
 	for cast in pairs(casts) do

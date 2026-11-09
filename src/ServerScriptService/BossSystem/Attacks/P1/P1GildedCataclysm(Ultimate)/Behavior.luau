@@ -55,7 +55,7 @@ return function(actor)
 	function api.CanUse(char)
 		return phase() >= 1
 			and phase() <= 1.5
-			and actor:GetAttribute("IsGoldenClone") ~= true
+			and (actor:GetAttribute("IsGoldenClone") ~= true or actor:GetAttribute("PastClone") == true)
 			and core.Active()
 			and core.Alive(char)
 	end

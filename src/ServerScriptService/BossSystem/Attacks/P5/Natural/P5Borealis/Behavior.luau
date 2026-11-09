@@ -13,7 +13,7 @@ return function(actor)
  local api={Cooldown=S.Cooldown,ManagesCooldown=true}
  function api.CanUse(target)return A.Ready(actor,S,current,target)end
  function api.Combo(target)
-  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Agile={"Speed"},Tell={"Windup"}})  -- difficulty knobs, this cast only
+  local S=require(B.Attacks.Shared.P5AstralCore).Tune(actor,S,{Agile={"Speed"},Tell={"Windup"}})
   local END=S.Windup+S.Chase+S.Capture+1
   if not api.CanUse(target)then return false end
   local core=require(B.Combat.AttackRegistry).For(actor,"P1CombatCore")

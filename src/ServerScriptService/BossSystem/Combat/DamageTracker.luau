@@ -5,20 +5,15 @@ local totals=setmetatable({},{__mode="k"})
 local dirty={}
 local started=false
 local watched=setmetatable({},{__mode="k"})
- -- the Lives column: a heart for every life left (player attribute LivesRemaining), so the player list reads as a
- -- lives bar next to Damage
-local function hearts(n)
- if type(n)~="number" then return "-" end
- n=math.max(0,math.floor(n))
- if n==0 then return "0" end
- return string.rep("♥",math.min(n,10))..(n>10 and "+" or "").." "..n
-end
+ -- the Lives column: how many lives are left (player attribute LivesRemaining), next to Damage
 local function showLives(player)
  local stats=player:FindFirstChild("leaderstats")
  if not stats then stats=Instance.new("Folder") stats.Name="leaderstats" stats.Parent=player end
  local lives=stats:FindFirstChild("Lives")
- if not lives then lives=Instance.new("StringValue") lives.Name="Lives" lives.Parent=stats end
- lives.Value=hearts(player:GetAttribute("LivesRemaining"))
+ if lives and not lives:IsA("IntValue") then lives:Destroy() lives=nil end  -- the old column was a row of hearts
+ if not lives then lives=Instance.new("IntValue") lives.Name="Lives" lives.Parent=stats end
+ local n=player:GetAttribute("LivesRemaining")
+ lives.Value=type(n)=="number" and math.max(0,math.floor(n)) or 0
 end
 local function value(player)
  local stats=player:FindFirstChild("leaderstats")

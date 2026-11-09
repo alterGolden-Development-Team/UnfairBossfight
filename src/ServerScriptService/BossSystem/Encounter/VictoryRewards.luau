@@ -19,15 +19,45 @@ function Rewards.BadgeFor(actor)
   return Config.BadgeIds[mode], mode
 end
 
-local function award(player, id, mode)
+-- (Round AA) solo detection: everybody who was in the server (and not just spectating) when the encounter started, plus anyone who
+-- joined while it ran. A player who leaves mid-fight still counts, so a "solo" win really is one player from the first attack to the last.
+local participants = {}
+local function trackParticipants()
+  participants = {}
+  for _, p in ipairs(Players:GetPlayers()) do
+    if p:GetAttribute("ViewAsServer") ~= true then participants[p.UserId] = true end
+  end
+end
+local function participantCount()
+  local n = 0
+  for _ in pairs(participants) do n += 1 end
+  return n
+end
+workspace:GetAttributeChangedSignal("EncounterStarted"):Connect(function()
+  if workspace:GetAttribute("EncounterStarted") == true then trackParticipants() end
+end)
+Players.PlayerAdded:Connect(function(p)
+  if workspace:GetAttribute("EncounterStarted") ~= true then return end
+  task.delay(2, function()
+    if workspace:GetAttribute("EncounterStarted") == true and p.Parent == Players and p:GetAttribute("ViewAsServer") ~= true then
+      participants[p.UserId] = true
+    end
+  end)
+end)
+if workspace:GetAttribute("EncounterStarted") == true then trackParticipants() end
+
+-- quiet = true: award the badge but leave the victory screen's VictoryBadge* attributes alone (they describe the normal badge)
+local function award(player, id, mode, quiet)
   local userId = player.UserId
   owned[id] = owned[id] or {}
   pending[id] = pending[id] or {}
   local badges, active = owned[id], pending[id]
   if player.Parent ~= Players or active[userId] then return end
   if badges[userId] then
-    player:SetAttribute("VictoryBadgeId", id)
-    player:SetAttribute("VictoryBadgeDifficulty", mode)
+    if not quiet then
+      player:SetAttribute("VictoryBadgeId", id)
+      player:SetAttribute("VictoryBadgeDifficulty", mode)
+    end
     return
   end
   active[userId] = true
@@ -44,8 +74,10 @@ local function award(player, id, mode)
     if ok and result then
       if player.Parent == Players then
         badges[userId] = true
-        player:SetAttribute("VictoryBadgeId", id)
-        player:SetAttribute("VictoryBadgeDifficulty", mode)
+        if not quiet then
+          player:SetAttribute("VictoryBadgeId", id)
+          player:SetAttribute("VictoryBadgeDifficulty", mode)
+        end
       end
       failure = nil
       break
@@ -57,9 +89,10 @@ local function award(player, id, mode)
   if failure and player.Parent == Players then warn("Victory badge for " .. player.Name .. ": " .. failure) end
 end
 
-function Rewards.AwardEncounter(actor)
+ -- claimed: the Phase 5 finale's sword was taken (Combat/P5Finale) - he left through his portal instead of dying
+function Rewards.AwardEncounter(actor, claimed)
   local h = actor and actor:FindFirstChildOfClass("Humanoid")
-  if not actor or not actor.Parent or not h or h.Health > 0 or completed[actor]
+  if not actor or not actor.Parent or not h or h.Health > 0 and not claimed or completed[actor]
     or actor:GetAttribute("IsGoldenClone") or not actor:GetAttribute("EncounterEnded") then return false end
   local id, mode = Rewards.BadgeFor(actor)
   if type(id) ~= "number" or id <= 0 then warn("No victory badge configured for " .. mode) return false end
@@ -69,6 +102,13 @@ function Rewards.AwardEncounter(actor)
     if Rewards.Eligible(player) then table.insert(winners, player) end
   end
   for _, player in ipairs(winners) do task.spawn(award, player, id, mode) end
+  -- a solo win also earns the solo badge of that difficulty (True Hardcore solo / Hellaven solo)
+  local soloId = Config.SoloBadgeIds and Config.SoloBadgeIds[mode]
+  if type(soloId) == "number" and soloId > 0 and participantCount() == 1 then
+    for _, player in ipairs(winners) do
+      if participants[player.UserId] then task.spawn(award, player, soloId, mode, true) end
+    end
+  end
   return true
 end
 

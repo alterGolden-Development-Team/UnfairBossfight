@@ -254,7 +254,7 @@ RunService:BindToRenderStep("PolarisCamera",Enum.RenderPriority.Camera.Value+1,f
  local scale=motion()
  if gradeStart and gradeActor and gradeActor.Parent and CollectionService:HasTag(gradeActor,TAG)then
   local elapsed=os.clock()-gradeStart
-  local total=S.Charge+(S.Shots-1)*S.ShotGap+S.ProjectileLife+#S.Burn*S.BurnInterval+S.Recovery
+  local total=S.Duration or (S.Charge+(S.Shots-1)*S.ShotGap+S.ProjectileLife+#S.Burn*S.BurnInterval+S.Recovery)
   local g=smooth(elapsed/(S.Rise+S.Charge))*math.clamp((total-elapsed)/1.6,0,1)*falloff(gradeActor)
   local pulse=math.clamp(math.abs(punch)/12,0,1)
   updateSky(g,pulse*scale)

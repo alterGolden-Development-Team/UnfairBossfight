@@ -315,7 +315,12 @@ local function ensureScheduler()
 					if joint.Motor.Parent then
 						local lift = record.Lift and joint.Motor.Part0 == record.Root and record.Lift or nil
 						local target = offset(joint, pose[name], name == "Waist" and (lift and bob + lift or bob) or lift)
-						joint.Motor.C0 = joint.Motor.C0:Lerp(target, weight)
+						local cur = joint.Motor.C0
+						local nxt = cur:Lerp(target, weight)
+						if (cur.Position - nxt.Position).Magnitude > 0.003 or cur.LookVector:Dot(nxt.LookVector) < 0.99998
+							or cur.UpVector:Dot(nxt.UpVector) < 0.99998 then
+							joint.Motor.C0 = nxt
+						end
 					end
 				end
 			end

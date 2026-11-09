@@ -1,14 +1,3 @@
---[[
- TPService - Phase 5 shared TP (one bar for the whole server).
-   * Phase 5 skills may drop white orbs (SkillDropChance for 1 orb; ultimates always drop
-     UltimateMin..UltimateMax). Touching an orb adds OrbValue TP for everyone.
-   * At full TP any participating player can press E (remote P5TPBreak): a white shockwave goes
-     out and strips the boss's Phase 5 godmode status (P5God) for the rest of Phase 5. After that
-     the bar is gone and skills stop dropping orbs.
- State lives in attributes so every client HUD can read it:
-   workspace.P5TPActive, workspace.P5TP, boss.GodStripped
- Visuals: VFXEngine.Effects.TPOrb (orbs) and VFXEngine.Effects.TPBreak (shockwave).
-]]
 local Players=game:GetService("Players")
 local Run=game:GetService("RunService")
 local CollectionService=game:GetService("CollectionService")
@@ -19,7 +8,7 @@ local api={}
 local CFG=table.freeze({
  Max=100,
  OrbValue=5,
- OrbLife=22,  -- seconds an uncollected orb stays
+ OrbLife=22,
  OrbArmTime=.7,  -- orb flight time from the boss before it can be picked up
  PickupRadius=13,  -- walking near an orb picks it up; no need to touch it
  SkillDropChance=.5,
@@ -27,7 +16,7 @@ local CFG=table.freeze({
 })
 api.Config=CFG
 
-local orbs={}  -- part -> {Expires, ArmedAt}
+local orbs={}
 local started=false
 local BOSS="alterGolden, the Nothing"
 
@@ -67,6 +56,8 @@ end
 
 function api.DropOrbs(origin,count)
  if not api.Active()or count<=0 then return end
+ local boss=api.Boss()
+ if boss and boss:GetAttribute("P5Mode")then return end  -- no orbs while a mode's shield is up (P5ModeService)
  local Placement=require(B.Encounter.ArenaPlacement)
  for _=1,count do
   local ang=math.random()*math.pi*2
@@ -138,6 +129,15 @@ local function tryBreak(player)
  setTP(0)
  boss:SetAttribute("GodStripped",true)
  boss:SetAttribute("GodStrippedBy",player.Name)
+ do
+  local shield=require(game.ReplicatedStorage.BossShared.Config.EncounterConfig).Phase5BaseShield or 5000
+  if boss:GetAttribute("P5Mode")then
+   boss:SetAttribute("P5BaseMaxShield",shield)boss:SetAttribute("P5BaseShield",shield)
+  else
+   boss:SetAttribute("MaxShield",shield)boss:SetAttribute("Shield",shield)
+   local glow=boss:FindFirstChild("ShieldGlow")if glow then glow.Enabled=true end
+  end
+ end
  Net.Send("TPBreak","Shockwave",{Pos=char.HumanoidRootPart.Position,Boss=boss:FindFirstChild("HumanoidRootPart"),Player=player})
  pcall(function()
   require(B.Players.PlayerEncounter).Say("...You tore through divinity itself? Then come and prove it.",nil,{Duration=3})

@@ -37,23 +37,23 @@ local function build(g,L,W,T,hilt)
   offsets[#offsets+1]=cf
   alphas[#alphas+1]=alpha or 0
  end
- local H=W*1.5  -- the point
+ local H=W*1.5
  add("Part",Vector3.new(W,L,T),CFrame.new(0,L/2,0),OBSIDIAN,METAL)
- add("Part",Vector3.new(W*.16,L*.82,T+.06),CFrame.new(0,L*.46,0),VIOLET,NEON,.1)  -- fuller
+ add("Part",Vector3.new(W*.16,L*.82,T+.06),CFrame.new(0,L*.46,0),VIOLET,NEON,.1)
  for _,s in ipairs({-1,1})do
-  add("Part",Vector3.new(math.max(.1,W*.1),L,T+.04),CFrame.new(s*(W/2-W*.05),L/2,0),GOLD,NEON)  -- edge
+  add("Part",Vector3.new(math.max(.1,W*.1),L,T+.04),CFrame.new(s*(W/2-W*.05),L/2,0),GOLD,NEON)
   add("WedgePart",Vector3.new(T,H,W/2),CFrame.new(s*W/4,L+H/2,0)*CFrame.Angles(0,-s*math.pi/2,0),OBSIDIAN,METAL)
-  add("Part",Vector3.new(math.max(.1,W*.1),math.sqrt(W*W/4+H*H),T+.04),CFrame.new(s*W/4,L+H/2,0)*CFrame.Angles(0,0,s*math.atan2(W/2,H)),GOLD,NEON)  -- edge along the point
+  add("Part",Vector3.new(math.max(.1,W*.1),math.sqrt(W*W/4+H*H),T+.04),CFrame.new(s*W/4,L+H/2,0)*CFrame.Angles(0,0,s*math.atan2(W/2,H)),GOLD,NEON)
  end
  local depth=0
  if hilt then
-  add("Part",Vector3.new(W*2.8,W*.32,T*2.4),CFrame.new(0,-W*.16,0),GOLD,METAL)  -- guard
-  add("Part",Vector3.new(W*.5,W*.5,T*2.6),CFrame.new(0,-W*.16,0)*CFrame.Angles(0,0,math.pi/4),SHINE,NEON)  -- gem
+  add("Part",Vector3.new(W*2.8,W*.32,T*2.4),CFrame.new(0,-W*.16,0),GOLD,METAL)
+  add("Part",Vector3.new(W*.5,W*.5,T*2.6),CFrame.new(0,-W*.16,0)*CFrame.Angles(0,0,math.pi/4),SHINE,NEON)
   for _,s in ipairs({-1,1})do
-   add("Part",Vector3.new(W*.55,W*.5,T*2.2),CFrame.new(s*W*1.55,-W*.05,0)*CFrame.Angles(0,0,s*.5),GOLD,METAL)  -- horns
+   add("Part",Vector3.new(W*.55,W*.5,T*2.2),CFrame.new(s*W*1.55,-W*.05,0)*CFrame.Angles(0,0,s*.5),GOLD,METAL)
   end
-  add("Part",Vector3.new(W*.38,W*1.9,W*.38),CFrame.new(0,-W*1.27,0),VOID,Enum.Material.Fabric)  -- grip
-  add("Part",Vector3.new(W*.66,W*.66,W*.66),CFrame.new(0,-W*2.5,0),GOLD,METAL,0,Enum.PartType.Ball)  -- pommel
+  add("Part",Vector3.new(W*.38,W*1.9,W*.38),CFrame.new(0,-W*1.27,0),VOID,Enum.Material.Fabric)
+  add("Part",Vector3.new(W*.66,W*.66,W*.66),CFrame.new(0,-W*2.5,0),GOLD,METAL,0,Enum.PartType.Ball)
   depth=W*2.85
  end
  return {Parts=parts,Offsets=offsets,Alphas=alphas,Length=L+H,Depth=depth,Width=W}
