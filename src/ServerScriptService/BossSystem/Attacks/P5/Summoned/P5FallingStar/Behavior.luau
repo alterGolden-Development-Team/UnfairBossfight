@@ -1,8 +1,6 @@
 local B = script:FindFirstAncestor("BossSystem")
 local Strike = require(B.Attacks.Shared.P5StrikeCore)
-local Audio = require(B.Presentation.CombatAudio)
 local Config = require(game.ReplicatedStorage.BossShared.Config.EncounterConfig)
-local Runtime = require(B.Combat.CombatRuntime)
 local S = require(script.Parent.Style)
 local function holdLead() return (Config.DeflectHoldTime or 0.2) + 0.45 end
 local function segmentDistance(point, a, b)

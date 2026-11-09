@@ -1,7 +1,6 @@
 local B = script:FindFirstAncestor("BossSystem")
 local Strike = require(B.Attacks.Shared.P5StrikeCore)
 local S = require(script.Parent.Style)
-local Ultimate = require(B.Combat.UltimateService)
 local Encounter = require(B.Players.PlayerEncounter)
 
 local READY = { RightShoulder = { -30, 0, 40 }, RightElbow = { 30, 0, 0 }, LeftShoulder = { 30, 0, -30 }, Waist = { 20, 40, 0 },
