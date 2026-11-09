@@ -102,6 +102,11 @@ function Rewards.AwardEncounter(actor, claimed)
     if Rewards.Eligible(player) then table.insert(winners, player) end
   end
   for _, player in ipairs(winners) do task.spawn(award, player, id, mode) end
+  -- cash for lobby runs (CashService ignores runs that did not come from the lobby); never let it break the badges
+  local paid, paidErr = pcall(function()
+    return require(script.Parent.CashService).PayWinners(winners, mode, workspace:GetAttribute("EncounterEnraged") == true)
+  end)
+  if not paid then warn("Cash payout: " .. tostring(paidErr)) end
   -- a solo win also earns the solo badge of that difficulty (True Hardcore solo / Hellaven solo)
   local soloId = Config.SoloBadgeIds and Config.SoloBadgeIds[mode]
   if type(soloId) == "number" and soloId > 0 and participantCount() == 1 then

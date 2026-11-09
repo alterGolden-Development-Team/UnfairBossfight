@@ -130,7 +130,7 @@ On `PlayerAdded`, read `player:GetJoinData().TeleportData`:
 ### 6.3 Cash
 
 - DataStore `UnfairBossfight_PlayerData_v1`, key `user_<userId>`, field `Cash` (integer).
-- Written only by the **boss place server** on a win (`BossEncounterWon`), via `UpdateAsync` increment, once per `(runId, userId)` (a `lastRunId` field guards double-award on retry wins).
+- Written only by the **boss place server** on a win (`BossEncounterWon`), via `UpdateAsync` increment, once per `(runId, userId)`. (As built: the record keeps a `PaidRuns` list of the last 10 run ids instead of a single `lastRunId`, and the callback adds nothing when the run is already listed, so a retried or repeated write cannot pay twice. Studio uses the store name `UnfairBossfight_PlayerData_v1_Studio`.)
 - Lobby reads it for the HUD. The shop (milestone 3) spends with `UpdateAsync` and a balance check, never `SetAsync`.
 - Payout = `CashTable[difficulty] * (enraged and 2 or 1)`. Participants who were alive or spectating when the win happened are paid, matching the existing victory-badge participant rule. DataStore failure: retry with backoff, then log and keep the pending amount for the session so the player is not silently robbed.
 

@@ -29,10 +29,23 @@ The two `ComingSoon` arches never call `TeleportService` (plan task 24 adds an i
 | `Workspace.PartyRooms.RoomN.RosterDisplay` | BasePart | screen for the roster; the roster billboard is drawn over `Pad` *(script adds)* |
 | `Workspace.Shop` | Model | shop shell with a `Sign` part reading "Coming soon" |
 
+## Coming-soon places (plan task 24)
+
+`PadInfoClient` shows a panel when a player is within 9 studs of a watched model. Watched: every child of `Workspace.Pads` with
+attribute `Status = "ComingSoon"`, and `Workspace.Shop`. The model's **name** must be a key in
+`lobby/src/ReplicatedStorage/Lobby/PadInfo.luau` (`JeffAndFred`, `FallenNoob`, `Shop`), which holds the panel text. These models have
+no ProximityPrompt and nothing touches `TeleportService` for them. To open a pad later: set its `Status` to `Live` and remove its
+`PadInfo` entry.
+
+## Cash HUD (plan task 22)
+
+Top-right "Cash: N", drawn by `CashHudClient` from the player attributes below. `--` means the balance is still loading or could not
+be read (it retries).
+
 ## Attributes the scripts publish (read-only for the map)
 
 - Room model (`RoomN`): `Phase` (Open / Countdown / Locked), `LeaderUserId`, `Difficulty`, `Enraged`, `CountdownEndsAt` (server time), `MemberCount`, `Roster` (JSON list of `{userId, name, class}`).
-- Player: `PlayerClass`, `ClassUnlocked_<id>`, `PartyRoom`, `PartyLocked`.
+- Player: `PlayerClass`, `ClassUnlocked_<id>`, `PartyRoom`, `PartyLocked`, `Cash` (whole number, only after a good read), `CashState` (`Loading` / `Ready` / `Error`).
 - Workspace: `LastLaunchPayload` (dry runs in Studio: the JSON that would have been sent).
 
 ## Place settings

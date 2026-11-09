@@ -7,7 +7,7 @@
 
 local Config = {}
 
-Config.Env = "Test" :: "Test" | "Live"
+Config.Env = "Live" :: "Test" | "Live"
 
 Config.Places = {
 	Live = { Lobby = 92877530696258, Boss = 123789153131367 }, -- universe 10768840017: "Place1" (lobby, empty) and The Golden Encounter
@@ -16,7 +16,7 @@ Config.Places = {
 
 -- Boss place: reject players who did not arrive through the lobby (reserved server + valid teleport payload).
 -- Stays false until the cut-over; Studio always uses the old behaviour regardless.
-Config.RequireLobby = false
+Config.RequireLobby = true
 -- The test universe already requires the lobby, so the "direct join bounces back" check (plan task 18) can run there.
 Config.RequireLobbyTest = true
 
@@ -49,6 +49,17 @@ Config.CashByDifficulty = table.freeze({
 	Easy = 5,
 })
 Config.EnragedCashMultiplier = 2
+
+-- Where cash lives (spec 6.3). DataStores are per universe, so the test universe has its own copy automatically.
+-- Studio gets a separate store name so a Studio session never touches real balances in whichever universe is open.
+Config.CashStoreName = "UnfairBossfight_PlayerData_v1"
+Config.CashStoreNameStudio = "UnfairBossfight_PlayerData_v1_Studio"
+Config.CashWriteAttempts = 4 -- boss: tries per payout before it is parked and retried in the background
+Config.CashReturnWaitSeconds = 12 -- boss: how long "Return to Lobby" waits for that player's cash write
+
+function Config.CashStore(isStudio: boolean): string
+	return if isStudio then Config.CashStoreNameStudio else Config.CashStoreName
+end
 
 function Config.IsDifficulty(id: any): boolean
 	if type(id) ~= "string" then

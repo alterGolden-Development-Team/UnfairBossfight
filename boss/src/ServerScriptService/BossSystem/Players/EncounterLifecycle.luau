@@ -48,6 +48,14 @@ function api.Start(resetEncounter)
 			end
 			return
 		end
+		if action == "ReturnToLobby" then
+			-- one player leaves for the lobby; the rules and the teleport live in Encounter/LobbyReturn
+			local BossSystem = script:FindFirstAncestor("BossSystem")
+			require(BossSystem.Encounter.LobbyReturn).Request(player, function(text)
+				remote:FireClient(player, "ReturnRejected", text)
+			end)
+			return
+		end
 		if action ~= "Retry" or player:GetAttribute("PermanentlyDefeated") ~= true then return end
 		local now = os.clock()
 		if now - (lastRequest[player] or -math.huge) < 2 then return end
