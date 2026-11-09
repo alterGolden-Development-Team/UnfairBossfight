@@ -215,7 +215,6 @@
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathRoars(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathScythe(Ultimate)/Behavior.luau : TypeError: Key 'Forced' not found in table '{| CanUse: (any) -> (...any), Combo: (any) -> (...any), Cooldown: any, Dispose: () -> (...any), IsUltimate: any, ManagesCooldown: any, UltimatePhase: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathScythe(Ultimate)/Behavior.luau : TypeError: Key 'Quick' not found in table '{| CanUse: (any) -> (...any), Combo: (any) -> (...any), Cooldown: any, Dispose: () -> (...any), IsUltimate: any, ManagesCooldown: any, UltimatePhase: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedRaining/Visuals.luau: LocalUnused: Variable 'NEON' is never used; prefix with '_' to silence
 8	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -247,7 +246,6 @@
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau: DuplicateCondition: Condition has already been checked on column N
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedGildedCataclysm/Visuals.luau: LocalUnused: Variable 'stone' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence

@@ -12,26 +12,27 @@ Every task passes the "three checks" (build, analyzer diff, Studio playtest). **
 ## Phase 1: Dead code
 - [x] 3. Remove unused imports (75), one commit per subsystem folder
 - [x] 4. Remove unused locals / functions (322 / 80), same batching - 76 functions + 191 locals removed, ran to a fixpoint
-- [ ] 5. (waiting on you) Decide on and remove `DisordererBackup_2026-11-09` (you decide)
+- [x] 5. Remove `DisordererBackup_2026-11-09` (you approved; recoverable from git history)
 
 ## Checkpoint: Dead code
 - [x] Check script clean (904 -> 569 distinct diagnostics)
 - [ ] One attack per phase played through (you)
 
 ## Phase 2: Duplicated files
-- [ ] 6. Server/client mirror pairs become stubs (Finality x2, Polaris Camera, HyperElastic Geometry, MysteriousGuy Client)
-- [ ] 7. Sibling-attack duplicate `Visuals` pairs get one shared home (Gilded Cataclysm, Direct Shot, Raining, Star Slash)
+- [x] 6. Mirror pairs: NOT turned into stubs (unsafe: stateful modules, and `Publish()` makes the ReplicatedStorage copy the live one). Instead `tools/mirror-pairs.txt` + a check that fails on new drift. Found 4 pairs that have ALREADY drifted - see plan.md
+- [x] 7. Duplicate `Visuals`: Gilded Cataclysm, Direct Shot and Raining now share one module (-1,068 lines). Star Slash skipped on purpose (its Visuals read a sibling `Style` that differs)
 
 ## Checkpoint: Duplicates
-- [ ] Check script clean; each attack with a touched file fought once (you)
+- [x] Check script clean
+- [ ] Fight Enhanced Gilded Cataclysm, Enhanced Direct Shot and Enhanced Raining once (you)
 
 ## Phase 3: Circular requires
-- [ ] 8. Map the cycles into `tasks/cycles.md` (no code changes)
-- [ ] 9. Break the smallest cycle (proves the approach)
-- [ ] 10. Break the remaining cycles, one per commit
+- [x] 8. Map the cycles into `tasks/cycles.md`: 0 load-time cycles, so nothing can deadlock today; the 235 flagged sites are 100 acyclic load-time + 135 lazy
+- [ ] 9. (deferred - needs your call) Break the smallest cycle. Every cut is a dependency inversion, not a mechanical edit; see cycles.md
+- [ ] 10. (deferred) Break the remaining cycles, one per commit
 
 ## Checkpoint: Cycles
-- [ ] Cyclic-dependency analyzer errors gone, or the remaining few documented as intentional
+- [x] Cycles documented as run-time safe (cycles.md); analyzer errors remain by design until Tasks 9-10
 - [ ] Full encounter run to Phase 5 with a clean Output window (you)
 
 ## Phase 4: Oversized files

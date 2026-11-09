@@ -249,3 +249,20 @@ registry?) and propose a split, for example one module per attack family. No cod
 - Is `DisordererBackup_2026-11-09` still wanted? (Task 5)
 - Was the boss template edited in Studio after the 16:27 snapshot? If so, those edits are lost and need redoing. (Recovered `.rbxm`)
 - How much playtesting time can you give each checkpoint? The **(you)** steps can't be automated.
+
+## Findings from Phases 2-3 (read this before Tasks 9-13)
+- **Mirror drift is already live, and goes both ways.** `Presentation.Publish()` only clones the server copy into
+  `ReplicatedStorage/BossShared/Presentation/*Runtime` when that folder does not exist, so **clients run the committed
+  ReplicatedStorage copy**. Four of the nine pairs differ:
+  - `HyperElasticRuntime/Style`: static has `BeamRange=360`, `RingMaxRadius=220`; server has `620` / `380`. The server
+    hits out to 620 while clients draw a 360 beam.
+  - `PolarisRuntime/Style`: static lacks the whole `Aurora` table and has `ScreenRange=260` (server: 420).
+  - `HyperElasticRuntime/Visuals`: static has the newer ground-matching colours (`GroundLook`); server has the newer
+    `shockDisc` effects. Neither is a superset.
+  - `BlackHoleRuntime/Client`: server removed the local explosion (now in `VFXEngine.BlackHoleDebris`); static still draws it.
+  **Needs your decision** which side is intended for each, then copy that side over (and flip the pair to `identical` in
+  `tools/mirror-pairs.txt`). Not merged automatically because it changes what players see.
+- **Task 6 as written was unsafe**: `Camera`, `Client` and `Visuals` hold per-instance state, and a re-export stub would
+  make every cast share it. Replaced by the drift guard.
+- **Task 7**: three of four pairs consolidated. `P4StarSlash`/`P5EnhancedStarSlash` stay separate (sibling `Style` differs).
+- **Tasks 9-10**: see `tasks/cycles.md`. No run-time cycle exists; each cut is a redesign, deferred pending your call.
