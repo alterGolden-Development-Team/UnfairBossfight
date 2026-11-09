@@ -1,0 +1,8 @@
+{
+  "folders": [
+    { "name": "boss (The Golden Encounter)", "path": "boss" },
+    { "name": "lobby (Unfair Bossfight)", "path": "lobby" },
+    { "name": "shared", "path": "shared" },
+    { "name": "docs + tasks (root)", "path": "." }
+  ]
+}
