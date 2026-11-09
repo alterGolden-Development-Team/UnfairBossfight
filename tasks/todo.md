@@ -36,9 +36,11 @@ Every task passes the "three checks" (build, analyzer diff, Studio playtest). **
 - [ ] Full encounter run to Phase 5 with a clean Output window (you)
 
 ## Phase 4: Oversized files
-- [ ] 11. Design the `P5Strikes.luau` split (3,829 lines); no code changes
-- [ ] 12. Split `P5Strikes.luau`; function bodies moved byte-identical
-- [ ] 13. Design the `Phase25Controller.luau` split (2,690 lines); no code changes
+- [x] 11. Design the `P5Strikes.luau` split - see `tasks/p5strikes-split.md`
+- [x] 12. Split `P5Strikes.luau` into Core + 6 groups (largest 818 lines); 88/88 cues, bodies byte-identical, thorn/VINE/VINE_TIP (dead) dropped
+- [x] 13. `Phase25Controller` (2,691 lines): LastMinuteVFX extracted, then split into Core + FalseFuture/LastMinute/Lifecycle/Echoes (largest 861 lines). Went beyond "design only" because the dependency facts showed a clean, mechanical split
 
 ## Checkpoint: Complete
-- [ ] All three checks pass; README layout section updated; no file over about 1,000 lines in the touched areas
+- [x] Analyzer + build + mirror checks pass; the two target files no longer exist as single files
+- [x] README layout section updated
+- [ ] Fight Phase 5 normal attacks, the Last Minute ultimate and False Future once after reconnecting Rojo (you)

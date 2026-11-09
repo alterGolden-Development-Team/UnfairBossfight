@@ -49,7 +49,12 @@ Studio back into the files, so either keep VS Code as the place you edit scripts
 - `place/TheGoldenEncounter.rbxl` — full Roblox place snapshot, including the map and saved instances. Open it in Roblox Studio.
 - `src/ServerStorage/BossEncounter/` — besides scripts this holds the boss `Templates`, `Assets` and `NPCs` as `.rbxm` models (recovered from `place/TheGoldenEncounter.rbxl`). Rojo manages them, so edit them in Studio only if you then re-export them over the `.rbxm`.
 - **Every folder under `src/` needs an `init.meta.json` with `{"ignoreUnknownInstances":true}`.** Without it Rojo deletes any non-script instance inside that folder on the next sync. (That is how `Templates` and the Gate of Wrath's boss model disappeared once.)
-- `tools/` — Studio export receiver and helper script.
+- `tools/` — Studio export receiver, `check.ps1` (build + analyzer + mirror-pair gate), `mirror-pairs.txt`, `analyzer-baseline.txt`.
+- `tasks/` — the refactor plan (`plan.md`, `todo.md`), the require-cycle analysis (`cycles.md`) and the P5Strikes split note.
+- Large modules are folder modules: `VFXEngine/Effects/P5Strikes/` and `BossSystem/Phases/Phase25Controller/` are an `init.luau`
+  that requires a `Core.luau` plus themed group files and returns the same table as before, so callers did not change.
+- `ReplicatedStorage/BossShared/Presentation/*Runtime` are client copies of server modules. Edit the **server** copy, then run
+  `tools\check.ps1 -SyncMirrors`; clients only run the ReplicatedStorage copy.
 - `_backup/` — existing project backups.
 
 Roblox cloud assets in the place remain referenced by their asset IDs and may need Roblox access to load.

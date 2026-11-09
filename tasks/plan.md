@@ -266,3 +266,19 @@ registry?) and propose a split, for example one module per attack family. No cod
   make every cast share it. Replaced by the drift guard.
 - **Task 7**: three of four pairs consolidated. `P4StarSlash`/`P5EnhancedStarSlash` stay separate (sibling `Style` differs).
 - **Tasks 9-10**: see `tasks/cycles.md`. No run-time cycle exists; each cut is a redesign, deferred pending your call.
+
+## Phase 4 outcome (P5Strikes and Phase25Controller)
+- Decisions taken on the drift pairs: the **server copy wins** for `HyperElasticRuntime/Style`, `PolarisRuntime/Style` and
+  `BlackHoleRuntime/Client` (newer, and the server is what decides hits); `HyperElasticRuntime/Visuals` is a **merge** of both
+  sides (ground-matched colours + the extra `shockDisc` effects). All 9 mirror pairs are identical again, and
+  `tools/check.ps1 -SyncMirrors` re-copies server -> ReplicatedStorage so they stay that way.
+- `check.ps1` no longer gates on the ~20-26k cross-module type-inference messages (symptoms of the cycles in
+  `tasks/cycles.md`); it still gates on everything that indicates a real problem. Baseline: 340 distinct diagnostics.
+- Two latent bugs surfaced by the splits and fixed: a missing `return` that would have stopped `P5Strikes` from loading (caught
+  by the analyzer before commit), and an undefined `g` in `SilentHit`'s floor raycast.
+- Still large (next targets, "bigger fish"): `VFXEngine/Effects/P5SonicBlaster` 1,874, `Disorderer` 1,847, `P5Ascend` 1,725,
+  the HyperElastic `Visuals` mirror pair (about 1,700 each), `Combat/ProjectileService` 1,624, `Phases/PhaseController` 1,570,
+  `Phases/Phase3Intro` 1,467, `Combat/StatusEffectService` 1,442; and single huge functions inside the new files:
+  `startLastMinuteCollapse` (532 lines, in `Phase25Controller/LastMinute`) and `BeginFalseTelegraph` (276).
+- Rojo was not running during this work, so Studio still holds the pre-split scripts. Start Rojo and click Connect in Studio;
+  it will add the new folder modules and remove the old single files.
