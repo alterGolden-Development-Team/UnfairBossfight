@@ -3,7 +3,6 @@
 2	src/ReplicatedStorage/BossShared/Config/DifficultyConfig.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 2	src/ReplicatedStorage/BossShared/Movement/R6DashClient.luau : TypeError: Key 'restoreRotate' not found in table '{| active: any, attachment: any, char: any, h: any, hover: any, listeners: {any}, params: any, pending: {|  |}, restoreRotate: any, root: any, staminaCap: any, velocity: any |}'
 1	src/ReplicatedStorage/BossShared/Movement/R6DashMotion.luau: ImplicitReturn: Function '__index' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ReplicatedStorage/BossShared/Presentation/BlackHoleRuntime/Client.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/BossShared/Presentation/BlackHoleRuntime/Client.luau: LocalUnused: Variable 'cam' is never used; prefix with '_' to silence
 101	src/ReplicatedStorage/BossShared/Presentation/BlackHoleRuntime/Client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/BossShared/Presentation/CameraFov.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -33,7 +32,6 @@
 37	src/ReplicatedStorage/BossShared/Presentation/StatusIcons.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/BossShared/Presentation/TrialMenuKit.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 5	src/ReplicatedStorage/BossShared/Presentation/TrueIllusion/Cinematic.luau : TypeError: Key 'Saved' not found in table 'camera'
-1	src/ReplicatedStorage/BossShared/Presentation/TrueIllusion/Cinematic.luau: FunctionUnused: Function 'easeOut' is never used; prefix with '_' to silence
 2	src/ReplicatedStorage/BossShared/Presentation/TrueIllusion/Cinematic.luau: LocalUnused: Variable 'humanoid' is never used; prefix with '_' to silence
 8	src/ReplicatedStorage/BossShared/Presentation/TrueIllusion/Cinematic.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ReplicatedStorage/BossShared/SonicBlaster.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -47,20 +45,15 @@
 1	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: LocalUnused: Variable 'beam' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: LocalUnused: Variable 'BLOCK' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: LocalUnused: Variable 'bot' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: LocalUnused: Variable 'groundOffset' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: LocalUnused: Variable 'VIOLET' is never used; prefix with '_' to silence
 93	src/ReplicatedStorage/VFXEngine/Effects/Disorderer.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/VFXEngine/Effects/DyingStar.luau : TypeError: Key 'Flight' not found in table '{| D: any, G: any, Grow: any, Heat: any, Inflow: any, Layers: {| [any]: any |}, Light: any, Mode: any, Root: any, Shell: any, Star: any, Swell: any, Trail: any |}'
-1	src/ReplicatedStorage/VFXEngine/Effects/DyingStar.luau: LocalUnused: Variable 'BLACK' is never used; prefix with '_' to silence
 14	src/ReplicatedStorage/VFXEngine/Effects/DyingStar.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ReplicatedStorage/VFXEngine/Effects/GroundShatter.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'Ending' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
 4	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'FlashAt' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
 1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'Gone' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
 1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau : TypeError: Key 'Locked' not found in table '{| Blind: any, BlindK: any, D: any, Eye: any, G: any, Layers: {| [any]: any |}, Lid: any, Light: any, Open: any, Pupil: any, Root: any |}'
-1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau: LocalUnused: Variable 'DANGER' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau: LocalUnused: Variable 'ga' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau: LocalUnused: Variable 'SAFE' is never used; prefix with '_' to silence
 13	src/ReplicatedStorage/VFXEngine/Effects/IrisStar.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 97	src/ReplicatedStorage/VFXEngine/Effects/P5Arsenal.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'arms' is never used; prefix with '_' to silence
@@ -68,9 +61,6 @@
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'k' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'm0' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'mark' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'osc' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'step' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'tk' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: LocalUnused: Variable 'width' is never used; prefix with '_' to silence
 191	src/ReplicatedStorage/VFXEngine/Effects/P5Ascend.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 3	src/ReplicatedStorage/VFXEngine/Effects/P5Finale.luau : TypeError: Key 'blend' not found in table 'cam'
@@ -103,27 +93,21 @@
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau : TypeError: Key 'Slammed' not found in table '{| Core: any, Fields: {any}, G: any, Top: any |}'
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau : TypeError: Unknown global 'g'; consider assigning to it first
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: ForRange: For loop should iterate backwards; did you forget to specify -1 as step?
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: FunctionUnused: Function 'placeThorn' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: FunctionUnused: Function 'thorn' is never used; prefix with '_' to silence
 112	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalShadow: Variable 'g' shadows a global variable used at line N
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'AURORA' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'boom' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'DEEP_RED' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'f' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'floor' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'RED' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'rings' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'shocks' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'smoke' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'sparks' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'swirls' is never used; prefix with '_' to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'VINE_DARK' is never used; prefix with '_' to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: LocalUnused: Variable 'warnColor' is never used; prefix with '_' to silence
 250	src/ReplicatedStorage/VFXEngine/Effects/P5Strikes.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ReplicatedStorage/VFXEngine/Effects/Polaris.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/Polaris.luau: LocalUnused: Variable 'c3' is never used; prefix with '_' to silence
 20	src/ReplicatedStorage/VFXEngine/Effects/Polaris.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ReplicatedStorage/VFXEngine/Effects/ShadowSwords.luau: LocalUnused: Variable 'PALE' is never used; prefix with '_' to silence
 5	src/ReplicatedStorage/VFXEngine/Effects/ShadowSwords.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ReplicatedStorage/VFXEngine/Effects/TPBreak.luau: LocalUnused: Variable 'ring' is never used; prefix with '_' to silence
 2	src/ReplicatedStorage/VFXEngine/Effects/TPBreak.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -139,59 +123,39 @@
 7	src/ReplicatedStorage/VFXEngine/Lighting.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ReplicatedStorage/VFXEngine/Sky.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1(ShieldBreak)/Swordsmaster/P1ChainedCombo/FX.luau: LocalUnused: Variable 'line' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5GildedThread/Behavior.luau: ImportUnused: Import 'Status' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5GoldenChain/Behavior.luau: ImplicitReturn: Function 'contact' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5GoldenLance/Behavior.luau: LocalUnused: Variable 'DEEP' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5Raining/Visuals.luau: LocalUnused: Variable 'NEON' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5RoyalBow(Ultimate)/Impact.luau: LocalUnused: Variable 'dustEmitter' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5RoyalBow(Ultimate)/Impact.luau: LocalUnused: Variable 'random' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5RoyalBow(Ultimate)/Impact.luau: LocalUnused: Variable 'STONE' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1.5/P1.5RoyalBow(Ultimate)/Particles.luau: LocalUnused: Variable 'dustEmitter' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1FallingBlade/Behavior.luau: LocalUnused: Variable 'effects' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1FallingBlade/Behavior.luau: LocalUnused: Variable 'h' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P1/P1GildedCataclysm(Ultimate)/Visuals.luau: LocalUnused: Variable 'stone' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenSplit/Behavior.luau: LocalUnused: Variable 'melee' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenSplit/Behavior.luau: LocalUnused: Variable 'Run' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenThrust/Behavior.luau: LocalUnused: Variable 'effects' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenThrust/Behavior.luau: LocalUnused: Variable 'h' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1GoldenThrust/Behavior.luau: LocalUnused: Variable 'motors' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P1/P1IntimidatingSlash/Behavior.luau: LocalUnused: Variable 'Run' is never used; prefix with '_' to silence
 6	src/ServerScriptService/BossSystem/Attacks/P1/P1NormalSlash/Behavior.luau : TypeError: Key 'MovementRevision' not found in table '{| ChooseTarget: (any) -> (...any), Combo: (any) -> (...any), Crescent: any, DamageArc: (any, any, any) -> (...any), Dispose: () -> (...any), GetTarget: (any) -> (...any), HitFx: any, IsInArc: (any, any, any) -> (...any), MovementRevision: any, Pose: (any, any) -> (...any), PoseAngles: (any, any) -> (...any), RunToTarget: (any, any) -> (...any), Settle: () -> (...any) |}'
-1	src/ServerScriptService/BossSystem/Attacks/P1/P1NormalSlash/Behavior.luau: ImportUnused: Import 'Registry' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1NormalSlash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P1/P1RangedSlashes/Behavior.luau: ImportUnused: Import 'Observer' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1RangedSlashes/Behavior.luau: LocalUnused: Variable 'h' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P1/P1RangedSlashes/Behavior.luau: LocalUnused: Variable 'Players' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P1/P1TornadoSlash/Behavior.luau: LocalUnused: Variable 'melee' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P2.5/P2.5MissingFrame/Behavior.luau: LocalUnused: Variable 'random' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P2.5/P2.5StolenSecond/Behavior.luau : TypeError: Key 'previewPosition' not found in table '{| anchored: any, cast: any, character: any, closed: any, direction: any, id: any, inputDeadline: any, lastPacket: any, mode: any, networkOwner: any, origin: any, ownershipAuto: any, player: any, previewFrame: any, previewPosition: any, replayFrame: any, replayProgress: any, samples: {any}, sequence: any, speed: any |}'
 2	src/ServerScriptService/BossSystem/Attacks/P2.5/P2.5StolenSecond/Behavior.luau : TypeError: Key 'storedDash' not found in table '{| anchored: any, cast: any, character: any, closed: any, direction: any, id: any, inputDeadline: any, lastPacket: any, mode: any, networkOwner: any, origin: any, ownershipAuto: any, player: any, previewFrame: any, previewPosition: any, replayFrame: any, replayProgress: any, samples: {any}, sequence: any, speed: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P2/P2TimeBullets/Behavior.luau: LocalUnused: Variable 'DEEP' is never used; prefix with '_' to silence
 7	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5IllusionBomb/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5IllusionBomb/Visuals.luau: FunctionUnused: Function 'scorch' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5IllusionBomb/Visuals.luau: LocalUnused: Variable 'ember' is never used; prefix with '_' to silence
 8	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5IllusionGun/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Behavior.luau: LocalUnused: Variable 'finished' is never used; prefix with '_' to silence
 15	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 12	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 3	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Presentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Visuals.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Visuals.luau: LocalUnused: Variable 'g' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Visuals.luau: LocalUnused: Variable 'LINEAR' is never used; prefix with '_' to silence
 30	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5MysteriousGuy(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Behavior.luau: ImportUnused: Import 'AttackDebuffs' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Behavior.luau: LocalUnused: Variable 'dealt' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Behavior.luau: LocalUnused: Variable 'debuffKey' is never used; prefix with '_' to silence
 3	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Finale.luau: LocalUnused: Variable 'TweenService' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Finale.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Launcher.luau: LocalUnused: Variable 'suitColor' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Launcher.luau: LocalUnused: Variable 'TweenService' is never used; prefix with '_' to silence
 25	src/ServerScriptService/BossSystem/Attacks/P3.5/P3.5TrueIllusion(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Cards/Behavior.luau: ImportUnused: Import 'Status' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Clone/Behavior.luau: LocalUnused: Variable 'system' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3ControlDistortion/Behavior.luau: ImplicitReturn: Function 'targetFor' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3ControlDistortion/Behavior.luau: ImportUnused: Import 'AttackDebuffs' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'AnimateDisabled' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'AnimateScript' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'AutomaticOwnership' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
@@ -205,12 +169,8 @@
 2	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'SafeReleaseFrame' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau : TypeError: Key 'WasAnchored' not found in table '{| AnimateDisabled: any, AnimateScript: any, AutomaticOwnership: any, Box: any, Cast: any, DownedFrame: any, DownedSnapshot: any, Held: any, HeldHumanoid: any, HeldRoot: any, NetworkOwner: any, NextPinnedTick: any, Player: any, SafeReleaseFrame: any, Target: any, Token: any, WasAnchored: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Dash/Behavior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3EtherealAcumen(Ultimate)/Behavior.luau: ImportUnused: Import 'AttackDebuffs' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3EtherealAcumen(Ultimate)/Behavior.luau: LocalUnused: Variable 'debuffKey' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3PickThePupils(Ultimate)/init.luau : TypeError: Key 'Mode' not found in table '{| Attempt: any, Cups: {any}, Deadline: any, DebuffPenalties: any, Focus: any, Holder: any, LastCorrect: any, LastPenalty: any, Mode: any, Mood: any, Pads: {| [any]: any |}, Penalties: any, PickTotal: any, Pupil: any, Results: {{| Correct: any, Mode: any, Penalties: any, Round: any |}}, RoundsCompleted: any, SelectedSlot: any, Stage: any, Token: any, Votes: any, Wins: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3PlayerClone/Behavior.luau: ImportUnused: Import 'AttackDebuffs' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3PlayerClone/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P3/P3Projectile/Behavior.luau: ImportUnused: Import 'AttackDebuffs' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P3/P3Projectile/Behavior.luau: LocalUnused: Variable 'flatRing' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'BeamRing' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
@@ -220,7 +180,6 @@
 1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau: DuplicateCondition: Condition has already been checked on column N
-1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5FlowerField/Behavior.luau: LocalUnused: Variable 'AMBER' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
 5	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P4.5/P4.5HeavenlyDisciple(Ultimate)/Visuals.luau : TypeError: Expected this to be 'Color3', but got 'ColorSequence | any'
@@ -256,12 +215,9 @@
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathRoars(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathScythe(Ultimate)/Behavior.luau : TypeError: Key 'Forced' not found in table '{| CanUse: (any) -> (...any), Combo: (any) -> (...any), Cooldown: any, Dispose: () -> (...any), IsUltimate: any, ManagesCooldown: any, UltimatePhase: any |}'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4DeathScythe(Ultimate)/Behavior.luau : TypeError: Key 'Quick' not found in table '{| CanUse: (any) -> (...any), Combo: (any) -> (...any), Cooldown: any, Dispose: () -> (...any), IsUltimate: any, ManagesCooldown: any, UltimatePhase: any |}'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedNormalSlashes/Behavior.luau: LocalUnused: Variable 'maxDashTime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedRaining/Behavior.luau: ImportUnused: Import 'Config' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedRaining/Visuals.luau: LocalUnused: Variable 'NEON' is never used; prefix with '_' to silence
 8	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau: FunctionUnused: Function 'fade' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedSplit/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4EnhancedThrust/Visuals.luau: LocalUnused: Variable 'cometEmitter' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
@@ -272,9 +228,6 @@
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Visuals.luau: FunctionUnused: Function 'spin' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Visuals.luau: LocalUnused: Variable 'RISE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4RipAndTear/Visuals.luau: LocalUnused: Variable 'WHITE' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
@@ -282,7 +235,6 @@
 3	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 14	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Visuals.luau: LocalUnused: Variable 'rng' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P4/P4StarSlash/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Borealis/Behavior.luau: LocalUnused: Variable 'END' is never used; prefix with '_' to silence
 14	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Borealis/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -295,74 +247,18 @@
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau: DuplicateCondition: Condition has already been checked on column N
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedFlowerField/Behavior.luau: LocalUnused: Variable 'AMBER' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedGildedCataclysm/Behavior.luau: FunctionUnused: Function 'chainTarget' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedGildedCataclysm/Behavior.luau: ImportUnused: Import 'Difficulty' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedGildedCataclysm/Behavior.luau: ImportUnused: Import 'qte' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5EnhancedGildedCataclysm/Visuals.luau: LocalUnused: Variable 'stone' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5GreatWind/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'now' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5LightningDash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Camera.luau: LocalUnused: Variable 'baseFov' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Camera.luau: LocalUnused: Variable 'lastFov' is never used; prefix with '_' to silence
 20	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Camera.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Presentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5Polaris(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: FunctionUnused: Function 'knock' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheGreatStorm(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Natural/P5TheWind/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 5	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5DeathRoar/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
 10	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
@@ -374,7 +270,6 @@
 2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'ROSE' not found in table '{  }'
 13	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedBurst/Behavior.luau : TypeError: Key 'WHITE' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedGlidedThread/Behavior.luau: LocalUnused: Variable 'stagger' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedGlidedThread/Behavior.luau: LocalUnused: Variable 'THROW_L' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau : TypeError: Key 'CRIMSON' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
@@ -383,84 +278,12 @@
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Visuals.luau: FunctionUnused: Function 'spin' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Visuals.luau: LocalUnused: Variable 'RISE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5EnhancedRipAndTear/Visuals.luau: LocalUnused: Variable 'WHITE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: LocalUnused: Variable 'DIVE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: LocalUnused: Variable 'LUNGE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Cross/Behavior.luau: LocalUnused: Variable 'WIND' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: FunctionUnused: Function 'dash' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: LocalUnused: Variable 'LUNGE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Dive/Behavior.luau: LocalUnused: Variable 'WIND' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'DIVE' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'landed' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'LUNGE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'RISE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5Fang-Pierce/Behavior.luau: LocalUnused: Variable 'WIND' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: FunctionUnused: Function 'knock' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5GoldenBullets/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: FunctionUnused: Function 'cue' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: FunctionUnused: Function 'dash' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: FunctionUnused: Function 'swing' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: LocalUnused: Variable 'DIVE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: LocalUnused: Variable 'RISE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5IntrusiveLunge/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5JudgementZone/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5NoonTearer/Behavior.luau: ImportUnused: Import 'Ultimate' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5NullifiedZone/Behavior.luau: LocalUnused: Variable 'FLAT' is never used; prefix with '_' to silence
 4	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5NullifiedZone/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5PerfectVerticalSlash/Behavior.luau: FunctionUnused: Function 'segmentDistance' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: FunctionUnused: Function 'cue' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: FunctionUnused: Function 'dash' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: FunctionUnused: Function 'swing' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: LocalUnused: Variable 'DIVE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: LocalUnused: Variable 'LUNGE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: LocalUnused: Variable 'RISE' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: LocalUnused: Variable 'WIND' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/NormalAttack/P5SwordDancer/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 21	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: LocalUnused: Variable 'cam' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: LocalUnused: Variable 'core' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Client.luau: LocalUnused: Variable 'gp' is never used; prefix with '_' to silence
@@ -469,46 +292,11 @@
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Presentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 7	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Pull.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 14	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlackHole/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5BlastBreath(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Disgeneration/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5DyingStar/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 5	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5DyingStar/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: FunctionUnused: Function 'knock' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedJumpKick/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau : TypeError: Key 'Context' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau : TypeError: Key 'Disc' not found in table '{  }'
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau : TypeError: Key 'FX' not found in table '{  }'
@@ -516,26 +304,8 @@
 3	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 14	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Visuals.luau : TypeError: Key 'Context' not found in table '{  }'
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Visuals.luau : TypeError: Key 'FX' not found in table '{  }'
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Visuals.luau: LocalUnused: Variable 'rng' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnhancedStarSlash/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5EnragedShockwave/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5GravityCrush/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5GravityCrush/Behavior.luau: FunctionUnused: Function 'segmentDistance' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5GravityCrush/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Presentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau : TypeError: Key 'bloom' not found in table 'post'
@@ -548,99 +318,18 @@
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau: LocalUnused: Variable 'W' is never used; prefix with '_' to silence
 9	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5Hyper-lasticBeam(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 4	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5IrisStar/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: FunctionUnused: Function 'knock' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5JumpKick/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'CALL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: LocalUnused: Variable 'UP' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5LightJab/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: FunctionUnused: Function 'knock' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5PlasmaBall/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5StarShooter/Behavior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5StarShooter/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-3	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: FunctionUnused: Function 'flat' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: FunctionUnused: Function 'knock' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: FunctionUnused: Function 'lift' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: FunctionUnused: Function 'smooth' is never used; prefix with '_' to silence
+2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraBlue/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: ImportUnused: Import 'Deflect' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: ImportUnused: Import 'Placement' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: LocalUnused: Variable 'CROUCH' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: LocalUnused: Variable 'KICK' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: LocalUnused: Variable 'STOMP_A' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: LocalUnused: Variable 'STOMP_B' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: LocalUnused: Variable 'THROW' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: LocalUnused: Variable 'TUCK' is never used; prefix with '_' to silence
-3	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Summoned/P5FallingStar/Behavior.luau: FunctionUnused: Function 'holdLead' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Summoned/P5FallingStar/Behavior.luau: FunctionUnused: Function 'segmentDistance' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Summoned/P5FallingStar/Behavior.luau: ImportUnused: Import 'Audio' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Summoned/P5FallingStar/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Summoned/P5FallingStar/Behavior.luau: LocalUnused: Variable 'POINT' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Summoned/P5FallingStar/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Chronobreak/Behavior.luau: FunctionUnused: Function 'segmentDistance' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Chronobreak/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Chronobreak/Behavior.luau: LocalUnused: Variable 'POINT' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Chronobreak/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
+1	src/ServerScriptService/BossSystem/Attacks/P5/Space/P5UltraRed/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5EnhancedDirectShot/Behavior.luau: DuplicateFunction: Duplicate function definition: 'api.Combo' also defined on line N
 1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5EnhancedTimeBullets/Behavior.luau: DuplicateFunction: Duplicate function definition: 'api.Combo' also defined on line N
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5EnhancedTimeBullets/Behavior.luau: LocalUnused: Variable 'DEEP' is never used; prefix with '_' to silence
 14	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Behavior.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Geometry.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Presentation.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -648,15 +337,10 @@
 1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Visuals.luau: CommentDirective: Comment directive is ignored because it is placed after the first non-comment token
 1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Visuals.luau: LocalUnused: Variable 'S' is never used; prefix with '_' to silence
 112	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5Finality(Ultimate)/Visuals.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5TimeBomb/Behavior.luau: FunctionUnused: Function 'segmentDistance' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5TimeBomb/Behavior.luau: ImportUnused: Import 'Runtime' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5TimeBomb/Behavior.luau: LocalUnused: Variable 'CAST' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Attacks/P5/Time/P5TimeBomb/Behavior.luau: LocalUnused: Variable 'SLAM' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Attacks/Shared/BossDamageService.luau: MultiLineStatement: Statement spans multiple lines; use indentation to silence
 1	src/ServerScriptService/BossSystem/Attacks/Shared/BossDamageService.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/ServerScriptService/BossSystem/Attacks/Shared/P1CombatCore.luau : TypeError: Key 'AirborneFloor' not found in table '{| Active: () -> (...any), Afterimage: (any) -> (...any), AirborneFloor: any, Alive: (any) -> (...any), BeginTelegraph: (any, any) -> (...any), CanHit: (any, any) -> (...any), Characters: any, Damage: (any, any, any) -> (...any), Dispose: () -> (...any), Effects: any, Face: (any) -> (...any), FloorY: (any, any) -> (...any), Humanoid: any, KeepFor: (any, any, any) -> (...any), Melee: any, MotionLine: (any, any, any, any, any, any) -> (...any), Motors: any, Params: any, Part: (any, any, any, any, any... *TRUNCATED*'
 1	src/ServerScriptService/BossSystem/Attacks/Shared/P1CombatCore.luau: ImplicitReturn: Function 'floorY' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Attacks/Shared/P1CombatCore.luau: LocalUnused: Variable 'bright' is never used; prefix with '_' to silence
 25	src/ServerScriptService/BossSystem/Attacks/Shared/P35IllusionFX.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 85	src/ServerScriptService/BossSystem/Attacks/Shared/P4CrimsonFX.luau : TypeError: Cyclic dependencies
 85	src/ServerScriptService/BossSystem/Attacks/Shared/P4GoldenFX.luau : TypeError: Cyclic dependencies
@@ -684,7 +368,6 @@
 595	src/ServerScriptService/BossSystem/Combat/CombatRuntime.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Combat/CombatRuntime.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 8	src/ServerScriptService/BossSystem/Combat/DamageTracker.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Combat/DeflectService.luau: FunctionUnused: Function 'anyShield' is never used; prefix with '_' to silence
 85	src/ServerScriptService/BossSystem/Combat/EffectService.luau : TypeError: Cyclic dependencies
 85	src/ServerScriptService/BossSystem/Combat/P5Debuffs.luau : TypeError: Cyclic dependencies
 255	src/ServerScriptService/BossSystem/Combat/P5ModeService.luau : TypeError: Cyclic dependencies
@@ -719,7 +402,6 @@
 85	src/ServerScriptService/BossSystem/Encounter/EncounterStory.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Encounter/EncounterStory.luau: LocalShadow: Variable 'ultimateLines' shadows previous declaration at line N
 1	src/ServerScriptService/BossSystem/Encounter/EncounterStory.luau: LocalUnused: Variable 'ultimateLines' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Encounter/EnragedGate.luau: LocalUnused: Variable 'Players' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Encounter/VictoryRewards.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1445	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Cyclic dependencies
 170	src/ServerScriptService/BossSystem/Mechanics/Clones/CloneController.luau : TypeError: Key 'Cancelled' not found in table '{| Actor: any, AppearanceAt: any, AppearanceCast: any, AppearanceDuration: any, AttackInterval: any, AttackName: any, ExpiresAt: any, FadeDuration: any, Generation: any, Handle: any, HoldDuration: any, Humanoid: any, MirrorMotors: {{| Copy: any, Source: any |}}, MirrorOwner: any, MirrorReadyAt: any, Mode: any, MovementCast: any, OnDefeated: any, OnHealthUpdate: any, Owner: any, OwnerHumanoid: any, Parts: {| [any]: any |}, Pool: any, ReadyAt: any, Role: any, State: any, Target: any, WorldOffset: any... *TRUNCATED*'
@@ -744,7 +426,6 @@
 1	src/ServerScriptService/BossSystem/Mechanics/Time/TimeEffectController.luau: ImplicitReturn: Function 'ActiveStop' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Passives/P3Misdirection(Passive).luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 4	src/ServerScriptService/BossSystem/Passives/P4Enraged(Passive).luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/ServerScriptService/BossSystem/Passives/P5God(Passive).luau: LocalUnused: Variable 'B' is never used; prefix with '_' to silence
 1785	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau : TypeError: Cyclic dependencies
 340	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau : TypeError: Key 'Revealed' not found in table '{| Cast: any, Duration: any, Elapsed: any, Geometry: any, Ready: any, Revealed: any, RevealedAt: any |}'
 170	src/ServerScriptService/BossSystem/Phases/Phase25Controller.luau : TypeError: Key 'RevealedAt' not found in table '{| Cast: any, Duration: any, Elapsed: any, Geometry: any, Ready: any, Revealed: any, RevealedAt: any |}'
@@ -762,13 +443,10 @@
 85	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau : TypeError: Key 'RecallBase' not found in table '{| Active: any, Burst: any, Center: any, FirstGap: any, Frame: any, HalfX: any, HalfZ: any, Players: {| [any]: any |}, Pull: any, Pulse: any, Recall: any, Waves: {any} |}'
 1	src/ServerScriptService/BossSystem/Phases/Phase3Intro.luau: ImplicitReturn: Function 'shoulderEndpoint' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 170	src/ServerScriptService/BossSystem/Phases/Phase45Transition.luau : TypeError: Cyclic dependencies
-510	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau : TypeError: Cyclic dependencies
+425	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau: ImportUnused: Import 'Effects' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau: LocalUnused: Variable 'EMBER' is never used; prefix with '_' to silence
 2	src/ServerScriptService/BossSystem/Phases/Phase5Transition.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-3485	src/ServerScriptService/BossSystem/Phases/PhaseController.luau : TypeError: Cyclic dependencies
-1	src/ServerScriptService/BossSystem/Phases/PhaseController.luau: ImportUnused: Import 'Encounter' is never used; prefix with '_' to silence
+3400	src/ServerScriptService/BossSystem/Phases/PhaseController.luau : TypeError: Cyclic dependencies
 340	src/ServerScriptService/BossSystem/Players/Classes/ClassFX.luau : TypeError: Cyclic dependencies
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassFX.luau: DuplicateFunction: Duplicate function definition: 'FX.Beam' also defined on line N
 1	src/ServerScriptService/BossSystem/Players/Classes/ClassFX.luau: DuplicateFunction: Duplicate function definition: 'FX.Burst' also defined on line N
@@ -827,13 +505,11 @@
 9	src/ServerScriptService/BossSystem/Players/Classes/Kits/Twinblade.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Warrior.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/ServerScriptService/BossSystem/Players/Classes/Kits/Warrior.luau: LocalUnused: Variable 'STEEL' is never used; prefix with '_' to silence
-1	src/ServerScriptService/BossSystem/Players/Classes/TrainingDummy.luau: LocalUnused: Variable 'BossSystem' is never used; prefix with '_' to silence
 85	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Argument count mismatch. Function 'Aim.Register' expects 0 to 1 argument, but 2 are specified
-1360	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Cyclic dependencies
+1275	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Cyclic dependencies
 85	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Key 'started' not found in table 'api'
 425	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau : TypeError: Key 'StartingLives' not found in table 'api'
 1	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau: ImplicitReturn: Function '__index' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
-1	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau: ImportUnused: Import 'Time' is never used; prefix with '_' to silence
 1	src/ServerScriptService/BossSystem/Players/PlayerEncounter.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 85	src/ServerScriptService/BossSystem/Players/PlayerR6Appearance.luau : TypeError: Cyclic dependencies
 5	src/ServerScriptService/BossSystem/Players/PlayerR6Appearance.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -847,7 +523,6 @@
 1	src/StarterGui/PlayerVitalsHUD/PlayerVitalsAndDash.client.luau : TypeError: Argument count mismatch. Function 'predictor.Start' expects 0 to 2 arguments, but 3 are specified
 1	src/StarterPlayer/StarterCharacter/Animate.client.luau: DeprecatedApi: Function 'wait' is deprecated, use 'task.wait' instead
 1	src/StarterPlayer/StarterCharacter/Animate.client.luau: FunctionUnused: Function 'moveSit' is never used; prefix with '_' to silence
-1	src/StarterPlayer/StarterCharacter/Animate.client.luau: LocalUnused: Variable 'jumpMaxLimbVelocity' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterCharacter/Animate.client.luau: LocalUnused: Variable 'Neck' is never used; prefix with '_' to silence
 2	src/StarterPlayer/StarterCharacter/Animate.client.luau: LocalUnused: Variable 'origRoll' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Input/CataclysmQTEClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -857,24 +532,17 @@
 2	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau : TypeError: Key 'C' not found in table '{| [any]: any |}'
 2	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau : TypeError: Key 'C' not found in table 'heldKeys'
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau : TypeError: Key 'HumanoidRootPart' not found in external type 'Instance'
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: FunctionUnused: Function 'corner' is never used; prefix with '_' to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: FunctionUnused: Function 'label' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: ImplicitReturn: Function can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: ImplicitReturn: Function 'character' can implicitly return no values even though there's an explicit return at line N; add explicit return to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: LocalUnused: Variable 'DIM' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: LocalUnused: Variable 'orbs' is never used; prefix with '_' to silence
 6	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/PlayerEncounterClient.client.luau: FunctionUnused: Function 'updateSkill' is never used; prefix with '_' to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/PlayerEncounterClient.client.luau: LocalUnused: Variable 'CAS' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau : TypeError: Expected this to be '{| [any]: any |}', but got 'nil'
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau : TypeError: Key 'dashAt' not found in table '{| char: any, connections: {any}, dashAt: any, dashElapsed: any, frozenPlaying: any, frozenTracks: {| [any]: any |}, h: any, joints: {| [any]: any |}, kind: any, player: any |}'
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau : TypeError: Key 'frozenPlaying' not found in table '{| char: any, connections: {any}, dashAt: any, dashElapsed: any, frozenPlaying: any, frozenTracks: {| [any]: any |}, h: any, joints: {| [any]: any |}, kind: any, player: any |}'
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/ArenaRuinClient.client.luau: LocalUnused: Variable 'GOLD' is never used; prefix with '_' to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/ArenaRuinClient.client.luau: LocalUnused: Variable 'SHINE' is never used; prefix with '_' to silence
 14	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/ArenaRuinClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BlackHoleClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau : TypeError: Key 'Waiting' not found in table '{| Busy: any, EQ: any, Ended: any, Loaded: any, Part: any, Sound: any |}'
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau: LocalUnused: Variable 'sonicPreloaded' is never used; prefix with '_' to silence
 2	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossCombatEffectsClient.client.luau : TypeError: Expected this to be 'number', but got 'number | unknown'
 4	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossCombatEffectsClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 3	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau : TypeError: Argument count mismatch. Function 'clear' expects 0 arguments, but 1 is specified
@@ -883,8 +551,7 @@
 3	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/init.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 2	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathRoarsClient/Spam.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeathScytheClient.client.luau : TypeError: Expected this to be 'number', but got 'number | unknown'
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeflectClient.client.luau: FunctionUnused: Function 'flick' is never used; prefix with '_' to silence
-28	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeflectClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
+27	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeflectClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DifficultyClient.client.luau: LocalUnused: Variable 'attribution' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/EtherealAcumenCinematics.client.luau: LocalUnused: Variable 'lastFov' is never used; prefix with '_' to silence
 2	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/FinalityClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
@@ -893,8 +560,6 @@
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/HeavenlyDiscipleClient.client.luau: LocalUnused: Variable 'savedClock' is never used; prefix with '_' to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/HyperElasticClient.client.luau : TypeError: Value of type '(() -> (...any))?' could be nil
 2	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/HyperElasticClient.client.luau : TypeError: Value of type '((any) -> (...any))?' could be nil
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/P5AstralClient.client.luau: LocalUnused: Variable 'distance' is never used; prefix with '_' to silence
-1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/P5AstralClient.client.luau: LocalUnused: Variable 'proximity' is never used; prefix with '_' to silence
 19	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/P5AstralClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 38	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/P5ModeAuraClient.client.luau: SameLineStatement: A new statement is on the same line; add semi-colon on previous statement to silence
 1	src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/P5TPClient.client.luau: LocalUnused: Variable 'vit' is never used; prefix with '_' to silence
