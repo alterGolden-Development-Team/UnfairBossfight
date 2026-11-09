@@ -88,15 +88,15 @@ local function build()
 	prompt.HoldDuration = 2
 	prompt.MaxActivationDistance = 12
 	prompt.RequiresLineOfSight = false
-	prompt.Enabled = workspace:GetAttribute("EncounterStarted") ~= true
+	prompt.Enabled = workspace:GetAttribute("EncounterStarted") ~= true and workspace:GetAttribute("LobbyMode") ~= true
 	prompt.Parent = portal
 	model.Parent = arena
 	return prompt
 end
 
 local function enter(player)
-	if workspace:GetAttribute("EncounterStarted") == true then
-		return
+	if workspace:GetAttribute("EncounterStarted") == true or workspace:GetAttribute("LobbyMode") == true then
+		return -- in lobby mode the party already chose Enraged (or not) in the lobby
 	end
 	workspace:SetAttribute("EncounterEnraged", true)
 	if not Arena.Activate(player) then
@@ -120,8 +120,9 @@ function api.Start()
 	build().Triggered:Connect(enter)
 	workspace:GetAttributeChangedSignal("EncounterStarted"):Connect(function()
 		local on = workspace:GetAttribute("EncounterStarted") == true
-		if prompt then prompt.Enabled = not on end
-		if not on then workspace:SetAttribute("EncounterEnraged", nil) end
+		local lobby = workspace:GetAttribute("LobbyMode") == true
+		if prompt then prompt.Enabled = not on and not lobby end
+		if not on and not lobby then workspace:SetAttribute("EncounterEnraged", nil) end  -- a lobby party keeps Enraged for Retry
 	end)
 end
 

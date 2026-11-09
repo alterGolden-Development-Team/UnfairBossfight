@@ -80,7 +80,8 @@ local function update()
 	button.Selectable = button.Active
 	button.AutoButtonColor = button.Active
 	button.BackgroundTransparency = button.Active and 0 or 0.65
-	hint.Text = available and "Change difficulty at the statue before starting again." or "Retry becomes available when the group is defeated."
+	local changeHint = workspace:GetAttribute("LobbyMode") == true and "Return to the lobby to change difficulty." or "Change difficulty at the statue before starting again."
+	hint.Text = available and changeHint or "Retry becomes available when the group is defeated."
 	if visible and not wasVisible and button.Active and Input.GamepadEnabled then GuiService.SelectedObject = button end
 	if not visible and GuiService.SelectedObject == button then GuiService.SelectedObject = nil end
 end
@@ -99,7 +100,7 @@ end)
 for _, name in ipairs({ "PermanentlyDefeated", "EncounterRetrying", "FinalDefeatShow", "FinalDefeatSpectate" }) do
 	player:GetAttributeChangedSignal(name):Connect(update)
 end
-for _, name in ipairs({ "EncounterRetryAvailable", "BossEncounterWon", "SonicBlasterActive", "NothingDimension" }) do
+for _, name in ipairs({ "EncounterRetryAvailable", "BossEncounterWon", "SonicBlasterActive", "NothingDimension", "LobbyMode" }) do
 	workspace:GetAttributeChangedSignal(name):Connect(update)
 end
 update()

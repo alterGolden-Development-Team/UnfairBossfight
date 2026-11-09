@@ -12,6 +12,7 @@ require(BossSystem.Players.R6DashService).Start(game.ReplicatedStorage:WaitForCh
 encounter.Start()
 require(BossSystem.Combat.TPService).Start()
 require(BossSystem.Players.Classes.ClassService).Start()
+require(BossSystem.Encounter.Intake).Start()  -- lobby arrivals: payload -> class, difficulty, Enraged (see Intake.luau)
 require(BossSystem.Players.Classes.TrainingDummy).Start()
 task.spawn(function()
 	require(BossSystem.Encounter.StartupWarmup).Run()

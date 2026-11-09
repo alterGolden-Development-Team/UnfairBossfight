@@ -7,33 +7,33 @@ Task numbers match plan.md; they are listed in build order, not numeric order.
 - [x] 1. Commit docs (intent, spec, plan)
 - [x] 2. Move repo to `D:/Project/UnfairBossfight` (`boss/`), fix paths, copy Claude memory (done as a clone + `git mv`, so the old folder is untouched and nothing had to be closed)
 - [x] 3. Lobby skeleton, `shared/UnfairShared/UnfairConfig`, mounts, `check.ps1` for both projects
-- [ ] 4. Test universe with copies of both places **(you)**
-- [ ] 5. Place IDs and `Env` switch into `UnfairConfig` (live IDs done; test IDs wait for task 4)
+- [x] 4. Test universe with copies of both places **(you)** (universe 10775538032 "Unfair Bossfight TEST": lobby 83310105029258, boss 76581021814220)
+- [x] 5. Place IDs and `Env` switch into `UnfairConfig` (live and test IDs in, `Env = "Test"`)
 
 ## Checkpoint A: Layout and test universe
-- [ ] Both projects build and pass `check.ps1`; Rojo serves 34872 (boss) and 34873 (lobby); test universe IDs recorded
+- [x] Both projects build and pass `check.ps1`; Rojo serves 34872 (boss) and 34873 (lobby); test universe IDs recorded
 
 ## Phase 1: Contracts (pure logic)
-- [ ] 6. `TeleportPayload` build and validate, with tests
-- [ ] 7. `PartyState` state machine, with tests
-- [ ] 20. `CashRules` payout table, with tests
+- [x] 6. `TeleportPayload` build and validate, with tests (20 cases)
+- [x] 7. `PartyState` state machine, with tests (28 cases)
+- [x] 20. `CashRules` payout table, with tests (6 cases)
 
 ## Phase 2: Lobby slices
-- [ ] 11. Lobby map shell: plaza, spawn, 3 portal arches, `MAP.md` **(you review)**
-- [ ] 12. Lobby map: class hall, 4 party rooms, shop shell **(you review)**
-- [ ] 13. Class picker server: `UnlockCheck`, `ClassPickService`
-- [ ] 14. Class picker UI **(you)**
-- [ ] 15. Party rooms server: `PartyService`
-- [ ] 16. Party room UI: leader panel, roster, countdown **(you)**
-- [ ] 17. `LaunchService` with Studio dry-run
+- [ ] 11. Lobby map shell: plaza, spawn, 3 portal arches, `MAP.md` **(you review)** (built in the test lobby window, contract in `lobby/MAP.md`; waits for your review and a save to `lobby/place/Lobby.rbxl`)
+- [ ] 12. Lobby map: class hall, 4 party rooms, shop shell **(you review)** (same)
+- [x] 13. Class picker server: `UnlockCheck`, `ClassPickService` (13 tests; Play-tested: pick, bogus class ignored, TrueWarrior locked with hint, owned classes unlock)
+- [ ] 14. Class picker UI **(you)** (Play-tested and screenshotted; waits for your click-through)
+- [ ] 15. Party rooms server: `PartyService` (Play-tested with 1 client: join, leader settings, Easy clears Enraged, countdown, walk-away cancels; the 3-client test still to do)
+- [ ] 16. Party room UI: leader panel, roster, countdown **(you)** (Play-tested with 1 client; waits for your check)
+- [x] 17. `LaunchService` with Studio dry-run (`LaunchPlan` 10 tests; dry-run payload checked in Play: right class, difficulty, Enraged)
 
 ## Checkpoint B: Lobby flow in Studio
 - [ ] 2+ test clients: classes picked, party formed, config set, dry-run payload correct **(you)**
 
 ## Phase 3: Boss intake
-- [ ] 8. `Intake` validate and apply (class, difficulty, enraged, lock, reject non-reserved)
-- [ ] 9. Hide statue, gate and class prompts in lobby mode; retry hint text **(you replay a fight)**
-- [ ] 10. Dev-payload harness and intake test cases
+- [x] 8. `Intake` validate and apply (class, difficulty, enraged, lock, reject non-reserved) (`IntakeRules` pure + 18 tests, `Intake.luau` glue; wired in `FightBootstrap`)
+- [ ] 9. Hide statue, gate and class prompts in lobby mode; retry hint text **(you replay a fight)** (code in: prompts disabled and props hidden in lobby mode, remotes refuse; waits for your Studio replay)
+- [x] 10. Dev-payload harness and intake test cases (`UnfairConfig.DevPayload` for Studio, 18 cases in `IntakeRulesTests`; the in-Studio play check still to do)
 
 ## Phase 4: First real teleport, run end, cash
 - [ ] 18. Published test-universe teleport test with 2 accounts **(you)**

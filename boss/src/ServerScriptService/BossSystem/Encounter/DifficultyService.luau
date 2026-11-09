@@ -43,11 +43,13 @@ end
 local function refresh()
  local id = Difficulty.Id()
  local profile = Difficulty.Get()
- local locked = workspace:GetAttribute("EncounterStarted") == true
+ local lobby = workspace:GetAttribute("LobbyMode") == true  -- the party chose the difficulty in the lobby
+ local locked = workspace:GetAttribute("EncounterStarted") == true or lobby
  workspace:SetAttribute("DifficultyDisplayName", profile.Name)
  if prompt then
   prompt.ObjectText = "Trial of Golden · " .. profile.Name
   prompt.ActionText = locked and "View Difficulty" or "Choose Difficulty"
+  prompt.Enabled = not lobby
  end
  if statue then
   statue:SetAttribute("SelectedDifficulty", id)
@@ -60,6 +62,7 @@ local function refresh()
 end
 function api.Select(player, id)
  if type(id) ~= "string" or not Difficulty.Profiles[id] then return false, "Unknown difficulty." end
+ if workspace:GetAttribute("LobbyMode") == true then return false, "Return to the lobby to change difficulty." end
  if workspace:GetAttribute("EncounterStarted") then return false, "Difficulty is locked during the encounter." end
  if not sessions[player] or sessions[player] < os.clock() or not closeEnough(player) then
   return false, "Interact with the statue to choose a difficulty."
@@ -82,7 +85,7 @@ function api.Lock()
 end
 function api.Unlock()
  workspace:SetAttribute("ActiveDifficulty", nil)
- workspace:SetAttribute("DifficultyLocked", false)
+ workspace:SetAttribute("DifficultyLocked", workspace:GetAttribute("LobbyMode") == true)  -- stays locked for a lobby party (Retry keeps the settings)
  table.clear(sessions)
  refresh()
 end
@@ -110,6 +113,7 @@ function api.Start()
  Players.PlayerRemoving:Connect(function(player) sessions[player] = nil; requests[player] = nil end)
  workspace:GetAttributeChangedSignal("SelectedDifficulty"):Connect(refresh)
  workspace:GetAttributeChangedSignal("EncounterStarted"):Connect(refresh)
+ workspace:GetAttributeChangedSignal("LobbyMode"):Connect(refresh)
  refresh()
 end
 return api

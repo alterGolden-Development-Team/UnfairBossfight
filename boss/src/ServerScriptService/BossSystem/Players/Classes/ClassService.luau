@@ -930,7 +930,13 @@ function S.Start()
   local statue = arena and arena:FindFirstChild("ClassStatue")
   local prompt = statue and statue:FindFirstChild("ClassPrompt", true)
   if prompt then
+    local function syncPrompt()
+      prompt.Enabled = workspace:GetAttribute("LobbyMode") ~= true  -- a lobby party picked classes in the lobby
+    end
+    syncPrompt()
+    workspace:GetAttributeChangedSignal("LobbyMode"):Connect(syncPrompt)
     prompt.Triggered:Connect(function(player)
+      if workspace:GetAttribute("LobbyMode") == true then return end
       remote:FireClient(player, "Open")
       task.spawn(S.RefreshUnlocks, player, 2)
     end)
@@ -941,6 +947,10 @@ function S.Start()
      player:SetAttribute(a,b)
     elseif action == "Select" then
       if type(a) ~= "string" or not ClassConfig.Classes[a] then
+        return
+      end
+      if workspace:GetAttribute("LobbyMode") == true then
+        remote:FireClient(player, "Result", { Message = "Return to the lobby to change class." })
         return
       end
       if workspace:GetAttribute("EncounterStarted") then
