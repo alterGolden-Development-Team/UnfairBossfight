@@ -427,20 +427,8 @@ function Hole:Supernova()
  if self.finished then return end
  self.finished=true
  self.model.Parent=nil  
- local pos,core,gy=self.pos,self.core,self.groundY
- local gp=Vector3.new(pos.X,gy+.15,pos.Z)
- flashBall(pos,CFG.Pale,core*.4,core*5,.35,0)
- flashBall(pos,CFG.Gold,core*.3,core*9,.55,.1)
- flashBall(pos,CFG.Violet,core*.6,self.pull*.5,.9,.35)
- local pillar=newPart(folder,"BH_Pillar",Enum.PartType.Cylinder,Vector3.new(420,core*.9,core*.9),CFG.Pale,Enum.Material.Neon,.05)
- pillar.CFrame=CFrame.new(pos.X,gy+210,pos.Z)*CFrame.Angles(0,0,HALF_PI)
- tween(pillar,.9,{Size=Vector3.new(420,.5,.5),Transparency=1},Enum.EasingStyle.Sine)
- Debris:AddItem(pillar,1)
- spawnRing{pos=gp,r0=self.foot,r1=self.pull*.7,life=1.1,color=CFG.Pale,thick=14,peak=1}
- spawnRing{pos=gp,r0=self.foot*.6,r1=self.pull*.45,life=.8,color=CFG.Gold,thick=10,peak=1}
- spawnRing{pos=gp,r0=self.foot*.3,r1=self.pull*.9,life=1.5,color=CFG.Violet,thick=6,peak=.7}
- burstEmitter(pos,SPARK,math.floor(220*Q),2.2)
- burstEmitter(gp,SMOKE,math.floor(60*Q),3.5)
+ local pos=self.pos
+ -- explosion visuals now come from VFXEngine.Effects.BlackHoleDebris (same burst timing)
  addFlash(math.clamp(proximity(pos,self.pull*1.1)*1.2+.25,.25,1))
  playSound(CFG.Sounds.Collapse,pos)
  if self.loop then self.loop:Stop() end

@@ -427,8 +427,7 @@ function Hole:Supernova()
  if self.finished then return end
  self.finished=true
  self.model.Parent=nil  
- local pos,core,gy=self.pos,self.core,self.groundY
- local gp=Vector3.new(pos.X,gy+.15,pos.Z)
+ local pos=self.pos
  -- explosion visuals now come from VFXEngine.Effects.BlackHoleDebris (same burst timing)
  addFlash(math.clamp(proximity(pos,self.pull*1.1)*1.2+.25,.25,1))
  playSound(CFG.Sounds.Collapse,pos)

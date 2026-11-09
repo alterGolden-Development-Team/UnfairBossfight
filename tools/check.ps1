@@ -3,6 +3,7 @@
 
     powershell -ExecutionPolicy Bypass -File tools\check.ps1                 # build + analyzer diff vs baseline
     powershell -ExecutionPolicy Bypass -File tools\check.ps1 -UpdateBaseline # accept the current analyzer output
+    powershell -ExecutionPolicy Bypass -File tools\check.ps1 -SyncMirrors    # copy server runtime modules over their ReplicatedStorage mirrors
 
   1. `rojo build` must succeed.
   2. `luau-lsp analyze` (the binary shipped with the VS Code Luau extension) runs over src/. Every diagnostic is
@@ -11,7 +12,7 @@
      Diagnostics that went away are reported as an improvement; run -UpdateBaseline to lock them in.
   Exit code: 0 = pass, 1 = regression, 2 = tooling problem.
 #>
-param([switch]$UpdateBaseline)
+param([switch]$UpdateBaseline, [switch]$SyncMirrors)
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
@@ -51,6 +52,7 @@ if (Test-Path $pairsFile) {
         if (-not (Test-Path -LiteralPath $a) -or -not (Test-Path -LiteralPath $b)) {
             Write-Host "FAIL: mirror pair file missing: $($c[1]) / $($c[2])" -ForegroundColor Red; $mirrorFail = $true; continue
         }
+        if ($SyncMirrors -and $c[0] -eq 'identical') { Copy-Item -LiteralPath $b -Destination $a -Force }
         $same = ((Get-Content -LiteralPath $a -Raw) -replace "`r`n", "`n") -ceq ((Get-Content -LiteralPath $b -Raw) -replace "`r`n", "`n")
         if ($c[0] -eq 'identical' -and -not $same) {
             Write-Host "FAIL: mirror pair drifted (clients run the ReplicatedStorage copy, not the server one): $($c[1])" -ForegroundColor Red; $mirrorFail = $true

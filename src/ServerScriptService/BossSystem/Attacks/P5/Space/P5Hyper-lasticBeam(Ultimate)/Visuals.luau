@@ -527,14 +527,33 @@ function Effect:AddDebris(part, pos, vel, ang, life)
 	})
 end
 
+ -- the floor's own colour and material (terrain or a part), so the rocks the beam tears up and
+ -- the dust it raises match whatever ground the arena has
+function Effect:GroundLook()
+	if not self.GroundColor then
+		local params = RaycastParams.new()
+		params.FilterType = Enum.RaycastFilterType.Include
+		local arena = workspace:FindFirstChild("GoldenGrasslandArena")
+		params.FilterDescendantsInstances = { workspace.Terrain, arena and arena:FindFirstChild("Grassland"), arena and arena:FindFirstChild("ApproachFloor") }
+		local hit = workspace:Raycast(self.Floor + Vector3.yAxis * 12, -Vector3.yAxis * 60, params)
+		if hit and hit.Instance == workspace.Terrain then
+			self.GroundColor, self.GroundMaterial = workspace.Terrain:GetMaterialColor(hit.Material), hit.Material
+		elseif hit then
+			self.GroundColor, self.GroundMaterial = hit.Instance.Color, hit.Instance.Material
+		else
+			self.GroundColor, self.GroundMaterial = self.C.Dust, MAT.Slate
+		end
+	end
+	return self.GroundColor, self.GroundMaterial
+end
+
 function Effect:NewRock(size)
 	local rng = self.Rng
-	local shade = rng:NextNumber(0.75, 1.15)
-	local mats = { MAT.Basalt, MAT.Slate, MAT.Rock }
+	local color, material = self:GroundLook()
 	return newPart(self.DebrisFolder, {
 		Size = Vector3.new(size, size * rng:NextNumber(0.6, 1), size * rng:NextNumber(0.7, 1.1)),
-		Material = mats[rng:NextInteger(1, #mats)],
-		Color = Color3.fromRGB(math.floor(84 * shade), math.floor(74 * shade), math.floor(66 * shade)),
+		Material = material,
+		Color = color:Lerp(Color3.new(0, 0, 0), rng:NextNumber(0, 0.25)),
 	})
 end
 
@@ -687,7 +706,7 @@ function Effect:BuildCharge()
 	})
 	ch.Dust = newEmitter(ch.DustField, {
 		Texture = TEX_SMOKE,
-		Color = ColorSequence.new(C.Dust, C.Dust:Lerp(C.Soot, 0.4)),
+		Color = ColorSequence.new((self:GroundLook()), (self:GroundLook()):Lerp(C.Soot, 0.4)),
 		Size = nseq({ { 0, 6 }, { 1, 26 } }),
 		Transparency = nseq({ { 0, 0.72 }, { 0.5, 0.8 }, { 1, 1 } }),
 		Lifetime = NumberRange.new(1.8, 2.8),
@@ -979,7 +998,7 @@ function Effect:BuildBeam()
 	})
 	bm.Smoke = newEmitter(bm.BodyField, {
 		Texture = TEX_SMOKE,
-		Color = ColorSequence.new(C.Soot, C.Dust),
+		Color = ColorSequence.new(C.Soot, (self:GroundLook())),
 		Size = nseq({ { 0, W * 0.12 }, { 1, W * 0.38 } }),
 		Transparency = nseq({ { 0, 0.55 }, { 0.6, 0.78 }, { 1, 1 } }),
 		Lifetime = NumberRange.new(2.2, 3.4),
@@ -994,7 +1013,7 @@ function Effect:BuildBeam()
 	bm.GroundField = newPart(folder, { Transparency = 1, Size = Vector3.new(10, 1, 10) })
 	bm.Dust = newEmitter(bm.GroundField, {
 		Texture = TEX_SMOKE,
-		Color = ColorSequence.new(C.Dust, C.Dust:Lerp(C.Soot, 0.35)),
+		Color = ColorSequence.new((self:GroundLook()), (self:GroundLook()):Lerp(C.Soot, 0.35)),
 		Size = nseq({ { 0, 12 }, { 1, 34 } }),
 		Transparency = nseq({ { 0, 0.55 }, { 0.5, 0.75 }, { 1, 1 } }),
 		Lifetime = NumberRange.new(1.6, 2.6),
@@ -1374,7 +1393,7 @@ function Effect:SpawnRing(data)
 		if i % 5 == 1 then
 			newEmitter(body[i], {
 				Texture = TEX_SMOKE,
-				Color = ColorSequence.new(C.Dust, C.Dust:Lerp(C.Soot, 0.4)),
+				Color = ColorSequence.new((self:GroundLook()), (self:GroundLook()):Lerp(C.Soot, 0.4)),
 				Size = nseq({ { 0, 4 }, { 1, tall and 16 or 10 } }),
 				Transparency = nseq({ { 0, 0.7 }, { 0.5, 0.82 }, { 1, 1 } }),
 				Lifetime = NumberRange.new(1.0, 1.8),

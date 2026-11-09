@@ -721,6 +721,8 @@ function Effect:BuildCharge()
 		Rate = 4,
 	})
 
+	 
+	shockDisc(Vector3.new(F.X, floorY + 0.3, F.Z), C.Dust, W * 1.6, 1.0, 0.55)
 	addShake(M, 0.9)
 	playSound("Charge", M, 1)
 end
@@ -1107,6 +1109,7 @@ function Effect:StartFire(data)
 	end)
 	burst(M, C.Yellow, W * 0.3, W * 1.5, 0.7, C.White)
 	burst(M, C.Amber, W * 0.2, W * 2.2, 1.0)
+	shockDisc(Vector3.new(M.X, floorY + 0.3, M.Z), C.Dust, W * 3, 1.0, 0.5)
 	shockDisc(Vector3.new(M.X, floorY + 0.35, M.Z), C.Yellow, W * 1.8, 0.6, 0.55)
 	sparkBurst(M, C.White, 120, 60, 200)
 	self.Bm.Dust:Emit(40)
@@ -1411,9 +1414,7 @@ function Effect:SpawnRing(data)
 		end
 	end
 	table.insert(self.Rings, { Born = data.StartedAt, Tall = tall, Center = center, Body = body, Lip = lip, Folder = folder, Units=units, BodyCFs=table.create(segments), LipCFs=tall and table.create(segments) or nil })
-	if tall then
-		shockDisc(center + Vector3.new(0, 0.3, 0), C.Yellow, 90, 0.6, 0.5)
-	end
+	shockDisc(center + Vector3.new(0, 0.3, 0), tall and C.Yellow or C.Dust, tall and 90 or 60, 0.6, 0.5)
 	addShake(center, tall and 1.8 or 0.8)
 	for _ = 1, tall and 7 or 4 do
 		local ang = self.Rng:NextNumber(0, TAU)

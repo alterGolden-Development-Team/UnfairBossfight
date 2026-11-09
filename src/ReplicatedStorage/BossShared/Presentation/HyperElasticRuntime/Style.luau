@@ -8,7 +8,7 @@ return table.freeze({
  Charge = 3.6, FireDuration = 8, Cooldown = 40,
 
   
- BeamRange = 360, BeamWidth = 80, HitPadding = 1,
+ BeamRange = 620, BeamWidth = 80, HitPadding = 1,
  BeamHeight = 12,       
  MuzzleOffset = 28,     
  GrowTime = 0.45,       
@@ -31,7 +31,7 @@ return table.freeze({
  BossFollowsAim = true, 
 
   
- RingCount = 6, RingInterval = 1.1, RingSpeed = 60, RingMaxRadius = 220,
+ RingCount = 6, RingInterval = 1.1, RingSpeed = 60, RingMaxRadius = 380,
  RingThickness = 3, LowHeight = 1.8, TallHeight = 16,
  RingDamage = 45, TallDamage = 150,
 
