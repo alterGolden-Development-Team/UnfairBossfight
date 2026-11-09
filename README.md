@@ -46,7 +46,8 @@ Studio back into the files, so either keep VS Code as the place you edit scripts
 
 - `src/` — Rojo-managed scripts used for editing and syncing.
 - `place/TheGoldenEncounter.rbxl` — full Roblox place snapshot, including the map and saved instances. Open it in Roblox Studio.
-- `exports/studio-source/` — 771-script source snapshot from Studio, plus its instance mapping and notes. This preserves the direct export separately from the Rojo-formatted source.
+- `src/ServerStorage/BossEncounter/` — besides scripts this holds the boss `Templates`, `Assets` and `NPCs` as `.rbxm` models (recovered from `place/TheGoldenEncounter.rbxl`). Rojo manages them, so edit them in Studio only if you then re-export them over the `.rbxm`.
+- **Every folder under `src/` needs an `init.meta.json` with `{"ignoreUnknownInstances":true}`.** Without it Rojo deletes any non-script instance inside that folder on the next sync. (That is how `Templates` and the Gate of Wrath's boss model disappeared once.)
 - `tools/` — Studio export receiver and helper script.
 - `_backup/` — existing project backups.
 

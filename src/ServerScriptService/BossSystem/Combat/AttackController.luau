@@ -256,14 +256,13 @@ function api.Start(actor)
 							actor:FindFirstChild("HumanoidRootPart")
 						)
 						lastWasUltimate = chosen.Skill.IsUltimate == true
-            if chosen.Skill.IsUltimate then
-            	local line = require(BossSystem.Encounter.EncounterStory).UltimateLine(actor, chosen.Name)
-            	if line then
-            		require(BossSystem.Players.PlayerEncounter).Say(line, nil, { Duration = 2.8, ScreenOnly = true })
-            	end
-            end
-            local ok, result = xpcall(chosen.Skill.Combo, debug.traceback, target)
-            local ok, result = xpcall(chosen.Skill.Combo, debug.traceback, target)
+						if chosen.Skill.IsUltimate then
+							local line = require(BossSystem.Encounter.EncounterStory).UltimateLine(actor, chosen.Name)
+							if line then
+								require(BossSystem.Players.PlayerEncounter).Say(line, nil, { Duration = 2.8, ScreenOnly = true })
+							end
+						end
+						local ok, result = xpcall(chosen.Skill.Combo, debug.traceback, target)
 						if not ok then
 							warn(chosen.Name .. ": " .. tostring(result))
 						end

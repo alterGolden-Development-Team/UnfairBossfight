@@ -145,27 +145,6 @@ function FX.Trail(part, color, width)
 	return t
 end
 
-function FX.Text(pos, text, color, size)
-	local p = FX.Part({ Size = Vector3.one * 0.2, CFrame = CFrame.new(pos), Transparency = 1 }, 1.6)
-	local g = Instance.new("BillboardGui")
-	g.Size = UDim2.fromOffset(240, 60)
-	g.AlwaysOnTop = true
-	g.StudsOffset = Vector3.new(0, 1, 0)
-	g.Parent = p
-	local l = Instance.new("TextLabel")
-	l.Size = UDim2.fromScale(1, 1)
-	l.BackgroundTransparency = 1
-	l.Font = Enum.Font.GothamBlack
-	l.TextScaled = true
-	l.Text = text
-	l.TextColor3 = color
-	l.TextStrokeTransparency = 0.2
-	l.Parent = g
-	Tween:Create(g, TweenInfo.new(1.4), { StudsOffset = Vector3.new(0, 4, 0) }):Play()
-	Tween:Create(l, TweenInfo.new(1.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), { TextTransparency = 1, TextStrokeTransparency = 1 }):Play()
-	return p
-end
-
  
  
  

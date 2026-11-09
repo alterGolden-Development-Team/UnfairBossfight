@@ -392,8 +392,6 @@ return function(actor)
 		local cast = effects.NewCast(actor, "GildedCataclysmSequence", 35)
 		local chunks = {}
 		local chain = chainVisual(cast)
-		local chainedPlayer, chainedChar, chainedRoot, oldAnchored, lockToken, session
-		local released = false
 		local groundFrame
 		local circle, mood
 		local function restoreBoss()
@@ -409,31 +407,6 @@ return function(actor)
 			core.AirborneFloor = nil
 			groundFrame = nil
 		end
-		local function releasePlayer()
-			if released then
-				return
-			end
-			released = true
-			if chainedRoot and chainedRoot.Parent then
-				Audio.Emit(actor, "ChainBreak", chainedRoot)
-			end
-			if chainedRoot and chainedRoot.Parent then
-				chainedRoot.AssemblyLinearVelocity = Vector3.zero
-				chainedRoot.AssemblyAngularVelocity = Vector3.zero
-				Time.SetAnchored(chainedRoot, oldAnchored)
-				if not oldAnchored and chainedPlayer and chainedPlayer.Parent == Players then
-					pcall(function()
-						chainedRoot:SetNetworkOwner(chainedPlayer)
-					end)
-				end
-			end
-			if chainedChar and chainedChar.Parent then
-				chainedChar:SetAttribute("CataclysmChained", false)
-			end
-			if chainedPlayer and lockToken then
-				status.SetLocked(chainedPlayer, lockToken, false)
-			end
-		end
 		local function valid()
 			return cast:Alive() and core.Active() and root.Parent and humanoid.Health > 0
 		end
@@ -441,9 +414,6 @@ return function(actor)
 			local began = Time.EncounterNow(actor)
 			repeat
 				if not Time.WaitForActor(actor) or not valid() then
-					return false
-				end
-				if chainedChar and not core.Alive(chainedChar) then
 					return false
 				end
 				local t = math.clamp((Time.EncounterNow(actor) - began) / seconds, 0, 1)
@@ -649,10 +619,6 @@ return function(actor)
 			return true
 		end
 		local ok, result = xpcall(sequence, debug.traceback)
-		if session and not session:IsFinished() then
-			session:Close("attack ended")
-		end
-		releasePlayer()
 		restoreBoss()
 		if circle then
 			circle.Close()

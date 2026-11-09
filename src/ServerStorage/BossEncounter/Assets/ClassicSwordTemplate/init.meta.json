@@ -1,0 +1,10 @@
+{
+  "className": "Tool",
+  "ignoreUnknownInstances": true,
+  "properties": {
+    "CanBeDropped": false,
+    "TextureContent": "rbxasset://Textures/Sword128.png",
+    "Grip": [0.0, 0.0, -1.5, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+  },
+  "attributes": { "SlashDamage": 100.0, "SlashRange": 8.0 }
+}

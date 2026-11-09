@@ -8,7 +8,7 @@ return table.freeze({
 	Intro = { Duration = 1.4, Raise = 0.5, FirstStreaks = 0.9 },  -- short wind-up, then the roar starts (scaled by the difficulty's Telegraph)
 	Roar = {
 		Duration = 5,        -- seconds of roaring, counted from the moment the roar ignites
-		TickEvery = 1,       -- 5s / 1s = 5 ticks
+		TickEvery = 0.2,       -- 5s / 1s = 5 ticks
 		TickFraction = 0.2,  -- each tick that is not deflected takes 20% of max HP
 		Deflect = "Tap",    -- "Hold" (keep E down through the tick) or "Tap" (press E just before each tick)
 	},
