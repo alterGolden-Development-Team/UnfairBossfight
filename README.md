@@ -9,6 +9,7 @@ src/
 tools/
   export-receiver.ps1     local receiver that writes the exported files here
   ExportFromStudio.luau   run in Studio to export every script into src/
+  check.ps1               build + static-analysis check; run it before committing a refactor
 default.project.json      Rojo project
 ```
 
@@ -53,3 +54,9 @@ Studio back into the files, so either keep VS Code as the place you edit scripts
 
 Roblox cloud assets in the place remain referenced by their asset IDs and may need Roblox access to load.
 
+
+## Checking a change
+
+`powershell -ExecutionPolicy Bypass -File tools\check.ps1` runs `rojo build` and the Luau analyzer over `src/` and
+fails if it finds any diagnostic that is not in `tools/analyzer-baseline.txt`. After a cleanup that removes warnings,
+run it with `-UpdateBaseline` to lock the improvement in. It cannot test gameplay: playtest the touched attacks in Studio.
