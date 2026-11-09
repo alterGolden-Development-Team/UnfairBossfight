@@ -14,7 +14,6 @@ return function(actor)
 	local TIME = Style.TIME
 	local WHITE = Style.WHITE
 	local GOLD = Style.GOLD
-	local DEEP = Style.DEEP
 	local TAU = math.pi * 2
 	local api = {}
 

@@ -2,21 +2,11 @@ local B = script:FindFirstAncestor("BossSystem")
 local Strike = require(B.Attacks.Shared.P5StrikeCore)
 local Audio = require(B.Presentation.CombatAudio)
 local Placement = require(B.Encounter.ArenaPlacement)
-local Config = require(game.ReplicatedStorage.BossShared.Config.EncounterConfig)
 local S = require(script.Parent.Style)
 local FLAT = Vector3.new(1, 0, 1)
-local UP = Vector3.yAxis
-local function holdLead() return (Config.DeflectHoldTime or 0.2) + 0.45 end
 local SWING_A = { RightShoulder = { 95, 0, 80 }, RightElbow = { 10, 0, 0 }, Waist = { 15, 50, 0 }, RightHip = { -40, 0, 0 }, RightKnee = { 40, 0, 0 } }
 local SWING_B = { RightShoulder = { 90, 0, -70 }, RightElbow = { 10, 0, 0 }, Waist = { 15, -50, 0 }, LeftHip = { -40, 0, 0 }, LeftKnee = { 40, 0, 0 } }
-local RISE = { RightShoulder = { 170, 0, 10 }, RightElbow = { 0, 0, 0 }, Waist = { -20, 0, 0 } }
-local DIVE = { RightShoulder = { 40, 0, 0 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { 40, 0, 0 }, Waist = { 45, 0, 0 } }
-local SLAM = { RightShoulder = { 30, 0, 0 }, LeftShoulder = { 30, 0, 0 }, Waist = { 40, 0, 0 }, RightHip = { -50, 0, 0 }, RightKnee = { 70, 0, 0 },
-	LeftHip = { -30, 0, 0 }, LeftKnee = { 50, 0, 0 } }
 local KICK = { RightHip = { 95, 0, 0 }, RightKnee = { 0, 0, 0 }, LeftShoulder = { 40, 0, -60 }, Waist = { -20, 0, 0 } }
-local WIND = { LeftShoulder = { 30, 0, 100 }, LeftElbow = { 60, 0, 0 }, Waist = { 0, 40, 0 }, RightHip = { -30, 0, 0 }, RightKnee = { 40, 0, 0 } }
-local LUNGE = { LeftShoulder = { 90, 0, -10 }, LeftElbow = { 0, 0, 0 }, Waist = { 20, -30, 0 }, LeftHip = { -50, 0, 0 }, RightHip = { 30, 0, 0 } }
-local CALL = { RightShoulder = { 160, 0, 30 }, LeftShoulder = { 160, 0, -30 }, Waist = { -15, 0, 0 } }
  -- a quick slash in front of him: the gold crescent drawn, everyone in the arc hit (TAP deflects)
 local function swing(c, index, reach, angle, damage, deflect)
 	local core = c.Core

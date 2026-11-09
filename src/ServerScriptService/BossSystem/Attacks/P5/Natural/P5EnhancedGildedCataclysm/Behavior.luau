@@ -8,10 +8,8 @@ return function(actor)
 	local registry = require(BossSystem.Combat.AttackRegistry)
 	local effects = require(BossSystem.Combat.EffectService)
 	local Time = require(BossSystem.Mechanics.Time.TimeEffectController)
-	local status = require(BossSystem.Combat.StatusEffectService)
 	local Encounter = require(BossSystem.Players.PlayerEncounter)
 	local placement = require(BossSystem.Encounter.ArenaPlacement)
-	local Players = game:GetService("Players")
 	local RunService = game:GetService("RunService")
 	local Lighting = game:GetService("Lighting")
 	local Debris = game:GetService("Debris")
@@ -60,39 +58,6 @@ return function(actor)
 			return char
 		end
 		return melee.GetTarget()
-	end
-	local function canChain(char)
-		if not core.Alive(char) then
-			return false
-		end
-		local player = Players:GetPlayerFromCharacter(char)
-		local targetRoot = char:FindFirstChild("HumanoidRootPart")
-		return player
-			and targetRoot
-			and not targetRoot.Anchored
-			and not char:GetAttribute("ParryFrozen")
-			and not char:GetAttribute("ExecutionPending")
-			and not player:GetAttribute("ExecutionPending")
-			and not player:GetAttribute("PermanentlyDefeated")
-			and not player:GetAttribute("ViewAsServer")
-			and not status.IsLocked(player)
-			and not status.IsDebuffImmune(char)
-	end
-	local function chainTarget(preferred)
-		if canChain(preferred) then
-			return preferred
-		end
-		local closest, distance
-		for _, char in ipairs(core.Characters()) do
-			if canChain(char) then
-				local current = (char.HumanoidRootPart.Position - root.Position).Magnitude
-				if not distance or current < distance then
-					closest = char
-					distance = current
-				end
-			end
-		end
-		return closest
 	end
 	local function groundAt(position)
 		local ground = placement.GroundPoint(position, { Margin = 2, Clamp = true })

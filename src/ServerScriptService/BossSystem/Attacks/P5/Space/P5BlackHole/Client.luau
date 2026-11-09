@@ -51,7 +51,6 @@ local function lerp(a,b,t) return a+(b-a)*t end
 local function rand(a,b) return a+(b-a)*math.random() end
 local function kp(t,v) return NumberSequenceKeypoint.new(t,v) end
 local function seq(...) return NumberSequence.new({...}) end
-local function flat(v) return Vector3.new(v.X,0,v.Z) end
 
 local folder=Instance.new("Folder") folder.Name="BlackHoleFX" folder.Parent=workspace
 

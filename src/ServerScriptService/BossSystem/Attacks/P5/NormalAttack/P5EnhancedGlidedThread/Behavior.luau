@@ -8,7 +8,6 @@ local S = require(script.Parent.Style)
 local FLAT = Vector3.new(1, 0, 1)
 local CALL = { RightShoulder = { 160, 0, 30 }, LeftShoulder = { 160, 0, -30 }, Waist = { -15, 0, 0 } }
 local THROW_R = { RightShoulder = { 90, 0, -10 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { 30, 0, -20 }, Waist = { 8, -15, 0 } }
-local THROW_L = { LeftShoulder = { 90, 0, 10 }, LeftElbow = { 0, 0, 0 }, RightShoulder = { 30, 0, 20 }, Waist = { 8, 15, 0 } }
 local ATTRIBUTES = { "GildedThreadSpeed", "GildedThreadLifetime", "GildedThreadSegmentLifetime" }
 return function(actor)
 	local c = Strike.Context(actor, S.Name)

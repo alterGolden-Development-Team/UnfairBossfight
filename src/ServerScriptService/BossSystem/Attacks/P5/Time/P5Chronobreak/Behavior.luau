@@ -4,15 +4,7 @@ local Audio = require(B.Presentation.CombatAudio)
 local Config = require(game.ReplicatedStorage.BossShared.Config.EncounterConfig)
 local S = require(script.Parent.Style)
 local function holdLead() return (Config.DeflectHoldTime or 0.2) + 0.45 end
-local function segmentDistance(point, a, b)
-	local d = b - a
-	local t = d:Dot(d) > 0.0001 and math.clamp((point - a):Dot(d) / d:Dot(d), 0, 1) or 0
-	return (point - (a + d * t)).Magnitude
-end
 local CAST = { RightShoulder = { 120, 0, 20 }, RightElbow = { 10, 0, 0 }, LeftShoulder = { 120, 0, -20 }, LeftElbow = { 10, 0, 0 }, Waist = { -10, 0, 0 } }
-local POINT = { RightShoulder = { 90, 0, -10 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { 20, 0, -20 }, Waist = { 0, -20, 0 } }
-local SLAM = { RightShoulder = { 30, 0, 20 }, LeftShoulder = { 30, 0, -20 }, Waist = { 30, 0, 0 }, RightHip = { -40, 0, 0 }, RightKnee = { 50, 0, 0 },
-	LeftHip = { -40, 0, 0 }, LeftKnee = { 50, 0, 0 } }
 
 return function(actor)
 	local c = Strike.Context(actor, S.Name)

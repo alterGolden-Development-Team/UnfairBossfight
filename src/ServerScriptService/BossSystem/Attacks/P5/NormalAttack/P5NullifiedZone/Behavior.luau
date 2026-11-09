@@ -5,7 +5,6 @@ local Audio = require(B.Presentation.CombatAudio)
 local Net = require(game.ReplicatedStorage.VFXEngine.Net)
 local CollectionService = game:GetService("CollectionService")
 local S = require(script.Parent.Style)
-local FLAT = Vector3.new(1, 0, 1)
 local PALM = { RightShoulder = { 60, 0, -10 }, RightElbow = { 10, 0, 0 }, RightWrist = { -80, 0, 0 }, LeftShoulder = { 20, 0, -30 },
 	Waist = { 30, 0, 0 }, RightHip = { -40, 0, 0 }, RightKnee = { 60, 0, 0 }, LeftHip = { -20, 0, 0 }, LeftKnee = { 40, 0, 0 } }
 

@@ -10,11 +10,6 @@ local HIGH = { RightShoulder = { 175, 0, 0 }, RightElbow = { 5, 0, 0 }, LeftShou
 local CHOP = { RightShoulder = { 40, 0, 0 }, RightElbow = { 0, 0, 0 }, LeftShoulder = { 35, 0, 5 }, LeftElbow = { 10, 0, 0 },
 	Waist = { 30, 0, 0 }, RightHip = { -40, 0, 0 }, RightKnee = { 45, 0, 0 }, LeftHip = { 20, 0, 0 } }
 
-local function segmentDistance(point, a, b)
-	local d = b - a
-	local t = d:Dot(d) > 0.0001 and math.clamp((point - a):Dot(d) / d:Dot(d), 0, 1) or 0
-	return (point - (a + d * t)).Magnitude
-end
 
 return function(actor)
 	local c = Strike.Context(actor, S.Name)
