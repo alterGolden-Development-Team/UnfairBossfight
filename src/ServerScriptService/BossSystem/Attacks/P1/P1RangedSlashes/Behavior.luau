@@ -1,4 +1,3 @@
-local Observer = require(script:FindFirstAncestor("BossSystem").Players.PlayerObserver)
 local Difficulty = require(game.ReplicatedStorage.BossShared.Config.DifficultyConfig)
 local script = script.Parent
 local Style = require(script.Style)
