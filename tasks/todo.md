@@ -3,19 +3,20 @@ Full details, acceptance criteria and risks: [plan.md](plan.md).
 Every task passes the "three checks" (build, analyzer diff, Studio playtest). **(you)** = needs you in Studio.
 
 ## Phase 0: Safety net
-- [ ] 1. Commit current work in clean pieces; decide on the `TickEvery = 0.2` edit (you decide)
-- [ ] 2. `tools/check.ps1`: build + analyzer diff against a stored baseline
+- [x] 1. Commit current work (done as one commit, "fourth commit", by you); `TickEvery = 0.2` is in it - still needs your confirmation it is intended
+- [x] 2. `tools/check.ps1`: build + analyzer diff against a stored baseline
 
 ## Checkpoint: Safety net
-- [ ] Clean `git status`; check script passes on a clean tree and fails on a deliberate error
+- [x] Clean `git status`; check script passes on a clean tree and fails on a deliberate error
 
 ## Phase 1: Dead code
-- [ ] 3. Remove unused imports (75), one commit per subsystem folder
-- [ ] 4. Remove unused locals / functions (322 / 80), same batching
-- [ ] 5. Decide on and remove `DisordererBackup_2026-11-09` (you decide)
+- [x] 3. Remove unused imports (75), one commit per subsystem folder
+- [x] 4. Remove unused locals / functions (322 / 80), same batching - 76 functions + 191 locals removed, ran to a fixpoint
+- [ ] 5. (waiting on you) Decide on and remove `DisordererBackup_2026-11-09` (you decide)
 
 ## Checkpoint: Dead code
-- [ ] Check script clean; one attack per phase played through (you)
+- [x] Check script clean (904 -> 569 distinct diagnostics)
+- [ ] One attack per phase played through (you)
 
 ## Phase 2: Duplicated files
 - [ ] 6. Server/client mirror pairs become stubs (Finality x2, Polaris Camera, HyperElastic Geometry, MysteriousGuy Client)
