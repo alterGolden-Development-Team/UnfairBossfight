@@ -2,7 +2,6 @@ local script = script.Parent
 local Style = require(script.Style)
 local Visuals = require(script.Visuals)
 local BossSystem = script:FindFirstAncestor("BossSystem")
-local Shared = game:GetService("ReplicatedStorage"):WaitForChild("BossShared")
  
 local TweenService = game:GetService("TweenService")
 
@@ -11,7 +10,6 @@ return function(actor)
 	local Registry = require(BossSystem.Combat.AttackRegistry)
 	local Effects = require(BossSystem.Combat.EffectService)
 	local Placement = require(BossSystem.Encounter.ArenaPlacement)
-	local Config = require(Shared:WaitForChild("Config"):WaitForChild("EncounterConfig"))
 	local core = Registry.For(actor, "P1CombatCore")
 	local ownerReference = actor:FindFirstChild("EncounterOwner")
 	local owner = ownerReference and ownerReference:IsA("ObjectValue") and ownerReference.Value or actor

@@ -12,7 +12,6 @@ return function(actor)
 	local NAME = "P3EtherealAcumen(Ultimate)"
 	local Placement = require(BossSystem.Encounter.ArenaPlacement)
 	local Status = require(BossSystem.Combat.StatusEffectService)
- local AttackDebuffs = require(BossSystem.Combat.AttackDebuffService)
 	local Encounter = require(BossSystem.Players.PlayerEncounter)
 	local Dash = require(BossSystem.Players.R6DashService)
 	local Cards = require(BossSystem.Mechanics.Clones.CloneController)

@@ -1,4 +1,3 @@
-local AttackDebuffs=require(script:FindFirstAncestor("BossSystem").Combat.AttackDebuffService)
 local Observer = require(script:FindFirstAncestor("BossSystem").Players.PlayerObserver)
 local Locomotion = require(script.Parent.Locomotion)
 local Tactics = require(script.Parent.Tactics)

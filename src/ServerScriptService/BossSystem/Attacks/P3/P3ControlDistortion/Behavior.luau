@@ -1,4 +1,3 @@
-local AttackDebuffs=require(script:FindFirstAncestor("BossSystem").Combat.AttackDebuffService)
 local script = script.Parent
 local BossSystem = script:FindFirstAncestor("BossSystem")
 local Shared = game:GetService("ReplicatedStorage"):WaitForChild("BossShared")

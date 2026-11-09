@@ -14,7 +14,6 @@ local V = require(script.Parent.Visuals)
 local Launcher = require(script.Parent.Launcher)
 local Cards = require(script.Parent.Cards)
 local Finale = require(script.Parent.Finale)
-local AttackDebuffs=require(B.Combat.AttackDebuffService)
 local Config=require(game.ReplicatedStorage.BossShared.Config.EncounterConfig)
 local NAME = "P3.5TrueIllusion(Ultimate)"
 local TAU = math.pi * 2

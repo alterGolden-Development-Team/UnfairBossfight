@@ -1,4 +1,3 @@
-local AttackDebuffs=require(script:FindFirstAncestor("BossSystem").Combat.AttackDebuffService)
 local script = script.Parent
 local Style = require(script.Style)
 local Visuals = require(script.Visuals)

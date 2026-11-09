@@ -1,7 +1,6 @@
 local B=script:FindFirstAncestor("BossSystem")
 local Shared=require(B.Attacks.Shared.P35IllusionFX)
 local S=require(script.Parent.Style)
-local Placement=require(B.Encounter.ArenaPlacement)
 local TweenService=game:GetService("TweenService")
 local Debris=game:GetService("Debris")
 local ReplicatedStorage=game:GetService("ReplicatedStorage")

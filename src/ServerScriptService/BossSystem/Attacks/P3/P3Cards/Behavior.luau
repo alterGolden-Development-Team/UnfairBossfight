@@ -10,7 +10,6 @@ return function(actor)
 	local Runtime = require(BossSystem.Combat.CombatRuntime)
 	local Cards = require(BossSystem.Mechanics.Clones.CloneController)
 	local Audio = require(BossSystem.Presentation.CombatAudio)
-	local Status = require(BossSystem.Combat.StatusEffectService)
 	local DebuffService=require(BossSystem.Combat.CardDebuffService)
  local debuffs=DebuffService.Names
 	local Players = game:GetService("Players")
