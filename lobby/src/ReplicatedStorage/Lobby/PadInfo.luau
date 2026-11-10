@@ -1,5 +1,5 @@
 --!strict
--- Text for the "coming soon" places in the lobby (plan task 24). Keyed by the model's name in the map (see lobby/MAP.md).
+-- Text for the portals of bosses that are not built yet. Keyed by the ComingSoon attribute on the portal face.
 -- Pure data: change a line here and nothing else needs touching. These places have NO teleport path at all.
 
 export type Info = { title: string, subtitle: string, body: string }
@@ -8,17 +8,12 @@ local PadInfo: { [string]: Info } = {
 	JeffAndFred = {
 		title = "Jeff n' Fred Bizzare Brother",
 		subtitle = "Coming soon",
-		body = "The chains are still on. This trial is not open yet - check back after the next update.",
+		body = "The brothers will not stop fighting long enough to let anyone through. This trial opens in a later update.",
 	},
 	FallenNoob = {
 		title = "TheFallenNoob's Private Island",
 		subtitle = "Coming soon",
-		body = "The dock is still being built. This trial is not open yet - check back after the next update.",
-	},
-	Shop = {
-		title = "The Shop",
-		subtitle = "Coming soon",
-		body = "Powerups and classes you buy with the cash you earn from wins. Keep winning - your cash is saved.",
+		body = "The tide has not given this door back yet. This trial opens in a later update.",
 	},
 }
 

@@ -7,7 +7,7 @@
 
 local Config = {}
 
-Config.Env = "Live" :: "Test" | "Live"
+Config.Env = "Test" :: "Test" | "Live" -- the lobby-redesign branch builds for the test universe; main stays "Live"
 
 Config.Places = {
 	-- universe 10768840017. SWAPPED at the cut-over so the existing start place (123789153131367, the old Golden Encounter

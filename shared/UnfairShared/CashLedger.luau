@@ -78,4 +78,86 @@ function Ledger.apply(record: any, runId: any, amount: any): ({ [string]: any },
 	return out, true
 end
 
+-- Shop half of the record: Owned = { Classes = { id, ... }, Orbs = { id, ... } }, EquippedOrb = id
+-- Only the lobby server spends; everything goes through UpdateAsync with these pure functions, so a retried write cannot
+-- charge twice (the item is already owned the second time) and a balance can never go negative.
+
+local KINDS = { Classes = true, Orbs = true }
+
+local function ownedList(record: any, kind: string): { string }
+	if type(record) ~= "table" or type(record.Owned) ~= "table" or type(record.Owned[kind]) ~= "table" then
+		return {}
+	end
+	local list: { string } = {}
+	for _, id in record.Owned[kind] do
+		if type(id) == "string" then
+			table.insert(list, id)
+		end
+	end
+	return list
+end
+
+function Ledger.owns(record: any, kind: string, id: any): boolean
+	return KINDS[kind] == true and type(id) == "string" and table.find(ownedList(record, kind), id) ~= nil
+end
+
+-- Returns (new record, result). result: "Bought" | "AlreadyOwned" | "TooPoor" | "Invalid". Only "Bought" changes anything.
+function Ledger.purchase(record: any, kind: any, id: any, price: any): ({ [string]: any }, string)
+	local out: { [string]: any } = {}
+	if type(record) == "table" then
+		for key, value in record do
+			out[key] = value
+		end
+	end
+	out.Cash = wholeNonNegative(out.Cash)
+	if type(kind) ~= "string" or not KINDS[kind] or type(id) ~= "string" or id == "" then
+		return out, "Invalid"
+	end
+	if type(price) ~= "number" or price ~= price or price <= 0 or price ~= math.floor(price) or price > Ledger.MaxSingleAward then
+		return out, "Invalid"
+	end
+	if Ledger.owns(out, kind, id) then
+		return out, "AlreadyOwned"
+	end
+	if out.Cash < price then
+		return out, "TooPoor"
+	end
+	local owned = { Classes = ownedList(out, "Classes"), Orbs = ownedList(out, "Orbs") }
+	table.insert(owned[kind], id)
+	out.Owned = owned
+	out.Cash -= price
+	return out, "Bought"
+end
+
+-- The orb to use, or nil. An equipped orb the record does not own counts as none.
+function Ledger.equippedOrb(record: any): string?
+	if type(record) ~= "table" then
+		return nil
+	end
+	local id = record.EquippedOrb
+	if type(id) == "string" and Ledger.owns(record, "Orbs", id) then
+		return id
+	end
+	return nil
+end
+
+-- orbId = nil takes the orb off. Returns (new record, applied).
+function Ledger.equip(record: any, orbId: any): ({ [string]: any }, boolean)
+	local out: { [string]: any } = {}
+	if type(record) == "table" then
+		for key, value in record do
+			out[key] = value
+		end
+	end
+	if orbId == nil then
+		out.EquippedOrb = nil
+		return out, true
+	end
+	if not Ledger.owns(out, "Orbs", orbId) then
+		return out, false
+	end
+	out.EquippedOrb = orbId
+	return out, true
+end
+
 return Ledger

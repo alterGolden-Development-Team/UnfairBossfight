@@ -1,59 +1,35 @@
 # Lobby map contract
 
-The lobby map lives in the place file (Rojo does not sync Workspace; backup in `lobby/place/Lobby.rbxl`).
-Scripts rely on the **names** below. Everything else (looks, extra decoration) is free.
-Anything marked *(script adds)* is created at runtime if the map does not have it, so it does not need building.
+The lobby world is built by the modules in `lobby/map/` into `Workspace.World` and saved in the place file (Rojo does not sync Workspace).
+Rebuild an area from Studio, **test place only**: `require(game.ServerStorage.MapBuilder).Build("Palace")`.
+Design notes and sources: [docs/spec/lobby-redesign.md](../docs/spec/lobby-redesign.md). Scripts rely on the names below.
 
-## Plaza (plan task 11)
+## Areas (all in one place, far apart)
 
-| Path | Type | Notes |
+| Area | Where | Notes |
 |---|---|---|
-| `Workspace.SpawnLocation` | SpawnLocation | centre of "Unfair Plaza" |
-| `Workspace.Pads` | Folder | the three portal arches |
-| `Workspace.Pads.AlterGolden` | Model | gold arch, live. Needs a `Sign` part (SurfaceGui title). Attribute `Status = "Live"` |
-| `Workspace.Pads.JeffAndFred` | Model | dimmed, chained arch. `Sign` part. Attribute `Status = "ComingSoon"` |
-| `Workspace.Pads.FallenNoob` | Model | harbour-dock arch (TheFallenNoob's Private Island). `Sign` part. Attribute `Status = "ComingSoon"` |
+| Hub | `World.Hub`, y = 400 | Floating island. `SpawnLocation` faces north at the portals. `Arrival` is where falls and returns land. |
+| Portals | `World.Portals.{AlterGolden,FallenNoob,JeffAndFred}` | Each has a `Trigger` part |
+| Shop | `World.Shop` | `Shopkeeper.Torso.ShopPrompt` opens the shop |
+| Palace | `World.Palace`, y = -400 | `ArrivalPalace`. The four party portals are `Workspace.PartyRooms.Room1..4` |
+| Island | `World.Island`, x = -12000 (attribute `Origin`) | Terrain sea and land. `ArrivalIsland`, `BoatLanding`, `BoardingSpot.BoardPrompt`, `Boats.Boat1..3` |
+| Forest | `World.Forest`, y = -400 | `ArrivalForest`, `CutTrigger`, `TheFight.{Jeff,Fred}` |
+| Stage | `World.Stage`, y = -400 | The showroom. `DummySpot` is where the client puts its dummy |
 
-The two `ComingSoon` arches never call `TeleportService` (plan task 24 adds an info panel).
+## Rules the scripts use
 
-## Class hall and party rooms (plan task 12)
+- A part tagged `UnfairPortal` with attribute `Target` (Hub, Palace, Island, Forest) moves whoever walks in. Used by `PortalService`.
+- `Workspace.PartyRooms.RoomN.Pad` is where a party gathers; `JoinPrompt` is added by `PartyService`.
+- Parts tagged `UnfairComingSoon` with attribute `ComingSoon` show the panel from `Lobby/PadInfo` (bosses not built yet). No teleport path exists for them.
+- Each client draws only its current area (`AreaClient` sets `LocalTransparencyModifier`; nothing is reparented). A new top-level folder under `World` must be added to `AREA_PARTS` there, or it shows in every area.
+- Models tagged `UnfairSpin` (with `SpinSpeed`) and GUI frames tagged `UnfairSpinGui` are rotated on the client.
 
-| Path | Type | Notes |
-|---|---|---|
-| `Workspace.ClassHall` | Folder | one child per class id |
-| `Workspace.ClassHall.<ClassId>` | Model or BasePart | name = an entry of `ClassConfig.Order` (Warrior, Mage, Tank, Supporter, Gambler, Duelist, Twinblade, Disorderer, TrueWarrior). A BasePart named `Pedestal` inside (or the part itself) carries the prompt. `PickPrompt` *(script adds, client side)* |
-| `Workspace.PartyRooms` | Folder | in the gold wing |
-| `Workspace.PartyRooms.Room1` .. `Room4` | Model | same structure each (4 = `UnfairConfig.PartyRooms`) |
-| `Workspace.PartyRooms.RoomN.Pad` | BasePart | players stand here; `JoinPrompt` *(script adds)*; leaving the pad by more than `UnfairConfig.RoomLeaveDistance` studs drops you from the room |
-| `Workspace.PartyRooms.RoomN.Console` | BasePart | decoration the leader looks at |
-| `Workspace.PartyRooms.RoomN.RosterDisplay` | BasePart | screen for the roster; the roster billboard is drawn over `Pad` *(script adds)* |
-| `Workspace.Shop` | Model | shop shell with a `Sign` part reading "Coming soon" |
+## Attributes the scripts publish
 
-## Coming-soon places (plan task 24)
-
-`PadInfoClient` shows a panel when a player is within 9 studs of a watched model. Watched: every child of `Workspace.Pads` with
-attribute `Status = "ComingSoon"`, and `Workspace.Shop`. The model's **name** must be a key in
-`lobby/src/ReplicatedStorage/Lobby/PadInfo.luau` (`JeffAndFred`, `FallenNoob`, `Shop`), which holds the panel text. These models have
-no ProximityPrompt and nothing touches `TeleportService` for them. To open a pad later: set its `Status` to `Live` and remove its
-`PadInfo` entry.
-
-## Cash HUD (plan task 22)
-
-Top-right "Cash: N", drawn by `CashHudClient` from the player attributes below. `--` means the balance is still loading or could not
-be read (it retries).
-
-## Attributes the scripts publish (read-only for the map)
-
-- Room model (`RoomN`): `Phase` (Open / Countdown / Locked), `LeaderUserId`, `Difficulty`, `Enraged`, `CountdownEndsAt` (server time), `MemberCount`, `Roster` (JSON list of `{userId, name, class}`).
-- Player: `PlayerClass`, `ClassUnlocked_<id>`, `PartyRoom`, `PartyLocked`, `Cash` (whole number, only after a good read), `CashState` (`Loading` / `Ready` / `Error`).
-- Workspace: `LastLaunchPayload` (dry runs in Studio: the JSON that would have been sent).
+- Room model: `Phase`, `LeaderUserId`, `Difficulty`, `Enraged`, `CountdownEndsAt`, `MemberCount`, `Roster`.
+- Player: `Area`, `PlayerClass`, `ClassUnlocked_<id>`, `PartyRoom`, `PartyLocked`, `Cash`, `CashState`, `OrbOwned_<id>`, `PlayerOrb`, plus `leaderstats.Cash`.
+- Workspace: `LastLaunchPayload` (Studio dry runs).
 
 ## Place settings
 
-- `Workspace.StreamingEnabled` is **off** in the lobby (the map is small). With streaming on, pads and rooms far from the player are not on the client yet and the party UI cannot find them.
-
-## Rules
-
-- Never rename a path above without changing the scripts: `PartyService`, `PartyClient`, `ClassPickerClient`.
-- Parts scripts touch must be anchored and have a stable name; keep decoration in separate models.
-- Re-save `lobby/place/Lobby.rbxl` after every map task.
+- `Workspace.StreamingEnabled` off. `Workspace.FallenPartsDestroyHeight` = -2000 (the Palace, Forest and Stage are at y = -400).

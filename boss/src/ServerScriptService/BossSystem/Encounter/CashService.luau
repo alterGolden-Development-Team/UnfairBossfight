@@ -111,8 +111,10 @@ function api.PayWinners(winners, difficulty, enraged)
 		if player.UserId > 0 and not paid[id] then
 			paid[id] = true
 			count += 1
-			player:SetAttribute("CashEarned", amount)
-			local entry = { userId = player.UserId, runId = runId, amount = amount, name = player.Name }
+			local okOrb, withOrb = pcall(require(script.Parent.Orbs).CashFor, player, amount)
+			local earned = okOrb and withOrb or amount
+			player:SetAttribute("CashEarned", earned)
+			local entry = { userId = player.UserId, runId = runId, amount = earned, name = player.Name }
 			task.spawn(settle, entry, Config.CashWriteAttempts)
 		end
 	end

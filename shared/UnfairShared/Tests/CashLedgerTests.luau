@@ -114,6 +114,68 @@ cases:add("hasPaid is false for junk input", function()
 	Harness.eq(Ledger.hasPaid({ PaidRuns = { "a" } }, 5), false)
 end)
 
+cases:add("purchase takes the price and records the item", function()
+	local record, result = Ledger.purchase({ Cash = 150 }, "Classes", "Supporter", 100)
+	Harness.eq(result, "Bought")
+	Harness.eq(Ledger.balance(record), 50)
+	Harness.truthy(Ledger.owns(record, "Classes", "Supporter"))
+	Harness.eq(Ledger.owns(record, "Orbs", "Supporter"), false)
+end)
+
+cases:add("the same item is never charged twice", function()
+	local record = Ledger.purchase({ Cash = 500 }, "Orbs", "Fortune", 250)
+	local again, result = Ledger.purchase(record, "Orbs", "Fortune", 250)
+	Harness.eq(result, "AlreadyOwned")
+	Harness.eq(Ledger.balance(again), 250)
+end)
+
+cases:add("too little cash buys nothing and the balance is untouched", function()
+	local record, result = Ledger.purchase({ Cash = 99 }, "Classes", "Supporter", 100)
+	Harness.eq(result, "TooPoor")
+	Harness.eq(Ledger.balance(record), 99)
+	Harness.eq(Ledger.owns(record, "Classes", "Supporter"), false)
+	local _, none = Ledger.purchase(nil, "Classes", "Supporter", 100)
+	Harness.eq(none, "TooPoor")
+end)
+
+cases:add("bad purchases are refused", function()
+	local badPrices: { any } = { 0, -5, 1.5, "10", 0 / 0, math.huge }
+	for _, price in badPrices do
+		local record, result = Ledger.purchase({ Cash = 1000 }, "Classes", "X", price)
+		Harness.eq(result, "Invalid", `price {tostring(price)}`)
+		Harness.eq(Ledger.balance(record), 1000)
+	end
+	local _, badKind = Ledger.purchase({ Cash = 1000 }, "Swords", "X", 10)
+	Harness.eq(badKind, "Invalid")
+	local _, badId = Ledger.purchase({ Cash = 1000 }, "Classes", "", 10)
+	Harness.eq(badId, "Invalid")
+end)
+
+cases:add("purchase keeps run history and does not change the record it was given", function()
+	local old = { Cash = 100, PaidRuns = { "a" }, Owned = { Classes = { "Gambler" }, Orbs = {} } }
+	local record = Ledger.purchase(old, "Classes", "Supporter", 10)
+	Harness.eq(record.PaidRuns[1], "a")
+	Harness.truthy(Ledger.owns(record, "Classes", "Gambler"))
+	Harness.eq(#old.Owned.Classes, 1)
+	Harness.eq(old.Cash, 100)
+end)
+
+cases:add("only an owned orb can be equipped, and nil takes it off", function()
+	local record = Ledger.purchase({ Cash = 100 }, "Orbs", "Vitality", 60)
+	local _, refused = Ledger.equip(record, "Fortune")
+	Harness.eq(refused, false)
+	local worn, applied = Ledger.equip(record, "Vitality")
+	Harness.truthy(applied)
+	Harness.eq(Ledger.equippedOrb(worn), "Vitality")
+	local off = Ledger.equip(worn, nil)
+	Harness.isNil(Ledger.equippedOrb(off))
+end)
+
+cases:add("a forged EquippedOrb the record does not own counts as none", function()
+	Harness.isNil(Ledger.equippedOrb({ EquippedOrb = "Fortune" }))
+	Harness.isNil(Ledger.equippedOrb(nil))
+end)
+
 return function()
 	return cases:run()
 end

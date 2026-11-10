@@ -527,6 +527,7 @@ function api.BindCharacter(player, char)
   h.Health = maxHealth
   char:SetAttribute("BaseWalkSpeed", def.Speed)
   h.WalkSpeed = def.Speed
+  pcall(require(script:FindFirstAncestor("BossSystem").Encounter.Orbs).Apply, player, char, h, def)  -- lobby orb, if any
   if respawning[player] then
     respawning[player] = nil
     immunity.Grant(char, "RespawnInvulnerableUntil", 5)

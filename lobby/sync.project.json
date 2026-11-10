@@ -1,0 +1,25 @@
+{
+  "name": "LobbySync",
+  "tree": {
+    "$className": "Folder",
+    "ReplicatedStorage": {
+      "$className": "Folder",
+      "Lobby": { "$path": "src/ReplicatedStorage/Lobby" },
+      "UnfairShared": { "$path": "../shared/UnfairShared" },
+      "BossShared": {
+        "$className": "Folder",
+        "Classes": { "$path": "../boss/src/ReplicatedStorage/BossShared/Classes" },
+        "ClassModels": { "$path": "../boss/src/ServerScriptService/BossSystem/Players/Classes/ClassModels" }
+      }
+    },
+    "ServerScriptService": {
+      "$className": "Folder",
+      "Lobby": { "$path": "src/ServerScriptService/Lobby" }
+    },
+    "StarterPlayerScripts": {
+      "$className": "Folder",
+      "LobbyClient": { "$path": "src/StarterPlayer/StarterPlayerScripts/LobbyClient" }
+    },
+    "MapBuilder": { "$path": "map" }
+  }
+}

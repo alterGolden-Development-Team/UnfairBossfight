@@ -15,6 +15,7 @@ local ClassConfig: any = require(ReplicatedStorage.BossShared.Classes.ClassConfi
 local ClassUnlocks: any = require(ReplicatedStorage.BossShared.Classes.ClassUnlocks)
 local UnlockCheck = require(ReplicatedStorage.UnfairShared.UnlockCheck)
 local LobbyRemotes = require(ReplicatedStorage.Lobby.LobbyRemotes)
+local PlayerData: any = require(script.Parent.PlayerData)
 
 local remote = LobbyRemotes.get("ClassPick")
 local classes: { [string]: any } = ClassConfig.Classes
@@ -45,6 +46,9 @@ local function depsFor(player: Player): UnlockCheck.Deps
 		hasPass = function(passId: number)
 			local ok, has = pcall(MarketplaceService.UserOwnsGamePassAsync, MarketplaceService, player.UserId, passId)
 			return ok, ok and has == true
+		end,
+		hasBought = function(classId: string)
+			return PlayerData.OwnsClass(player, classId)
 		end,
 		isPresent = function()
 			return player.Parent == Players

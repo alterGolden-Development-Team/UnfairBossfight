@@ -6,12 +6,13 @@
 -- Result of an ownership question is tri-state: true = owns it, false = does not, nil = could not find out.
 -- A failed lookup never unlocks anything (fail closed).
 
-export type Entry = { Kind: string, Id: number, Hint: string? }
+export type Entry = { Kind: string, Id: number, Hint: string?, ClassId: string?, Price: number? }
 
 export type Deps = {
 	bypass: (() -> boolean)?, -- true for Studio / the experience creator / nothing to check
 	hasBadge: (badgeId: number) -> (boolean, boolean), -- (lookup worked, owns it)
 	hasPass: (passId: number) -> (boolean, boolean),
+	hasBought: ((classId: string) -> (boolean, boolean))?, -- cash classes: (lookup worked, owns it)
 	isPresent: (() -> boolean)?, -- false once the player has left, stops the retries
 	wait: ((seconds: number) -> ())?, -- between retries
 }
@@ -33,6 +34,14 @@ local function owns(entry: Entry, deps: Deps): boolean?
 			return false -- a pass that is not set up yet cannot be owned
 		end
 		local worked, has = deps.hasPass(entry.Id)
+		if worked then
+			return has == true
+		end
+	elseif entry.Kind == "Cash" then
+		if not deps.hasBought or type(entry.ClassId) ~= "string" then
+			return nil
+		end
+		local worked, has = deps.hasBought(entry.ClassId)
 		if worked then
 			return has == true
 		end

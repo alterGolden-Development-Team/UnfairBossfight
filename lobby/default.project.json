@@ -14,6 +14,9 @@
         "$ignoreUnknownInstances": true,
         "Classes": {
           "$path": "../boss/src/ReplicatedStorage/BossShared/Classes"
+        },
+        "ClassModels": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Players/Classes/ClassModels"
         }
       }
     },

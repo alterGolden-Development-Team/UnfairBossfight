@@ -163,6 +163,10 @@ local function handle(player)
 		return
 	end
 
+	pcall(require(BossSystem.Encounter.Orbs).Load, player) -- may wait for the data store; before Apply below
+	if player.Parent ~= Players then
+		return
+	end
 	player:SetAttribute("PlayerClass", class)
 	player:SetAttribute("LobbyArrival", true)
 	if player.Character then

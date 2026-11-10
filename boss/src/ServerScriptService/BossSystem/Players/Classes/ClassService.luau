@@ -612,6 +612,7 @@ function S.Apply(player, char)
   h.MaxHealth = maxHealth
   h.Health = maxHealth
   h.WalkSpeed = def.Speed
+  pcall(require(script:FindFirstAncestor("BossSystem").Encounter.Orbs).Apply, player, char, h, def)  -- lobby orb, if any
   for _,key in ipairs(cooldownKeys) do
    local attribute=cooldownAttribute(char,key)
    char:SetAttribute("ClassCD_"..key,player:GetAttribute(attribute) or 0)
@@ -863,6 +864,12 @@ local function ownsEntry(player, entry)
     if type(entry.Id) ~= "number" or entry.Id <= 0 then return false end
     local ok, has = pcall(Marketplace.UserOwnsGamePassAsync, Marketplace, player.UserId, entry.Id)
     if ok then return has == true end
+  elseif entry.Kind == "Cash" then
+    -- bought in the lobby shop: the saved record says so, the client and the teleport payload cannot
+    local ok, record = require(script:FindFirstAncestor("BossSystem").Encounter.PlayerRecord).Get(player.UserId)
+    if ok then
+      return require(game:GetService("ReplicatedStorage").UnfairShared.CashLedger).owns(record, "Classes", entry.ClassId)
+    end
   end
   return nil
 end

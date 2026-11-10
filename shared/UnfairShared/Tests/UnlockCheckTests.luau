@@ -131,6 +131,27 @@ cases:add("an unknown entry kind is treated as unverifiable, not as open", funct
 	Harness.isNil(UnlockCheck.resolve(entry, deps(), 1))
 end)
 
+local cashEntry: UnlockCheck.Entry = { Kind = "Cash", Id = 0, ClassId = "Supporter", Price = 100, Hint = "Buy in the shop for 100 cash." }
+
+local function cashDeps(worked: boolean, owned: boolean): UnlockCheck.Deps
+	local d: any = deps()
+	d.hasBought = function(classId: string)
+		Harness.eq(classId, "Supporter")
+		return worked, owned
+	end
+	return d
+end
+
+cases:add("a bought class is unlocked, an unbought one is locked", function()
+	Harness.eq(UnlockCheck.resolve(cashEntry, cashDeps(true, true), 1), true)
+	Harness.eq(UnlockCheck.resolve(cashEntry, cashDeps(true, false), 1), false)
+end)
+
+cases:add("a cash class fails closed when the save cannot be read", function()
+	Harness.isNil(UnlockCheck.resolve(cashEntry, cashDeps(false, true), 1))
+	Harness.isNil(UnlockCheck.resolve(cashEntry, deps(), 1), "no lookup supplied")
+end)
+
 return function()
 	return cases:run()
 end

@@ -585,7 +585,7 @@ do
 		end
 
 		local G = GRIP * R(rad(-90), 0, 0) * CFrame.new(0, 0, 0.35)
-		local rig = { Char = char, _conns = {} }
+		local rig: any = { Char = char, _conns = {} }
 		local animate = makeAnimator(rig._conns)
 		buildGun(char, G, rig, animate)
 		buildDie(char, rig)
