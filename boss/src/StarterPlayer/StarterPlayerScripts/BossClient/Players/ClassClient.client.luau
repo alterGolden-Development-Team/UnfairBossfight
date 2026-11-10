@@ -850,6 +850,7 @@ local hudConnection=Run.Heartbeat:Connect(function(dt)
   if c~=statusCharacter then bindStatusCharacter(c) end
   local def = classOf()
   hud.Enabled=c~=nil and c:GetAttribute("ClassId")~=nil and workspace:GetAttribute("BossEncounterWon")~=true and player:GetAttribute("ChainBreakActive")~=true
+   and workspace:GetAttribute("ClassShowroom")~=true  -- the lobby's showroom has its own panel
   if not hud.Enabled then
     releaseHudInputs()
     for id,ch in pairs(chips) do ch.Frame:Destroy(); chips[id]=nil end

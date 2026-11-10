@@ -3,6 +3,7 @@
 -- all three boss portals on the skyline in front of you and the shop's giant sword on your right.
 -- Nothing taller than a bench stands between the spawn and the portals. A spring on the west side runs off the edge as a waterfall.
 local Kit = require(script.Parent.Kit)
+local Assets = require(script.Parent.Assets)
 local C, M = Kit.C, Kit.M
 
 local Hub = {}
@@ -62,51 +63,55 @@ end
 
 local ringWall = Kit.ring
 
+-- Stretches one mesh of a store asset to an exact size (mesh parts scale per axis; models only uniformly).
+local function meshPiece(parent, name, size, cf, color, material)
+	local part = Assets.Get(name):FindFirstChildWhichIsA("MeshPart", true)
+	part.Name = name
+	part.Size = size
+	part.CFrame = cf
+	part.Color = color
+	part.Material = material
+	part.Parent = parent
+	return part
+end
+
 local function island(area)
 	local land = Kit.folder(area, "Island")
 	local r = Kit.R
-	Kit.disc(land, "Grass", v(0, 0), 250, 12, C.Grass, M.Grass)
-	Kit.disc(land, "Earth", v(0, 0, -12), 244, 22, Kit.rgb(116, 92, 66), M.Ground)
-	for _, layer in { { -34, 214, 40 }, { -74, 164, 60 }, { -134, 112, 70 }, { -204, 60, 70 }, { -274, 22, 60 } } do
-		Kit.disc(land, "Underside", v(0, 0, layer[1]), layer[2], layer[3], C.Rock, M.Slate)
-	end
-	-- broken edge so it does not read as a coin; a gap where the stream goes over
-	for a = 0, 355, 6 do
-		local rad = math.rad(a)
-		if angleGap(rad, FALLS_ANGLE) > math.rad(5) then
-			local d = r:NextNumber(120, 127)
-			Kit.rock(land, v(math.cos(rad) * d, math.sin(rad) * d, r:NextNumber(-11, -2)), Vector3.new(r:NextNumber(13, 26), r:NextNumber(10, 22), r:NextNumber(13, 26)), r:NextNumber() > 0.3 and C.Stone or C.StoneDark)
-		end
-	end
-	-- moss on top of the rim stones, so the grass seems to spill over them
-	for a = 3, 358, 9 do
-		local rad = math.rad(a)
+	-- the walkable top stays a flat disc (paths, plaza and portals sit on it); the store meshes are the island around and under it:
+	-- a grass cap whose ragged edge spills past the disc, and a long earth root hanging below (Starblaze Games' floating island)
+	local WIDTH = 272
+	Kit.disc(land, "Grass", v(0, 0), 250, 3, C.Grass, M.Grass)
+	local capH = 26
+	meshPiece(land, "IslandTop", Vector3.new(WIDTH, capH, WIDTH), CFrame.new(v(0, 0, -0.4 - capH / 2)), C.Grass, M.Grass)
+	local baseH = 250
+	local baseTop = Y - 0.4 - capH * 0.24
+	meshPiece(land, "IslandBase", Vector3.new(WIDTH * 0.985, baseH, WIDTH * 0.985), CFrame.new(Vector3.new(0, baseTop - baseH / 2, 0)), Kit.rgb(161, 119, 91), M.SmoothPlastic)
+	-- a few store rocks along the rim, half sunk, so the edge is not one clean line (none where the stream goes over)
+	for a = 0, 350, 14 do
+		local rad = math.rad(a + r:NextNumber(-4, 4))
 		if angleGap(rad, FALLS_ANGLE) > math.rad(9) then
-			local d = r:NextNumber(114, 119)
-			Kit.noShadow(Kit.ball(land, "Moss", r:NextNumber(7, 11), v(math.cos(rad) * d, math.sin(rad) * d, r:NextNumber(-3.4, -2.4)), r:NextNumber() > 0.5 and C.Grass or C.GrassDark, M.LeafyGrass))
+			local d = r:NextNumber(118, 126)
+			local size = r:NextNumber(7, 14)
+			local rock = Assets.Place(land, "Rock", CFrame.new(v(math.cos(rad) * d, math.sin(rad) * d, -size * 0.18)) * CFrame.Angles(0, r:NextNumber(0, 6.28), 0), size, true)
+			for _, part in rock:GetDescendants() do
+				if part:IsA("BasePart") then
+					part.Color = r:NextNumber() > 0.4 and C.Stone or C.StoneDark
+					part.Material = M.Slate
+				end
+			end
 		end
 	end
-	-- hanging rock under the island
-	for _ = 1, 70 do
-		local a, d = r:NextNumber(0, 6.28), r:NextNumber(10, 105)
-		local depth = -34 - (105 - d) * r:NextNumber(1.2, 2.4)
-		local size = r:NextNumber(14, 34)
-		Kit.rock(land, v(math.cos(a) * d, math.sin(a) * d, depth), Vector3.new(size, size * r:NextNumber(1, 2.2), size), r:NextNumber() > 0.5 and C.Rock or C.StoneDark)
-	end
-	-- roots and vines hanging out of the earth below the rim
+	-- roots and vines trailing off the cap's edge
 	local vine, root = Kit.rgb(70, 112, 58), Kit.rgb(92, 70, 50)
-	for _ = 1, 64 do
+	for _ = 1, 40 do
 		local a = r:NextNumber(0, 6.28)
 		if angleGap(a, FALLS_ANGLE) > math.rad(8) then
-			-- just outside the earth band (radius 122, y -12 to -34), so they are not buried in it
-			local d = r:NextNumber(122.2, 123)
-			local length = r:NextNumber(8, 30)
-			local top = v(math.cos(a) * d, math.sin(a) * d, r:NextNumber(-16, -12))
+			local d = r:NextNumber(128, 131)
+			local length = r:NextNumber(8, 26)
+			local top = v(math.cos(a) * d, math.sin(a) * d, -capH * 0.55)
 			local isRoot = r:NextNumber() > 0.6
 			Kit.detail(Kit.box(land, isRoot and "Root" or "Vine", Vector3.new(isRoot and 1.1 or 0.6, length, isRoot and 1.1 or 0.6), CFrame.new(top - Vector3.new(0, length / 2, 0)) * CFrame.Angles(r:NextNumber(-0.12, 0.12), a, r:NextNumber(-0.12, 0.12)), isRoot and root or vine, isRoot and M.Wood or M.LeafyGrass))
-			if not isRoot and r:NextNumber() > 0.5 then
-				Kit.detail(Kit.ball(land, "Leaf", r:NextNumber(1.6, 2.6), top - Vector3.new(0, length, 0), vine, M.LeafyGrass))
-			end
 		end
 	end
 end
@@ -130,29 +135,12 @@ local function slabPath(area, from, to, width)
 end
 
 local function fountain(f)
+	-- a store fountain (MR_MohamedTarek's two-tier marble one) on a gold-rimmed step
 	local center = v(0, 0, 0.92)
-	Kit.column(f, "Basin", center, 1.4, 17, C.Marble, M.Marble)
-	ringWall(f, "BasinWall", center, 16.6, 2.6, 1.2, 24, C.Marble, M.Marble)
-	ringWall(f, "BasinLip", center + Vector3.new(0, 2.6, 0), 16.6, 0.35, 1.6, 24, C.Gold, M.Foil)
-	Kit.noShadow(Kit.disc(f, "Water", center + Vector3.new(0, 2.1, 0), 15.6, 0.4, WATER, M.SmoothPlastic, { Reflectance = 0.25, Transparency = 0.15, CanCollide = false }))
-	Kit.column(f, "Pedestal", center, 4.6, 2.4, C.Marble, M.Marble)
-	Kit.column(f, "Bowl", center + Vector3.new(0, 4.6, 0), 0.6, 6.5, C.Marble, M.Marble)
-	ringWall(f, "BowlLip", center + Vector3.new(0, 5.2, 0), 6.2, 0.5, 0.5, 14, C.Gold, M.Foil)
-	Kit.noShadow(Kit.disc(f, "BowlWater", center + Vector3.new(0, 5.55, 0), 5.8, 0.3, WATER, M.SmoothPlastic, { Reflectance = 0.25, CanCollide = false }))
-	local spout = Kit.detail(Kit.ball(f, "Spout", 1.2, center + Vector3.new(0, 6.1, 0), C.Gold, M.Foil))
-	local jet = Instance.new("ParticleEmitter")
-	jet.Name = "Jet"
-	jet.Color = ColorSequence.new(Kit.rgb(210, 240, 255))
-	jet.LightEmission = 0.3
-	jet.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.2), NumberSequenceKeypoint.new(1, 1) })
-	jet.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.5), NumberSequenceKeypoint.new(1, 0.25) })
-	jet.Rate = 60
-	jet.Speed = NumberRange.new(9, 11)
-	jet.SpreadAngle = Vector2.new(16, 16)
-	jet.Acceleration = Vector3.new(0, -34, 0)
-	jet.Lifetime = NumberRange.new(0.6, 0.8)
-	jet.EmissionDirection = Enum.NormalId.Top
-	jet.Parent = spout
+	Kit.column(f, "FountainStep", v(0, 0, 0.1), 0.8, 28, C.Marble, M.Marble)
+	ringWall(f, "FountainStepLip", v(0, 0, 0.6), 28, 0.35, 1, 32, C.Gold, M.Foil)
+	local model = Assets.Place(f, "Fountain", CFrame.new(center), 26, true)
+	model.Name = "Fountain"
 end
 
 local function plaza(area)
@@ -269,18 +257,19 @@ end
 local function flora(area)
 	local f = Kit.folder(area, "Flora")
 	local r = Kit.R
-	local leafTints = { C.Leaf, C.GrassDark, Kit.rgb(88, 140, 66) }
+	-- trees are the store island's own low-poly tree (Starblaze Games), in three greens and a few in blossom
+	local leafTints = { Kit.rgb(72, 121, 60), Kit.rgb(88, 140, 66), Kit.rgb(60, 104, 52) }
 	for _ = 1, 30 do
 		local a, d = r:NextNumber(0, 6.28), r:NextNumber(58, 110)
 		local p = v(math.cos(a) * d, math.sin(a) * d, 0)
 		if not keepClear(p.X, p.Z, 4) then
-			local roll = r:NextNumber()
-			if roll < 0.28 then
-				Kit.pine(f, p, r:NextNumber(24, 36))
-			elseif roll < 0.42 then
-				Kit.tree(f, p, r:NextNumber(20, 28), Kit.rgb(108, 78, 62), Kit.rgb(240, 172, 196)) -- blossom
-			else
-				Kit.tree(f, p, r:NextNumber(20, 34), C.Wood, leafTints[r:NextInteger(1, #leafTints)])
+			local blossom = r:NextNumber() < 0.16
+			local tree = Assets.Place(f, "Tree", CFrame.new(p - Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, r:NextNumber(0, 6.28), 0), r:NextNumber(22, 34))
+			for _, part in tree:GetDescendants() do
+				if part:IsA("MeshPart") and part.MeshId == "rbxassetid://7383573087" then
+					part.Color = blossom and Kit.rgb(240, 172, 196) or leafTints[r:NextInteger(1, #leafTints)]
+					part.CastShadow = true
+				end
 			end
 		end
 	end
@@ -325,31 +314,29 @@ end
 local function satellites(area)
 	local f = Kit.folder(area, "Satellites")
 	local r = Kit.R
-	for _, s in { { -190, 40, -34, 50 }, { 180, -130, 26, 40 }, { -150, -210, 40, 58 }, { 210, 130, -46, 44 }, { -40, 230, -58, 62 } } do
-		local center = v(s[1], s[2], s[3])
-		Kit.disc(f, "Grass", center, s[4], 5, C.Grass, M.Grass)
-		Kit.disc(f, "Under", center - Vector3.new(0, 5, 0), s[4] * 0.86, 12, C.Rock, M.Slate)
-		for _ = 1, 12 do
-			local a, d = r:NextNumber(0, 6.28), r:NextNumber(0, s[4] * 0.42)
-			local size = r:NextNumber(6, s[4] * 0.3)
-			Kit.rock(f, center + Vector3.new(math.cos(a) * d, -r:NextNumber(10, s[4] * 0.5), math.sin(a) * d), Vector3.new(size, size * 1.4, size), C.Rock)
+	-- small islands drifting round the hub: Starblaze Games' floating island, scaled down and turned so no two look alike
+	for _, s in { { -190, 40, -34, 60 }, { 180, -130, 26, 50 }, { -150, -210, 40, 70 }, { 210, 130, -46, 54 }, { -40, 230, -58, 76 } } do
+		local model = Assets.Get("SkyIsland")
+		local _, box = model:GetBoundingBox()
+		model:ScaleTo(model:GetScale() * s[4] / math.max(box.X, box.Z))
+		model:PivotTo(CFrame.new(v(s[1], s[2], 0)) * CFrame.Angles(0, r:NextNumber(0, 6.28), 0))
+		-- put its grass on the height we want
+		local cap
+		for _, part in model:GetDescendants() do
+			if part:IsA("MeshPart") and part.MeshId == "rbxassetid://7383572612" then
+				cap = part
+			end
 		end
-		for k = 1, 6 do
-			local a = k / 6 * 6.28
-			Kit.detail(Kit.box(f, "Vine", Vector3.new(0.6, r:NextNumber(6, 16), 0.6), CFrame.new(center + Vector3.new(math.cos(a) * s[4] * 0.47, -9, math.sin(a) * s[4] * 0.47)), Kit.rgb(70, 112, 58), M.LeafyGrass))
+		if cap then
+			model:PivotTo(model:GetPivot() + Vector3.new(0, s[3] - (cap.Position.Y + cap.Size.Y / 2 - Y), 0))
 		end
-		if r:NextNumber() > 0.4 then
-			Kit.tree(f, center, r:NextNumber(18, 26), C.Wood, C.Leaf)
-		else
-			Kit.pine(f, center, r:NextNumber(22, 30))
-		end
-		Kit.bush(f, center + Vector3.new(s[4] * 0.2, 0, -s[4] * 0.15), 5, C.GrassDark)
-		Kit.rock(f, center + Vector3.new(-s[4] * 0.22, 1, s[4] * 0.1), Vector3.new(5, 4, 4), C.Stone)
+		model.Name = "Satellite"
+		model.Parent = f
 	end
 	-- a sea of cloud below sells the height
 	for _ = 1, 44 do
 		local a, d = r:NextNumber(0, 6.28), r:NextNumber(130, 620)
-		local base = v(math.cos(a) * d, math.sin(a) * d, r:NextNumber(-250, -190))
+		local base = v(math.cos(a) * d, math.sin(a) * d, r:NextNumber(-290, -230))
 		for _ = 1, 5 do
 			local size = r:NextNumber(50, 130)
 			Kit.noShadow(Kit.ball(f, "Cloud", size, base + Vector3.new(r:NextNumber(-50, 50), r:NextNumber(-14, 14), r:NextNumber(-50, 50)), C.Cloud, M.SmoothPlastic, { Transparency = 0.12 }))

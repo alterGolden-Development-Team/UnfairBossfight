@@ -1,15 +1,17 @@
 --!nonstrict
 --[[
  The shop (docs/spec/lobby-redesign.md). Press E at the Keeper for three choices: Classes, Orbs, Lore.
- Classes and Orbs fade to the private showroom: a dummy on a stage wearing what you are looking at. Click a skill and the dummy does it.
+ Classes and Orbs fade to the showroom: a dummy on a stage wearing what you are looking at. Click a skill and the dummy uses it on a
+ second dummy. For classes that is the fight's real skill: the performer is your own character in a dummy's body, running the boss
+ place's class kits (TryoutService). Orbs are shown by a dummy that only exists on your client.
  Every button only asks the server; prices and ownership are decided there (ShopService, ClassPickService).
 ]]
+local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local ClassConfig = require(ReplicatedStorage.BossShared.Classes.ClassConfig)
 local ClassUnlocks = require(ReplicatedStorage.BossShared.Classes.ClassUnlocks)
-local ClassModels = require(ReplicatedStorage.BossShared.ClassModels)
 local OrbConfig = require(ReplicatedStorage.UnfairShared.OrbConfig)
 local Fade = require(ReplicatedStorage.Lobby.Fade)
 local Freeze = require(ReplicatedStorage.Lobby.Freeze)
@@ -21,6 +23,7 @@ local SkillDemos = require(ReplicatedStorage.Lobby.SkillDemos)
 local player = Players.LocalPlayer
 local shopRemote = LobbyRemotes.get("Shop")
 local classRemote = LobbyRemotes.get("ClassPick")
+local tryRemote = LobbyRemotes.get("Tryout")
 
 local GOLD = Color3.fromRGB(246, 211, 117)
 local INK = Color3.fromRGB(18, 15, 14)
@@ -31,6 +34,8 @@ local TITLE_FONT = Enum.Font.Garamond
 local BODY_FONT = Enum.Font.Gotham
 local SKILL_KEYS = { "M1", "F", "C", "V", "R" }
 local KEY_LABEL = { M1 = "Click", F = "F", C = "C", V = "V", R = "R" }
+-- skills the fight makes you hold: how long the performer holds them (Mage's C is a tap or a hold; the tap is the one shown)
+local HOLD = { Tank = { F = 1.6 }, Mage = { C = 0.1 }, Duelist = { C = 1.2 }, Disorderer = { M1 = 1.2, C = 1.2, V = 1.2 } }
 
 local function make(className, props, parent)
 	local instance = Instance.new(className)
@@ -273,6 +278,11 @@ shopRemote.OnClientEvent:Connect(function(action, data)
 		refreshAction()
 	end
 end)
+tryRemote.OnClientEvent:Connect(function(action, data)
+	if action == "Result" and type(data) == "table" and data.Message then
+		print("[Shop] " .. data.Message)
+	end
+end)
 classRemote.OnClientEvent:Connect(function(action, data)
 	if action == "Result" and type(data) == "table" and data.Message and data.Message ~= "" then
 		status.Text = data.Message
@@ -287,6 +297,33 @@ player.AttributeChanged:Connect(function(name)
 		end
 	end
 end)
+
+-- Has the performer use a skill for real: back to its mark with cooldowns cleared, then the same message the fight's input sends.
+local performToken = 0
+local function perform(classId, key)
+	local control = ReplicatedStorage:FindFirstChild("ClassControl")
+	local target = workspace:FindFirstChild("ClassTrainingDummy")
+	if not control or not target or player:GetAttribute("TryoutClass") ~= classId then
+		return
+	end
+	performToken += 1
+	local mine = performToken
+	tryRemote:FireServer("Ready")
+	task.delay(0.25, function()
+		if mine ~= performToken or player:GetAttribute("TryoutClass") ~= classId then
+			return
+		end
+		local aim = target:GetPivot().Position
+		control:FireServer("Action", key, "Begin", aim)
+		local hold = HOLD[classId] and HOLD[classId][key]
+		if hold then
+			task.wait(hold)
+			if mine == performToken then
+				control:FireServer("Action", key, "End", aim)
+			end
+		end
+	end)
+end
 
 local function clearSkills()
 	for _, child in skillRow:GetChildren() do
@@ -307,10 +344,10 @@ local function showClass(id)
 	passiveLabel.Text = def.Passive and (def.Passive.Name .. ": " .. def.Passive.Text) or ""
 	skillsTitle.Text = "Skills: click one to see it"
 	clearSkills()
-	rig:clearGear()
-	rig:setClass(ClassModels, id, def.Color)
-	SkillDemos.Stop()
-	rig:reset(0.15)
+	performToken += 1
+	if player:GetAttribute("TryoutClass") ~= id then
+		tryRemote:FireServer("Class", id)
+	end
 	local order = 0
 	for _, key in SKILL_KEYS do
 		local skill = def[key]
@@ -319,7 +356,7 @@ local function showClass(id)
 			local b = button(skillRow, { Name = "Skill" .. key, Size = UDim2.new(0, 56, 1, 0), LayoutOrder = order, Text = KEY_LABEL[key], TextSize = 18 })
 			local function choose()
 				skillName.Text, skillBody.Text = skill.Name, skill.Text or ""
-				SkillDemos.Play({ rig = rig, dummyTarget = targetPart }, id, key, def.Color, def.Color2)
+				perform(id, key)
 			end
 			b.Activated:Connect(choose)
 			if order == 1 then
@@ -409,7 +446,29 @@ end
 
 local function stage()
 	local world = workspace:WaitForChild("World")
-	return world:WaitForChild("Stage"):WaitForChild("DummySpot")
+	return world:WaitForChild("Stage"):WaitForChild("OrbSpot")
+end
+
+-- Classes: the performer and its target are real and already on the stage; this side only points the camera at them from the side
+-- and stops the movement keys (the skill keys still work, so pressing F does what clicking F does).
+local transit = false
+local function sink()
+	return Enum.ContextActionResult.Sink
+end
+local function setupClassStage()
+	local character = player.Character
+	local root = character and character:WaitForChild("HumanoidRootPart", 5)
+	local target = workspace:WaitForChild("ClassTrainingDummy", 5)
+	if not root or not target then
+		return
+	end
+	local from, to = root.Position, target:GetPivot().Position
+	local mid = (from + to) / 2
+	local along = ((to - from) * Vector3.new(1, 0, 1)).Unit
+	local side = along:Cross(Vector3.yAxis)
+	camera.CameraType = Enum.CameraType.Scriptable
+	camera.CFrame = CFrame.lookAt(mid + side * 13 + Vector3.new(0, 1.4, 0), mid + Vector3.new(0, 0.2, 0))
+	ContextActionService:BindActionAtPriority("ShowroomStill", sink, false, 3000, table.unpack(Enum.PlayerActions:GetEnumItems()))
 end
 
 local function setupStage()
@@ -447,7 +506,62 @@ local function moodEvent(name)
 	end
 end
 
+local function openClasses()
+	mode = "Classes"
+	menu.Visible = false
+	transit = true
+	local first = player:GetAttribute("PlayerClass") or ClassConfig.Default
+	tryRemote:FireServer("Enter", first)
+	-- the server fades the screen, swaps the body and sets TryoutClass when the performer is on its mark
+	local waited = 0
+	while not player:GetAttribute("TryoutClass") and waited < 6 do
+		waited += task.wait(0.05)
+	end
+	transit = false
+	if not player:GetAttribute("TryoutClass") then
+		menu.Visible = true
+		return
+	end
+	setupClassStage()
+	heading.Text = "Classes"
+	view.Visible = true
+	buildList()
+	showClass(player:GetAttribute("TryoutClass"))
+end
+
+local function closeClasses()
+	view.Visible = false
+	performToken += 1
+	transit = true
+	ContextActionService:UnbindAction("ShowroomStill")
+	local performer = player.Character
+	tryRemote:FireServer("Leave")
+	-- done when the server has cleared TryoutClass AND handed back your own body (it does those in that order)
+	local waited = 0
+	while (player:GetAttribute("TryoutClass") or player.Character == performer) and waited < 8 do
+		waited += task.wait(0.05)
+	end
+	local own = player.Character
+	if own then
+		own:WaitForChild("Humanoid", 5)
+	end
+	camera.CameraType = Enum.CameraType.Custom
+	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+	if humanoid then
+		camera.CameraSubject = humanoid
+	end
+	transit = false
+	-- back at the Keeper, in your own body
+	Freeze.Off()
+	Freeze.On()
+	menu.Visible = true
+end
+
 openShowcase = function(kind)
+	if kind == "Classes" then
+		openClasses()
+		return
+	end
 	mode = kind
 	menu.Visible = false
 	Fade.Out(0.3, kind == "Classes" and "The Armoury" or "The Reliquary")
@@ -466,6 +580,10 @@ openShowcase = function(kind)
 end
 
 local function closeShowcase()
+	if mode == "Classes" then
+		closeClasses()
+		return
+	end
 	Fade.Out(0.3)
 	view.Visible = false
 	teardownStage()
@@ -521,6 +639,10 @@ task.spawn(function()
 end)
 
 player.CharacterRemoving:Connect(function()
+	if transit then
+		return -- the showroom swapping the body in or out
+	end
+	ContextActionService:UnbindAction("ShowroomStill")
 	if gui.Enabled then
 		if view.Visible then
 			view.Visible = false

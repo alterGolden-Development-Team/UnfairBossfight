@@ -51,7 +51,9 @@ $ErrorActionPreference = 'Continue'   # Windows PowerShell 5.1 turns a native co
 $raw = & $lsp.FullName analyze "--definitions=$($defs.FullName)" "--sourcemap=$sourcemap" --no-strict-dm-types src ..\shared 2>&1 |
     ForEach-Object { "$_" }
 $ErrorActionPreference = 'Stop'
-$problems = @($raw | Where-Object { $_ -match '(TypeError|[A-Za-z]+Unused|SyntaxError|[A-Za-z]+): ' -and $_ -match '[\\/](src|shared)[\\/]' })
+$problems = @($raw | Where-Object { $_ -match '(TypeError|[A-Za-z]+Unused|SyntaxError|[A-Za-z]+): ' -and $_ -match '[\\/](src|shared)[\\/]' -and
+    # the boss code the lobby mounts (class kits for the showroom) is gated by the boss check and its baseline, not here
+    $_ -notmatch '^\s*\S*[\\/]boss[\\/]src[\\/]' })
 if ($problems.Count) {
     Write-Host "FAIL: $($problems.Count) analyzer diagnostics in lobby/shared:" -ForegroundColor Red
     $problems | Select-Object -First 40 | ForEach-Object { Write-Host "  $_" }

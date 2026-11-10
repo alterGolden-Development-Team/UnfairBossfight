@@ -39,7 +39,8 @@ function S.State(char)
   return char and states[char]
 end
 function S.ClassOf(player)
-  local id = player:GetAttribute("PlayerClass")
+  -- the lobby's training hall (workspace.ClassShowroom) lets a player try a class they have not picked: TryoutClass, set by the server only
+  local id = workspace:GetAttribute("ClassShowroom") == true and player:GetAttribute("TryoutClass") or player:GetAttribute("PlayerClass")
   return ClassConfig.Classes[id] and id or ClassConfig.Default
 end
 function S.Alive(char)
@@ -925,8 +926,11 @@ function S.Start()
   local function settings(player)
    if player:GetAttribute("ClassAutoAim")==nil then player:SetAttribute("ClassAutoAim",true) end
   end
-  for _,player in Players:GetPlayers() do settings(player) task.spawn(S.RefreshUnlocks, player) end
-  Players.PlayerAdded:Connect(function(player) settings(player) task.spawn(S.RefreshUnlocks, player) end)
+  -- in the lobby's training hall the lobby owns unlocks and class choice; this service only runs the kits
+  local showroom = workspace:GetAttribute("ClassShowroom") == true
+  local function refresh(player) if not showroom then task.spawn(S.RefreshUnlocks, player) end end
+  for _,player in Players:GetPlayers() do settings(player) refresh(player) end
+  Players.PlayerAdded:Connect(function(player) settings(player) refresh(player) end)
   Marketplace.PromptGamePassPurchaseFinished:Connect(function(player, passId, purchased)
     if not purchased then return end
     for id, entry in pairs(Unlocks) do
@@ -952,6 +956,8 @@ function S.Start()
     if action=="Setting" then
      if (a~="ClassAutoAim" and a~="DisableSkillCutscenes") or type(b)~="boolean" then return end
      player:SetAttribute(a,b)
+    elseif showroom and (action == "Select" or action == "Buy") then
+      return
     elseif action == "Select" then
       if type(a) ~= "string" or not ClassConfig.Classes[a] then
         return
@@ -1075,7 +1081,7 @@ function S.Start()
   Run.Heartbeat:Connect(step)
    
   for _, p in ipairs(Players:GetPlayers()) do
-    if p.Character then
+    if p.Character and not showroom then
       task.spawn(S.Apply, p, p.Character)
     end
   end

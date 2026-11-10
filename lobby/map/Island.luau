@@ -27,7 +27,14 @@ local function land()
 	-- ocean to the horizon
 	Terrain:FillBlock(CFrame.new(at(0, -20, 0)), Vector3.new(1600, 44, 1600), Enum.Material.Water)
 	-- main island: sand shelf, grass top, hills, rocky point in the north
-	Terrain:FillCylinder(CFrame.new(at(0, -10, -20)), 30, 190, Enum.Material.Sand)
+	-- the sand shelf slopes into the sea in shallow steps (terrain smooths them) instead of standing up as one wall
+	-- and keeps going down under the water (the sea is clear, so a sheer underwater side reads as a cliff) onto a sandy floor
+	Terrain:FillBlock(CFrame.new(at(0, -38, 0)), Vector3.new(1600, 8, 1600), Enum.Material.Sand)
+	for _, step in { { 5, 184 }, { 4, 191 }, { 3, 197 }, { 2, 203 }, { 0.5, 209 }, { -1.5, 215 }, { -4.5, 222 }, { -9, 232 }, { -14, 246 }, { -20, 262 }, { -26, 282 }, { -31, 304 } } do
+		local top, radius = step[1], step[2]
+		local bottom = -36
+		Terrain:FillCylinder(CFrame.new(at(0, (top + bottom) / 2, -20)), top - bottom, radius, Enum.Material.Sand)
+	end
 	Terrain:FillCylinder(CFrame.new(at(0, -7, -30)), 30, 150, Enum.Material.Grass)
 	Terrain:FillBall(at(-90, -36, -40), 66, Enum.Material.Grass)
 	Terrain:FillBall(at(95, -42, -10), 70, Enum.Material.Grass)
@@ -35,8 +42,6 @@ local function land()
 	Terrain:FillBall(at(0, -26, -190), 62, Enum.Material.Rock)
 	Terrain:FillBall(at(-46, -26, -176), 40, Enum.Material.Rock)
 	Terrain:FillBall(at(48, -26, -172), 40, Enum.Material.Rock)
-	-- beach apron facing the boats
-	Terrain:FillBall(at(0, -56, 150), 66, Enum.Material.Sand)
 	-- arrival sandbar
 	Terrain:FillCylinder(CFrame.new(at(0, -10, 390)), 28, 58, Enum.Material.Sand)
 	task.wait(2) -- terrain collision catches up a moment after the fill; props below measure the ground

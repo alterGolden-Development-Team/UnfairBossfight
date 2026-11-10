@@ -4,6 +4,15 @@ The lobby world is built by the modules in `lobby/map/` into `Workspace.World` a
 Rebuild an area from Studio, **test place only**: `require(game.ServerStorage.MapBuilder).Build("Palace")`.
 Design notes and sources: [docs/spec/lobby-redesign.md](../docs/spec/lobby-redesign.md). Scripts rely on the names below.
 
+## Store assets
+
+Some props are Creator Store models: the plaza fountain, the gothic greatswords (Jeff n' Fred's portal, gilded on the shop roof),
+the hub island's earth and grass meshes, its trees and rocks, the small islands around the hub, and the palms. Builders clone them from
+`ServerStorage.MapAssets` (saved in the place), never from the web. `lobby/map/Assets.luau` lists every id with its creator and
+rebuilds that folder: `require(game.ServerStorage.MapBuilder.Assets).Fetch()` (test place only). Fetch strips every script, spawn,
+prompt and tool from what it downloads: free models are props, never code. Check a new model for scripts before adding it; several
+"portal" uploads on the store hide malware-style scripts.
+
 ## Areas (all in one place, far apart)
 
 | Area | Where | Notes |
@@ -14,7 +23,7 @@ Design notes and sources: [docs/spec/lobby-redesign.md](../docs/spec/lobby-redes
 | Palace | `World.Palace`, y = -400 | `ArrivalPalace`. The four party portals are `Workspace.PartyRooms.Room1..4` |
 | Island | `World.Island`, x = -12000 (attribute `Origin`) | Terrain sea and land. `ArrivalIsland`, `BoatLanding`, `BoardingSpot.BoardPrompt`, `Boats.Boat1..3` |
 | Forest | `World.Forest`, y = -400 | `ArrivalForest`, `CutTrigger`, `TheFight.{Jeff,Fred}` |
-| Stage | `World.Stage`, y = -400 | The showroom. `DummySpot` is where the client puts its dummy |
+| Stage | `World.Stage`, y = -400 | The class showroom. `DummySpot` is where the target dummy stands (`TryoutService` puts up `workspace.ClassTrainingDummy`); performers stand in a ring 7 studs round it. `OrbSpot` is the orb dais. `ArrivalStage` |
 
 ## Rules the scripts use
 
@@ -29,6 +38,9 @@ Design notes and sources: [docs/spec/lobby-redesign.md](../docs/spec/lobby-redes
 - Room model: `Phase`, `LeaderUserId`, `Difficulty`, `Enraged`, `CountdownEndsAt`, `MemberCount`, `Roster`.
 - Player: `Area`, `PlayerClass`, `ClassUnlocked_<id>`, `PartyRoom`, `PartyLocked`, `Cash`, `CashState`, `OrbOwned_<id>`, `PlayerOrb`, plus `leaderstats.Cash`.
 - Workspace: `LastLaunchPayload` (Studio dry runs).
+- Workspace: `ClassShowroom` = true (set by `TryoutService`): the boss place's `ClassService`, mounted here for the showroom, then
+  leaves unlocks and class choice to the lobby and the fight HUD stays hidden.
+- Player: `TryoutClass` is the class a showroom performer is wearing (server only; nil outside the showroom).
 
 ## Place settings
 

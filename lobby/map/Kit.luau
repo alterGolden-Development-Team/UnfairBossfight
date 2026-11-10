@@ -415,28 +415,11 @@ function Kit.crate(parent, cf, size)
 	return m
 end
 
-function Kit.palm(parent, base, height, lean)
-	local m = Kit.model(parent, "Palm")
-	local r = Kit.R
-	local yaw = r:NextNumber(0, 6.28)
-	local dir = Vector3.new(math.cos(yaw), 0, math.sin(yaw))
-	local p = base
-	local segments = 6
-	for i = 1, segments do
-		local t = i / segments
-		local nextP = base + Vector3.new(0, height * t, 0) + dir * (t * t) * (lean or height * 0.35)
-		local mid = (p + nextP) / 2
-		Kit.box(m, "Trunk", Vector3.new(height * 0.075 * (1.25 - t * 0.5), (nextP - p).Magnitude + 0.3, height * 0.075 * (1.25 - t * 0.5)), CFrame.lookAt(mid, nextP) * CFrame.Angles(math.rad(90), 0, 0), Kit.rgb(128, 98, 66), Kit.M.Wood)
-		p = nextP
-	end
-	for i = 1, 7 do
-		local a = i / 7 * math.pi * 2
-		local out = Vector3.new(math.cos(a), 0, math.sin(a))
-		local length = height * 0.55
-		local cf = CFrame.lookAt(p + out * length * 0.45 + Vector3.new(0, -length * 0.08, 0), p + out * length + Vector3.new(0, -length * 0.42, 0))
-		Kit.noShadow(Kit.wedge(m, "Frond", Vector3.new(height * 0.16, 0.5, length), cf * CFrame.Angles(0, math.rad(180), 0), Kit.rgb(62, 142, 72), Kit.M.Grass))
-	end
-	return m
+function Kit.palm(parent, base, height)
+	-- LoucDu44's low-poly palm from the Creator Store (see Assets), turned at random
+	local palm = require(script.Parent.Assets).Place(parent, "Palm", CFrame.new(base) * CFrame.Angles(0, Kit.R:NextNumber(0, 6.28), 0), height)
+	palm.Name = "Palm"
+	return palm
 end
 
 -- A stylised person made of blocks, standing at `cf` (feet on the ground). Used for statues and for the shopkeeper.

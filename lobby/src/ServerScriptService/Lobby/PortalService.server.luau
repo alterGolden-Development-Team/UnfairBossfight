@@ -28,6 +28,7 @@ local AREAS = {
 	Palace = { Arrival = "Palace.ArrivalPalace", Floor = -440 },
 	Island = { Arrival = "Island.ArrivalIsland", Floor = -40, Radius = 760, Center = ISLAND_ORIGIN },
 	Forest = { Arrival = "Forest.ArrivalForest", Floor = -440 },
+	Stage = { Arrival = "Stage.ArrivalStage", Floor = -440 }, -- the training hall; TryoutService sends people there
 }
 
 local FADE_TIME = 0.35

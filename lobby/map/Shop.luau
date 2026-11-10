@@ -3,6 +3,7 @@
 -- shelves so full they feel like they might fall), but the stock is swords, bows, axes, shields, potions, scrolls and orbs.
 -- Local coordinates: front (doorway) is -Z, back wall is +Z. A giant sword through the roof is the landmark you steer by.
 local Kit = require(script.Parent.Kit)
+local Assets = require(script.Parent.Assets)
 local C, M = Kit.C, Kit.M
 
 local Shop = {}
@@ -156,12 +157,20 @@ local function shell(m)
 		Kit.wallLantern(m, BASE * CFrame.new(side * 11.5, h - 11, -DEPTH / 2 - 1))
 	end
 	-- the landmark
-	local swordCF = BASE * CFrame.new(0, h + 44, 4) * CFrame.Angles(0, 0, math.rad(-7))
-	Kit.box(m, "GiantBlade", Vector3.new(7, 62, 1.6), swordCF * CFrame.new(0, -4, 0), Kit.rgb(204, 212, 224), M.Metal)
-	Kit.box(m, "GiantFuller", Vector3.new(1.4, 58, 1.8), swordCF * CFrame.new(0, -4, 0), Kit.rgb(120, 130, 146), M.Metal)
-	Kit.box(m, "GiantGuard", Vector3.new(24, 3, 4.6), swordCF * CFrame.new(0, 28.5, 0), C.Gold, M.Foil)
-	Kit.box(m, "GiantGrip", Vector3.new(2.6, 12, 2.6), swordCF * CFrame.new(0, 36, 0), C.WoodDark, M.Fabric)
-	Kit.ball(m, "GiantPommel", 6, (swordCF * CFrame.new(0, 43.5, 0)).Position, C.Gold, M.Foil)
+	-- the store greatsword (Wirly_world's gothic blade), gilded and made huge, driven point-first through the roof
+	local giant = Assets.Get("GothicSword")
+	local blade = giant:FindFirstChildWhichIsA("MeshPart", true)
+	local length = 84
+	blade.Size *= length / math.max(blade.Size.X, blade.Size.Y, blade.Size.Z)
+	-- the mesh's long axis is X with the hilt at +X; turned hilt-up, leaning a little, about a third of it inside the roof
+	blade.CFrame = BASE * CFrame.new(0, h + 2, 4) * CFrame.Angles(0, 0, math.rad(-7)) * CFrame.new(0, length * 0.3, 0) * CFrame.Angles(0, 0, math.rad(90))
+	local look = blade:FindFirstChildOfClass("SurfaceAppearance")
+	if look then
+		look.Color = Kit.rgb(255, 214, 120)
+	end
+	blade.CastShadow = true
+	giant.Name = "GiantSword"
+	giant.Parent = m
 end
 
 local TIMBER = Kit.rgb(70, 48, 32)
@@ -330,14 +339,16 @@ local function keeper(m)
 	local torso = fig:FindFirstChild("Torso")
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.Name = "ShopPrompt"
-	prompt.ActionText = "Talk"
-	prompt.ObjectText = "The Keeper"
+	prompt.ActionText = "" -- just the key: the nameplate already says who he is
+	prompt.ObjectText = ""
 	prompt.KeyboardKeyCode = Enum.KeyCode.E
 	prompt.RequiresLineOfSight = false
 	prompt.MaxActivationDistance = 18
 	prompt.HoldDuration = 0
 	prompt.Parent = torso
-	Kit.nameplate(head, "The Keeper", "Press E", C.GoldPale, 4, 40)
+	Kit.nameplate(head, "The Keeper", "", C.GoldPale, 4, 40)
+	-- where you come back to from the training hall
+	Kit.box(m, "ShopArrival", Vector3.new(1, 1, 1), BASE * CFrame.new(0, 1, 2) * CFrame.Angles(0, math.rad(180), 0), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
 end
 
 function Shop.Build(root)

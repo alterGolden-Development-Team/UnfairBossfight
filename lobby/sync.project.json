@@ -4,22 +4,93 @@
     "$className": "Folder",
     "ReplicatedStorage": {
       "$className": "Folder",
-      "Lobby": { "$path": "src/ReplicatedStorage/Lobby" },
-      "UnfairShared": { "$path": "../shared/UnfairShared" },
+      "Lobby": {
+        "$path": "src/ReplicatedStorage/Lobby"
+      },
+      "UnfairShared": {
+        "$path": "../shared/UnfairShared"
+      },
       "BossShared": {
-        "$className": "Folder",
-        "Classes": { "$path": "../boss/src/ReplicatedStorage/BossShared/Classes" },
-        "ClassModels": { "$path": "../boss/src/ServerScriptService/BossSystem/Players/Classes/ClassModels" }
+        "$path": "../boss/src/ReplicatedStorage/BossShared",
+        "ClassModels": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Players/Classes/ClassModels"
+        }
+      },
+      "VFXEngine": {
+        "$path": "../boss/src/ReplicatedStorage/VFXEngine"
       }
     },
     "ServerScriptService": {
       "$className": "Folder",
-      "Lobby": { "$path": "src/ServerScriptService/Lobby" }
+      "Lobby": {
+        "$path": "src/ServerScriptService/Lobby"
+      },
+      "BossSystem": {
+        "$className": "Folder",
+        "Attacks": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Attacks"
+        },
+        "Boss": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Boss"
+        },
+        "Combat": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Combat"
+        },
+        "Development": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Development"
+        },
+        "Encounter": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Encounter"
+        },
+        "Mechanics": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Mechanics"
+        },
+        "Passives": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Passives"
+        },
+        "Phases": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Phases"
+        },
+        "Players": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Players"
+        },
+        "Presentation": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Presentation"
+        }
+      }
     },
     "StarterPlayerScripts": {
       "$className": "Folder",
-      "LobbyClient": { "$path": "src/StarterPlayer/StarterPlayerScripts/LobbyClient" }
+      "LobbyClient": {
+        "$path": "src/StarterPlayer/StarterPlayerScripts/LobbyClient"
+      },
+      "BossClient": {
+        "$className": "Folder",
+        "Players": {
+          "$className": "Folder",
+          "ClassClient": {
+            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau"
+          },
+          "ClassAnimator": {
+            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassAnimator.client.luau"
+          },
+          "R6ActionAnimations": {
+            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau"
+          }
+        },
+        "Presentation": {
+          "$className": "Folder",
+          "BossAudioClient": {
+            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau"
+          }
+        }
+      },
+      "VFXEngineClient": {
+        "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/VFXEngineClient.client.luau"
+      }
     },
-    "MapBuilder": { "$path": "map" }
+    "MapBuilder": {
+      "$path": "map"
+    }
   }
 }

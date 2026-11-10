@@ -14,7 +14,8 @@ local function updateTag(other)
 	if not head then
 		return
 	end
-	local def = ClassConfig.Classes[other:GetAttribute("PlayerClass")]
+	-- no tag on a showroom performer (TryoutClass set): it is a dummy showing a class, not the player's pick
+	local def = other:GetAttribute("TryoutClass") == nil and ClassConfig.Classes[other:GetAttribute("PlayerClass")]
 	local tag = tags[other]
 	if not def then
 		if tag then
@@ -50,6 +51,9 @@ end
 
 local function track(other)
 	other:GetAttributeChangedSignal("PlayerClass"):Connect(function()
+		updateTag(other)
+	end)
+	other:GetAttributeChangedSignal("TryoutClass"):Connect(function()
 		updateTag(other)
 	end)
 	other.CharacterAdded:Connect(function()

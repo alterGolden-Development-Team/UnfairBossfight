@@ -12,15 +12,15 @@ local function makePart(model, name, size, cf, color, shape)
  p.Parent = model
  return p
 end
-local function create()
+local function create(standAt)
  local arena = workspace:FindFirstChild("GoldenGrasslandArena")
  local floor = arena and arena:FindFirstChild("Grassland")
- if not floor then return nil end
+ if not floor and not standAt then return nil end
  local model = Instance.new("Model")
  model.Name = "ClassTrainingDummy"
  model:SetAttribute("DamageableClone", true)
  model:SetAttribute("TrainingDummy", true)
- local base = floor.Position + Vector3.new(0, floor.Size.Y * 0.5, 0)
+ local base = standAt or floor.Position + Vector3.new(0, floor.Size.Y * 0.5, 0)
  local torsoCF = CFrame.new(base + Vector3.new(0, 4, 0))
  local root = makePart(model, "HumanoidRootPart", Vector3.new(2, 2, 1), torsoCF, Color3.fromRGB(40, 40, 48), Enum.PartType.Block)
  root.Transparency = 1
@@ -61,6 +61,10 @@ local function create()
  end)
  model.Parent = workspace
  return model
+end
+-- The lobby's training hall stands one where it likes (standAt = the point on the floor under it).
+function api.Create(standAt)
+ return create(standAt)
 end
 function api.Start()
  if workspace:GetAttribute("EncounterStarted") == true then return end

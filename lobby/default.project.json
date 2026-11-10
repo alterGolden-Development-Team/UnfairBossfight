@@ -10,20 +10,53 @@
         "$path": "../shared/UnfairShared"
       },
       "BossShared": {
-        "$className": "Folder",
+        "$path": "../boss/src/ReplicatedStorage/BossShared",
         "$ignoreUnknownInstances": true,
-        "Classes": {
-          "$path": "../boss/src/ReplicatedStorage/BossShared/Classes"
-        },
         "ClassModels": {
           "$path": "../boss/src/ServerScriptService/BossSystem/Players/Classes/ClassModels"
         }
+      },
+      "VFXEngine": {
+        "$path": "../boss/src/ReplicatedStorage/VFXEngine"
       }
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "$path": "src/ServerScriptService",
-      "$ignoreUnknownInstances": true
+      "$ignoreUnknownInstances": true,
+      "BossSystem": {
+        "$className": "Folder",
+        "Attacks": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Attacks"
+        },
+        "Boss": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Boss"
+        },
+        "Combat": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Combat"
+        },
+        "Development": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Development"
+        },
+        "Encounter": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Encounter"
+        },
+        "Mechanics": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Mechanics"
+        },
+        "Passives": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Passives"
+        },
+        "Phases": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Phases"
+        },
+        "Players": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Players"
+        },
+        "Presentation": {
+          "$path": "../boss/src/ServerScriptService/BossSystem/Presentation"
+        }
+      }
     },
     "StarterGui": {
       "$className": "StarterGui",
@@ -33,7 +66,35 @@
     "StarterPlayer": {
       "$className": "StarterPlayer",
       "$path": "src/StarterPlayer",
-      "$ignoreUnknownInstances": true
+      "$ignoreUnknownInstances": true,
+      "StarterPlayerScripts": {
+        "$path": "src/StarterPlayer/StarterPlayerScripts",
+        "$ignoreUnknownInstances": true,
+        "BossClient": {
+          "$className": "Folder",
+          "Players": {
+            "$className": "Folder",
+            "ClassClient": {
+              "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau"
+            },
+            "ClassAnimator": {
+              "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassAnimator.client.luau"
+            },
+            "R6ActionAnimations": {
+              "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau"
+            }
+          },
+          "Presentation": {
+            "$className": "Folder",
+            "BossAudioClient": {
+              "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau"
+            }
+          }
+        },
+        "VFXEngineClient": {
+          "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/VFXEngineClient.client.luau"
+        }
+      }
     }
   }
 }

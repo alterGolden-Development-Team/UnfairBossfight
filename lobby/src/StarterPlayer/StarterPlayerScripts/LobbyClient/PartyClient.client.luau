@@ -1,7 +1,7 @@
 --!nonstrict
 -- The party portals in the palace. Reads the room's replicated attributes (see PartyService) and sends intents on the PartyControl remote.
 -- Nothing here decides anything: a non-leader's buttons are read-only for show and the server refuses their requests anyway.
---   * the expedition board while you are in a room: five difficulty cards (what it pays, how hard it is), the Enraged seal, roster and Start
+--   * a small panel while you are in a room: five difficulty buttons, what the pick pays, Enraged, Enter and Leave
 --   * a billboard over every portal
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
@@ -19,16 +19,16 @@ local remote = LobbyRemotes.get("PartyControl")
 local GOLD = Color3.fromRGB(246, 211, 117)
 local INK = Color3.fromRGB(16, 13, 12)
 local CARD = Color3.fromRGB(38, 32, 28)
-local OFF = Color3.fromRGB(70, 64, 58)
-local TITLE_FONT = Enum.Font.Garamond
+local OFF = Color3.fromRGB(58, 53, 49)
+local SOFT = Color3.fromRGB(200, 192, 180)
 
--- Hardest on the left, the order the boss's own picker uses. Skulls say how hard, colour says the same thing again for a quick read.
+-- Hardest on the left, the order the boss's own picker uses. The chosen button takes the difficulty's colour.
 local DIFFICULTY = {
-	Hellaven = { Name = "Hellaven", Skulls = 5, Color = Color3.fromRGB(226, 64, 74), Blurb = "No mercy at all" },
-	TrueHardcore = { Name = "True Hardcore", Skulls = 4, Color = Color3.fromRGB(232, 120, 60), Blurb = "The real fight" },
-	Hardcore = { Name = "Hardcore", Skulls = 3, Color = Color3.fromRGB(240, 186, 70), Blurb = "A proper test" },
-	NerfedHardcore = { Name = "Nerfed Hardcore", Skulls = 2, Color = Color3.fromRGB(150, 200, 96), Blurb = "Room to learn" },
-	Easy = { Name = "Easy", Skulls = 1, Color = Color3.fromRGB(110, 190, 225), Blurb = "See the story" },
+	Hellaven = { Name = "Hellaven", Color = Color3.fromRGB(226, 64, 74), Blurb = "No mercy at all" },
+	TrueHardcore = { Name = "True Hardcore", Color = Color3.fromRGB(232, 120, 60), Blurb = "The real fight" },
+	Hardcore = { Name = "Hardcore", Color = Color3.fromRGB(240, 186, 70), Blurb = "A proper test" },
+	NerfedHardcore = { Name = "Nerfed Hardcore", Color = Color3.fromRGB(150, 200, 96), Blurb = "Room to learn" },
+	Easy = { Name = "Easy", Color = Color3.fromRGB(110, 190, 225), Blurb = "See the story" },
 }
 local function difficultyName(id)
 	return DIFFICULTY[id] and DIFFICULTY[id].Name or tostring(id)
@@ -97,52 +97,52 @@ local function bindRoom(index, model)
 	refreshBoard()
 end
 
--- the expedition board --------------------------------------------------------------------------------------------------
+-- the party panel: five difficulty buttons, one line saying what the pick pays, Enraged, Enter, Leave ---------------------------
 local gui = make("ScreenGui", { Name = "PartyGui", ResetOnSpawn = false, DisplayOrder = 6 }, player:WaitForChild("PlayerGui"))
-local panel = make("Frame", { Name = "Expedition", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Size = UDim2.new(0.96, 0, 0, 270), BackgroundColor3 = INK, BackgroundTransparency = 0.05, Visible = false }, gui)
-make("UISizeConstraint", { MaxSize = Vector2.new(1060, 270) }, panel)
-make("UICorner", { CornerRadius = UDim.new(0, 12) }, panel)
-make("UIStroke", { Color = GOLD, Thickness = 2 }, panel)
+local panel = make("Frame", { Name = "Party", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Size = UDim2.new(0.96, 0, 0, 172), BackgroundColor3 = INK, BackgroundTransparency = 0.05, BorderSizePixel = 0, Visible = false }, gui)
+make("UISizeConstraint", { MaxSize = Vector2.new(540, 172) }, panel)
+make("UICorner", { CornerRadius = UDim.new(0, 10) }, panel)
 
-local title = make("TextLabel", { Position = UDim2.fromOffset(18, 8), Size = UDim2.new(0.5, 0, 0, 34), BackgroundTransparency = 1, Font = TITLE_FONT, TextSize = 30, TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Left, Text = "Portal" }, panel)
-local hint = make("TextLabel", { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -18, 0, 12), Size = UDim2.new(0.5, -18, 0, 24), BackgroundTransparency = 1, Font = Enum.Font.GothamMedium, TextSize = 14, TextColor3 = Color3.fromRGB(200, 192, 180), TextXAlignment = Enum.TextXAlignment.Right, Text = "" }, panel)
+local function line(props)
+	local base = { BackgroundTransparency = 1, Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = SOFT, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd, Text = "" }
+	for key, value in props do
+		base[key] = value
+	end
+	return make("TextLabel", base, panel)
+end
+local function action(props)
+	local base = { BackgroundColor3 = CARD, Font = Enum.Font.GothamMedium, TextSize = 15, TextColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, AnchorPoint = Vector2.new(1, 0) }
+	for key, value in props do
+		base[key] = value
+	end
+	local b = make("TextButton", base, panel)
+	make("UICorner", { CornerRadius = UDim.new(0, 6) }, b)
+	return b
+end
 
--- five cards across the top
-local cardRow = make("Frame", { Position = UDim2.fromOffset(16, 46), Size = UDim2.new(1, -32, 0, 134), BackgroundTransparency = 1 }, panel)
-make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, cardRow)
+local title = line({ Position = UDim2.fromOffset(14, 8), Size = UDim2.new(0.4, 0, 0, 22), Font = Enum.Font.GothamBold, TextSize = 15, TextColor3 = GOLD })
+local rosterLabel = line({ AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 8), Size = UDim2.new(0.6, -20, 0, 22), TextXAlignment = Enum.TextXAlignment.Right })
 
+local cardRow = make("Frame", { Position = UDim2.fromOffset(14, 36), Size = UDim2.new(1, -28, 0, 40), BackgroundTransparency = 1 }, panel)
+make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, cardRow)
 local cards = {}
 for order, id in Config.Difficulties do
 	local info = DIFFICULTY[id]
-	local card = make("TextButton", { Name = id, LayoutOrder = order, Size = UDim2.new(0.2, -7, 1, 0), BackgroundColor3 = CARD, Text = "", AutoButtonColor = true }, cardRow)
-	make("UICorner", { CornerRadius = UDim.new(0, 10) }, card)
-	local stroke = make("UIStroke", { Color = info.Color, Thickness = 1.2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, card)
-	make("Frame", { Size = UDim2.new(1, -20, 0, 4), Position = UDim2.fromOffset(10, 10), BackgroundColor3 = info.Color, BorderSizePixel = 0 }, card)
-	local name = make("TextLabel", { Position = UDim2.fromOffset(10, 20), Size = UDim2.new(1, -20, 0, 42), BackgroundTransparency = 1, Font = TITLE_FONT, TextSize = 24, TextColor3 = Color3.new(1, 1, 1), TextWrapped = true, Text = info.Name, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top }, card)
-	local skulls = make("TextLabel", { Position = UDim2.fromOffset(10, 64), Size = UDim2.new(1, -20, 0, 18), BackgroundTransparency = 1, Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = info.Color, TextXAlignment = Enum.TextXAlignment.Left, Text = string.rep("\u{2620} ", info.Skulls) }, card)
-	local blurb = make("TextLabel", { Position = UDim2.fromOffset(10, 84), Size = UDim2.new(1, -20, 0, 16), BackgroundTransparency = 1, Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = Color3.fromRGB(200, 192, 180), TextXAlignment = Enum.TextXAlignment.Left, Text = info.Blurb }, card)
-	local pay = make("TextLabel", { Position = UDim2.fromOffset(10, 104), Size = UDim2.new(1, -20, 0, 22), BackgroundTransparency = 1, Font = TITLE_FONT, TextSize = 21, TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Left, Text = "" }, card)
+	local card = make("TextButton", { Name = id, LayoutOrder = order, Size = UDim2.new(0.2, -5, 1, 0), BackgroundColor3 = CARD, BorderSizePixel = 0, Font = Enum.Font.GothamMedium, TextSize = 13, TextWrapped = true, TextColor3 = Color3.new(1, 1, 1), Text = info.Name }, cardRow)
+	make("UICorner", { CornerRadius = UDim.new(0, 6) }, card)
 	card.Activated:Connect(function()
 		remote:FireServer("SetConfig", id)
 	end)
-	cards[id] = { button = card, stroke = stroke, name = name, skulls = skulls, blurb = blurb, pay = pay, color = info.Color }
+	cards[id] = { button = card, color = info.Color }
 end
 
--- bottom row: who is going, the Enraged seal, and the two actions
-local rosterLabel = make("TextLabel", { Position = UDim2.fromOffset(16, 190), Size = UDim2.new(1, -620, 0, 68), BackgroundColor3 = CARD, Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = Color3.new(1, 1, 1), TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top, TextWrapped = true, Text = "" }, panel)
-make("UICorner", { CornerRadius = UDim.new(0, 8) }, rosterLabel)
-make("UIPadding", { PaddingLeft = UDim.new(0, 10), PaddingTop = UDim.new(0, 6), PaddingRight = UDim.new(0, 8) }, rosterLabel)
+local summary = line({ Position = UDim2.fromOffset(14, 82), Size = UDim2.new(1, -28, 0, 20) })
 
-local enragedButton = make("TextButton", { Name = "Enraged", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -424, 0, 190), Size = UDim2.fromOffset(180, 68), BackgroundColor3 = CARD, Font = TITLE_FONT, TextSize = 24, TextColor3 = Color3.new(1, 1, 1), Text = "Enraged" }, panel)
-make("UICorner", { CornerRadius = UDim.new(0, 8) }, enragedButton)
-make("UIStroke", { Color = Color3.fromRGB(226, 64, 74), Thickness = 1.5, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }, enragedButton)
+local leaveButton = action({ Name = "Leave", Position = UDim2.new(1, -14, 0, 110), Size = UDim2.fromOffset(84, 48), Text = "Leave" })
+local startButton = action({ Name = "Start", Position = UDim2.new(1, -104, 0, 110), Size = UDim2.fromOffset(200, 48), Font = Enum.Font.GothamBold, TextSize = 18, Text = "Enter" })
+local enragedButton = action({ Name = "Enraged", AnchorPoint = Vector2.new(0, 0), Position = UDim2.fromOffset(14, 110), Size = UDim2.new(1, -332, 0, 48), Text = "Enraged" })
 
-local startButton = make("TextButton", { Name = "Start", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -120, 0, 190), Size = UDim2.fromOffset(292, 68), BackgroundColor3 = GOLD, Font = TITLE_FONT, TextSize = 32, TextColor3 = INK, Text = "Enter" }, panel)
-make("UICorner", { CornerRadius = UDim.new(0, 8) }, startButton)
-local leaveButton = make("TextButton", { Name = "Leave", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -16, 0, 190), Size = UDim2.fromOffset(92, 68), BackgroundColor3 = OFF, Font = TITLE_FONT, TextSize = 22, TextColor3 = Color3.new(1, 1, 1), Text = "Leave" }, panel)
-make("UICorner", { CornerRadius = UDim.new(0, 8) }, leaveButton)
-
-local toast = make("TextLabel", { Name = "Toast", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -296), Size = UDim2.fromOffset(460, 34), BackgroundColor3 = INK, BackgroundTransparency = 0.1, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamMedium, TextSize = 15, Text = "", Visible = false }, gui)
+local toast = make("TextLabel", { Name = "Toast", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -196), Size = UDim2.fromOffset(460, 34), BackgroundColor3 = INK, BackgroundTransparency = 0.1, TextColor3 = Color3.new(1, 1, 1), Font = Enum.Font.GothamMedium, TextSize = 15, Text = "", Visible = false }, gui)
 make("UICorner", { CornerRadius = UDim.new(0, 8) }, toast)
 local toastToken = 0
 local function showToast(text, seconds)
@@ -162,10 +162,11 @@ local function currentRoom()
 	return index and rooms[index] and rooms[index].model or nil
 end
 
-local function style(button, enabled, color)
+local function style(button, enabled, color, textColor)
 	button.Active = enabled
 	button.AutoButtonColor = enabled
 	button.BackgroundColor3 = enabled and color or OFF
+	button.TextColor3 = enabled and textColor or Color3.new(1, 1, 1)
 	button.TextTransparency = enabled and 0 or 0.45
 end
 
@@ -180,48 +181,42 @@ local function refreshPanel()
 	local phase = room:GetAttribute("Phase")
 	local difficulty = room:GetAttribute("Difficulty")
 	local enraged = room:GetAttribute("Enraged") == true
-	local open = phase == "Open"
-	local canEdit = isLeader and open
+	local canEdit = isLeader and phase == "Open"
 
-	title.Text = "Portal " .. tostring(room:GetAttribute("Index")) .. "  -  Choose your trial"
-	hint.Text = isLeader and "You lead. Pick a trial, then Enter." or "The leader chooses the trial."
-
-	local lines = {}
+	title.Text = "Portal " .. tostring(room:GetAttribute("Index"))
+	local names = {}
 	for _, member in readRoster(room) do
 		local def = classDef(member.class)
-		table.insert(lines, (member.userId == leader and "\u{2605} " or "    ") .. member.name .. "  -  " .. (def and def.Name or tostring(member.class)))
+		table.insert(names, (member.userId == leader and "\u{2605} " or "") .. member.name .. " (" .. (def and def.Name or tostring(member.class)) .. ")")
 	end
-	rosterLabel.Text = table.concat(lines, "\n")
+	rosterLabel.Text = table.concat(names, ",  ")
 
 	for id, ui in cards do
 		local chosen = id == difficulty
 		ui.button.Active, ui.button.AutoButtonColor = canEdit, canEdit
-		ui.button.BackgroundColor3 = chosen and Color3.fromRGB(78, 62, 36) or CARD
-		ui.stroke.Thickness = chosen and 3.5 or 1.2
-		ui.stroke.Transparency = (chosen or canEdit) and 0 or 0.6
-		local allow = enraged and Config.EnragedAllowed(id)
-		local amount = CashRules.payout(id, allow)
-		ui.pay.Text = "+" .. amount .. " cash"
-		ui.name.TextTransparency = (chosen or canEdit) and 0 or 0.4
+		ui.button.BackgroundColor3 = chosen and ui.color or CARD
+		ui.button.TextColor3 = chosen and INK or Color3.new(1, 1, 1)
+		ui.button.TextTransparency = (chosen or canEdit) and 0 or 0.5
 	end
 
 	local allowed = Config.EnragedAllowed(difficulty)
-	enragedButton.Text = not allowed and "No Enraged on Easy" or enraged and "ENRAGED  x2 cash" or "Enraged: off"
-	enragedButton.TextSize = allowed and 24 or 18
-	style(enragedButton, canEdit and allowed, enraged and Color3.fromRGB(190, 44, 54) or CARD)
+	local info = DIFFICULTY[difficulty]
+	summary.Text = string.format("%s  \u{00B7}  pays %d cash%s", info and info.Blurb or "", CashRules.payout(difficulty, enraged and allowed), isLeader and "" or "  \u{00B7}  the leader chooses")
+	enragedButton.Text = not allowed and "No Enraged on Easy" or enraged and "Enraged: ON  (x2 cash)" or "Enraged: off"
+	style(enragedButton, canEdit and allowed, enraged and Color3.fromRGB(190, 44, 54) or CARD, Color3.new(1, 1, 1))
 	if enraged and allowed and not canEdit then
 		enragedButton.BackgroundColor3 = Color3.fromRGB(120, 40, 46)
 		enragedButton.TextTransparency = 0
 	end
 
 	if phase == "Countdown" then
-		style(startButton, isLeader, Color3.fromRGB(230, 140, 90))
+		style(startButton, isLeader, Color3.fromRGB(230, 140, 90), INK)
 		startButton.Text = "Cancel"
 	else
-		style(startButton, canEdit, GOLD)
+		style(startButton, canEdit, GOLD, INK)
 		startButton.Text = isLeader and "Enter" or "Waiting..."
 	end
-	style(leaveButton, phase ~= "Locked", OFF)
+	style(leaveButton, phase ~= "Locked", CARD, Color3.new(1, 1, 1))
 end
 
 enragedButton.Activated:Connect(function()

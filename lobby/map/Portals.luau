@@ -2,6 +2,7 @@
 -- The three boss portals on the hub. Each one is built from its boss's world so it can be read from across the island without a sign:
 -- gold and a crown for the Midas king, rough rock and sand for the island, black against white for the brothers.
 local Kit = require(script.Parent.Kit)
+local Assets = require(script.Parent.Assets)
 local C, M = Kit.C, Kit.M
 
 local Portals = {}
@@ -16,25 +17,59 @@ local function steps(parent, cf, width, depth, count, color, material)
 	end
 end
 
--- The disc you walk into, with the trigger just in front of it.
+-- The opening you walk into: a dark well with a slowly turning shimmer (ForceField material animates on its own), light pulled
+-- inward by particles, and a soft glow on the ground. The trigger is just in front.
 local function face(parent, cf, diameter, color, target, plain)
-	local disc = Kit.cyl(parent, "Face", 0.4, diameter, cf * CFrame.Angles(0, math.rad(90), 0), color, M.Neon, { Transparency = plain and 1 or 0.42, CanCollide = false })
+	local turned = CFrame.Angles(0, math.rad(90), 0)
+	-- the front: a thin glowing skin you can see into, with a moving ForceField shimmer laid over it
+	local disc = Kit.cyl(parent, "Face", 0.2, diameter, cf * turned, color, M.Neon, { Transparency = plain and 1 or 0.72, CanCollide = false, CastShadow = false })
 	if not plain then
-		-- depth: a dark core behind the glow, and two brighter rings set back inside it, so it reads as a hole and not a plate
-		Kit.noShadow(Kit.cyl(parent, "Core", 0.3, diameter * 0.96, cf * CFrame.new(0, 0, 1.2) * CFrame.Angles(0, math.rad(90), 0), color:Lerp(Color3.new(0, 0, 0), 0.72), M.SmoothPlastic, { CanTouch = false, CanQuery = false }))
-		for i, scale in { 0.72, 0.42 } do
-			Kit.noShadow(Kit.cyl(parent, "Inner", 0.2, diameter * scale, cf * CFrame.new(0, 0, 0.8 - i * 0.2) * CFrame.Angles(0, math.rad(90), 0), color:Lerp(Color3.new(1, 1, 1), 0.2 * i), M.Neon, { Transparency = 0.55, CanTouch = false, CanQuery = false }))
+		Kit.noShadow(Kit.cyl(parent, "Shimmer", 0.2, diameter * 0.98, cf * CFrame.new(0, 0, -0.15) * turned, color:Lerp(Color3.new(1, 1, 1), 0.5), M.ForceField, { CanTouch = false, CanQuery = false, CanCollide = false }))
+		-- behind it, a tunnel: rings stepping back, smaller and brighter toward a white-hot middle, over a dark well
+		Kit.noShadow(Kit.cyl(parent, "Core", 0.3, diameter * 0.99, cf * CFrame.new(0, 0, 4.2) * turned, color:Lerp(Color3.new(0, 0, 0), 0.7), M.SmoothPlastic, { CanTouch = false, CanQuery = false }))
+		for i, scale in { 0.86, 0.68, 0.5, 0.33, 0.18 } do
+			local tone = color:Lerp(Color3.new(1, 1, 1), (i - 1) * 0.16)
+			Kit.noShadow(Kit.cyl(parent, "Tunnel", 0.2, diameter * scale, cf * CFrame.new(0, 0, 0.6 + i * 0.6) * turned, tone, M.Neon, { Transparency = 0.35 - i * 0.05, CanTouch = false, CanQuery = false, CanCollide = false }))
 		end
-		Kit.particles(disc, color, 26, 3, 1.8, 1)
-		Kit.light(disc, color, 44, 2.4)
+		-- motes drifting in toward the middle
+		local swirl = Instance.new("ParticleEmitter")
+		swirl.Name = "Swirl"
+		swirl.Color = ColorSequence.new(color:Lerp(Color3.new(1, 1, 1), 0.5), color)
+		swirl.LightEmission = 1
+		swirl.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.7), NumberSequenceKeypoint.new(1, 0) })
+		swirl.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.3, 0.2), NumberSequenceKeypoint.new(1, 1) })
+		swirl.Lifetime = NumberRange.new(1.4, 2)
+		swirl.Rate = 40
+		swirl.Speed = NumberRange.new(-6, -4) -- negative: emitted from the rim, flying inward
+		swirl.Shape = Enum.ParticleEmitterShape.Cylinder
+		swirl.ShapeStyle = Enum.ParticleEmitterShapeStyle.Surface
+		swirl.ShapeInOut = Enum.ParticleEmitterShapeInOut.Inward
+		swirl.RotSpeed = NumberRange.new(-90, 90)
+		swirl.Parent = disc
+		Kit.light(disc, color, 40, 1.6)
+		-- the glow it throws on the ground in front
+		Kit.noShadow(Kit.disc(parent, "Glow", (cf * CFrame.new(0, -diameter / 2 + 0.1, -5)).Position, diameter * 0.75, 0.06, color, M.Neon, { Transparency = 0.82, CanCollide = false, CanQuery = false, CanTouch = false }))
 	end
 	Kit.trigger(parent, Vector3.new(diameter * 0.9, diameter, 4), cf * CFrame.new(0, 0, -1), target)
 	return disc
 end
 
--- A column of light over each portal: the landmark you can steer by from anywhere on the island.
-local function beacon(parent, pos, color)
-	Kit.noShadow(Kit.column(parent, "Beacon", pos + Vector3.new(0, 52, 0), 420, 5, color, M.Neon, { Transparency = 0.45, CanQuery = false, CanTouch = false }))
+-- A store greatsword (Wirly_world's gothic blade) driven point-down into the ground at `base`, tinted through its own texture.
+local function greatsword(parent, base, length, tint, lean)
+	local model = Assets.Get("GothicSword")
+	local blade = model:FindFirstChildWhichIsA("MeshPart", true)
+	local k = length / math.max(blade.Size.X, blade.Size.Y, blade.Size.Z)
+	blade.Size *= k
+	-- the mesh's long axis is X with the hilt at +X; turned so the hilt is up and about a third of the blade is buried
+	blade.CFrame = base * CFrame.Angles(0, 0, lean or 0) * CFrame.new(0, length * 0.36, 0) * CFrame.Angles(0, 0, math.rad(90))
+	local look = blade:FindFirstChildOfClass("SurfaceAppearance")
+	if look then
+		look.Color = tint
+	end
+	blade.Name = "Greatsword"
+	blade.Parent = parent
+	model:Destroy()
+	return blade
 end
 
 local function midas(root, pos, y)
@@ -118,8 +153,8 @@ local function fallen(root, pos, y)
 	face(m, center, 28, Kit.rgb(70, 190, 215), "Island")
 	Kit.spinRing(m, center * CFrame.new(0, 0, -0.5), 14.5, 24, Kit.rgb(230, 214, 170), M.Sand, -0.22, Vector3.new(1.8, 1.2, 1.2))
 	-- what washed up with it
-	Kit.palm(m, (base * CFrame.new(-25, 2.6, -8)).Position, 30, 7)
-	Kit.palm(m, (base * CFrame.new(26, 2.6, 2)).Position, 24, 6)
+	Kit.palm(m, (base * CFrame.new(-25, 2.6, -8)).Position, 30)
+	Kit.palm(m, (base * CFrame.new(26, 2.6, 2)).Position, 24)
 	Kit.box(m, "Driftwood", Vector3.new(17, 1.7, 2), base * CFrame.new(16, 3.2, -14) * CFrame.Angles(0.06, 0.5, 0.05), Kit.rgb(164, 142, 112), M.Wood)
 	local anchor = base * CFrame.new(-19, 2.6, -14)
 	Kit.box(m, "AnchorShaft", Vector3.new(1, 11, 1), anchor * CFrame.new(0, 4.6, 0) * CFrame.Angles(0, 0, 0.32), C.StoneDark, M.CorrodedMetal)
@@ -194,12 +229,9 @@ local function brothers(root, pos, y)
 		Kit.box(m, "Spire", Vector3.new(5, 34, 5), spire * CFrame.new(0, 17, 0), color, material)
 		Kit.wedge(m, "SpireTip", Vector3.new(5, 9, 2.5), spire * CFrame.new(0, 38.5, 1.25), color, material)
 		Kit.wedge(m, "SpireTip", Vector3.new(5, 9, 2.5), spire * CFrame.new(0, 38.5, -1.25) * CFrame.Angles(0, math.rad(180), 0), color, material)
-		-- each brother's blade, driven into the ground on his side
-		local sword = base * CFrame.new(side * 12, 1, -14) * CFrame.Angles(0, 0, side * 0.12)
-		local opposite = side > 0 and C.White or C.Black
-		Kit.box(m, "Blade", Vector3.new(1.2, 13, 0.4), sword * CFrame.new(0, 6.5, 0), opposite, M.Metal)
-		Kit.box(m, "Guard", Vector3.new(5, 0.8, 0.9), sword * CFrame.new(0, 13, 0), color, M.Metal)
-		Kit.box(m, "Grip", Vector3.new(0.7, 3, 0.7), sword * CFrame.new(0, 14.8, 0), opposite, M.Fabric)
+		-- each brother's blade, driven into the ground on the other's side: white on the black ground, black on the white
+		local tint = side > 0 and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(52, 52, 58)
+		greatsword(m, base * CFrame.new(side * 12, 1.1, -14), 17, tint, side * -0.12)
 	end
 	local plate = yinYang(m, center * CFrame.new(0, 0, -0.4), 28)
 	face(m, center, 28, C.White, "Forest", true)
@@ -209,9 +241,9 @@ end
 
 function Portals.Build(root, positions, y)
 	local folder = Kit.folder(root, "Portals")
-	beacon(midas(folder, positions.AlterGolden, y), positions.AlterGolden, C.Gold)
-	beacon(fallen(folder, positions.FallenNoob, y), positions.FallenNoob, Kit.rgb(70, 190, 215))
-	beacon(brothers(folder, positions.JeffAndFred, y), positions.JeffAndFred, C.White)
+	midas(folder, positions.AlterGolden, y)
+	fallen(folder, positions.FallenNoob, y)
+	brothers(folder, positions.JeffAndFred, y)
 	return folder
 end
 
