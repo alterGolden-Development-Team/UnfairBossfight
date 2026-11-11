@@ -95,6 +95,13 @@
           "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/VFXEngineClient.client.luau"
         }
       }
+    },
+    "ReplicatedFirst": {
+      "$className": "ReplicatedFirst",
+      "$ignoreUnknownInstances": true,
+      "TravelArrival": {
+        "$path": "../shared/ReplicatedFirst/TravelArrival.client.luau"
+      }
     }
   }
 }

@@ -7,6 +7,7 @@
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TravelScreen = require(ReplicatedStorage:WaitForChild("UnfairShared"):WaitForChild("TravelScreen"))
 local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage.UnfairShared.UnfairConfig)
@@ -86,8 +87,25 @@ local function bindRoom(index, model)
 	make("UICorner", { CornerRadius = UDim.new(0, 8) }, label)
 	make("UIStroke", { Color = GOLD, Thickness = 1.5 }, label)
 	rooms[index] = { model = model, pad = pad, label = label }
+	local launching = false
 	local function refreshBoard()
 		label.Text = describeRoom(model)
+		-- our party is leaving: the Golden Encounter's travel card, kept up while the boss place loads (UnfairShared/TravelScreen)
+		local ours = player:GetAttribute("PartyRoom") == index
+		if ours and model:GetAttribute("Phase") == "Locked" and not launching then
+			launching = true
+			TravelScreen.ForTeleport("Golden")
+			task.spawn(TravelScreen.Show, "Golden", 0.6)
+			task.delay(25, function() -- the launch failed and we are still here
+				if launching then
+					launching = false
+					TravelScreen.Hide(0.6)
+				end
+			end)
+		elseif launching and (not ours or model:GetAttribute("Phase") ~= "Locked") then
+			launching = false
+			TravelScreen.Hide(0.6)
+		end
 	end
 	for _, attribute in { "Phase", "LeaderUserId", "Difficulty", "Enraged", "MemberCount", "Roster" } do
 		model:GetAttributeChangedSignal(attribute):Connect(refreshBoard)

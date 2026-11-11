@@ -74,10 +74,13 @@ ShinL/R, Sword, posed by `ReplicatedStorage.Lobby.BrotherRig` (the builder poses
 
 - **Azusa**: `World.Hub.AzusaSpot` (built by `Hub.luau`) is where `SidePlaceService` stands Azusa (the mymeo125 avatar, R15, idle
   animation, `HumanoidRootPart.TalkPrompt` hold E). `AzusaClient` runs her conversation; "teach me" teleports to the Tutorial place.
-- **Back walls**: every portal trigger has a `BackWall` model behind it (`Gates.backWall`), so gates can only be entered from the front.
-  Themed per boss from the `PortalWalls` kit (`lobby/blender/portal_walls.py`): `WallGolden` (alterGolden's door, the palace way back),
-  `WallWreck` (TheFallenNoob's wreck, the island way back), `WallDivided` (Jeff n' Fred's swords, the forest way back).
-- **Divided Wood**: the ground now runs to x = ±500 and z = -700..190, under the mountain wall and past the way back (the old edge left
+- **No back walls** (removed on request): portals can be walked into from behind again.
+- **Portal titles**: each boss has its own lettering (`Kit.PLATE`: Golden = Bodoni in molten gold, Island = Fondamento in sea teal,
+  Divided = Permanent Marker split white/black), used by the hub portal, its area's portals and the palace signs.
+- **Travel cards**: going through a portal shows the destination's card (`UnfairShared/TravelScreen`, via `Lobby/Fade`) instead of a black
+  screen; to another place the card stays up while it loads (`SetTeleportGui`, `shared/ReplicatedFirst/TravelArrival`).
+- **Avatars**: the Keeper wears elcuh_4l's avatar, Jeff hosuh1215's and Fred bobtheunfunnyman's (`R6Pose.dress`, at build time).
+- **Divided Wood**: the south mountains now stand at z = 178 (the way back at z = 66 was inside one); the ground runs to x = ±500 and z = -700..260, under the mountain wall and past the way back (the old edge left
   gaps). Trees are sunk by 0.8 + 2.5% of their height and also fill the outer bands. `Forest.Props` (cabins, ruined cabins, wells,
   shrines, log piles, boulders, stumps; `Realm` kit, `lobby/blender/realm.py`), `Forest.Mist` (64 fog banks), and
   `Forest.GlitchPortal.Face` (tag `UnfairPlacePortal`, `Place = "Glitched"`, tag `UnfairGlitchPortal` for `GlitchPortalClient`).

@@ -2,9 +2,119 @@
   "name": "TutorialSync",
   "tree": {
     "$className": "Folder",
-    "ReplicatedStorage": { "$className": "Folder", "UnfairShared": { "$path": "../shared/UnfairShared" } },
-    "ServerScriptService": { "$path": "src/ServerScriptService" },
-    "StarterPlayerScripts": { "$path": "src/StarterPlayer/StarterPlayerScripts" },
-    "ServerStorage": { "$className": "Folder", "MapBuilder": { "$path": "map" } }
+    "ReplicatedFirst": {
+      "$className": "Folder",
+      "TravelArrival": {
+        "$path": "../shared/ReplicatedFirst/TravelArrival.client.luau"
+      }
+    },
+    "ReplicatedStorage": {
+      "$className": "Folder",
+      "UnfairShared": {
+        "$path": "../shared/UnfairShared"
+      },
+      "BossShared": {
+        "$path": "../alterGolden Bossfight/src/ReplicatedStorage/BossShared",
+        "ClassModels": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Players/Classes/ClassModels"
+        }
+      },
+      "VFXEngine": {
+        "$path": "../alterGolden Bossfight/src/ReplicatedStorage/VFXEngine"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "Folder",
+      "Tutorial": {
+        "$path": "src/ServerScriptService/Tutorial"
+      },
+      "BossSystem": {
+        "$className": "Folder",
+        "Attacks": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Attacks"
+        },
+        "Boss": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Boss"
+        },
+        "Combat": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Combat"
+        },
+        "Development": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Development"
+        },
+        "Encounter": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Encounter"
+        },
+        "Mechanics": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Mechanics"
+        },
+        "Passives": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Passives"
+        },
+        "Phases": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Phases"
+        },
+        "Players": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Players"
+        },
+        "Presentation": {
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Presentation"
+        }
+      }
+    },
+    "StarterPlayerScripts": {
+      "$className": "Folder",
+      "TutorialClient": {
+        "$path": "src/StarterPlayer/StarterPlayerScripts/TutorialClient"
+      },
+      "BossClient": {
+        "$className": "Folder",
+        "Players": {
+          "$className": "Folder",
+          "ClassClient": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau"
+          },
+          "ClassAnimator": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassAnimator.client.luau"
+          },
+          "R6ActionAnimations": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau"
+          },
+          "PlayerEncounterClient": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/PlayerEncounterClient.client.luau"
+          }
+        },
+        "Presentation": {
+          "$className": "Folder",
+          "BossAudioClient": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau"
+          },
+          "BossCombatEffectsClient": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossCombatEffectsClient.client.luau"
+          },
+          "GoldenHourView": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/GoldenHourView.luau"
+          },
+          "DeflectClient": {
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/DeflectClient.client.luau"
+          }
+        }
+      },
+      "VFXEngineClient": {
+        "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/VFXEngineClient.client.luau"
+      }
+    },
+    "StarterGui": {
+      "$className": "Folder",
+      "PlayerVitalsHUD": {
+        "$path": "../alterGolden Bossfight/src/StarterGui/PlayerVitalsHUD"
+      }
+    },
+    "ServerStorage": {
+      "$className": "Folder",
+      "MapBuilder": {
+        "$path": "map"
+      }
+    }
   }
 }

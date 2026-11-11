@@ -91,6 +91,12 @@
     },
     "MapBuilder": {
       "$path": "map"
+    },
+    "ReplicatedFirst": {
+      "$className": "Folder",
+      "TravelArrival": {
+        "$path": "../shared/ReplicatedFirst/TravelArrival.client.luau"
+      }
     }
   }
 }

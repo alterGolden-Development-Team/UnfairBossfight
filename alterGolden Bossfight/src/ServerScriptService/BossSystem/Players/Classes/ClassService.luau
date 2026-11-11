@@ -93,6 +93,12 @@ end
 local EnemyTargets=require(game.ReplicatedStorage.BossShared.Classes.EnemyTargetRules)
  
 function S.Boss()
+  -- another boss map (UnfairShared/BossKit) names its boss here, so the class kits aim at it like they aim at alterGolden
+  local named = workspace:GetAttribute("ClassBossName")
+  if type(named) == "string" then
+    local other = workspace:FindFirstChild(named)
+    if other and S.Alive(other) then return other end
+  end
   if workspace:GetAttribute("EncounterStarted") ~= true then
     local training = workspace:FindFirstChild("ClassTrainingDummy")
     if training and S.Alive(training) then return training end

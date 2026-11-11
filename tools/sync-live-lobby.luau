@@ -25,5 +25,6 @@ swap(SPS, root.StarterPlayerScripts.LobbyClient)
 swap(SPS, root.StarterPlayerScripts.BossClient)
 swap(SPS, root.StarterPlayerScripts.VFXEngineClient)
 swap(SS, root.MapBuilder)
+swap(game:GetService("ReplicatedFirst"), root.ReplicatedFirst.TravelArrival)
 root:Destroy()
 return "synced"

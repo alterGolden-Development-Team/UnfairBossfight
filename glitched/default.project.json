@@ -5,7 +5,9 @@
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "$ignoreUnknownInstances": true,
-      "UnfairShared": { "$path": "../shared/UnfairShared" }
+      "UnfairShared": {
+        "$path": "../shared/UnfairShared"
+      }
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",
@@ -15,7 +17,9 @@
     "ServerStorage": {
       "$className": "ServerStorage",
       "$ignoreUnknownInstances": true,
-      "MapBuilder": { "$path": "map" }
+      "MapBuilder": {
+        "$path": "map"
+      }
     },
     "StarterPlayer": {
       "$className": "StarterPlayer",
@@ -23,6 +27,13 @@
       "StarterPlayerScripts": {
         "$path": "src/StarterPlayer/StarterPlayerScripts",
         "$ignoreUnknownInstances": true
+      }
+    },
+    "ReplicatedFirst": {
+      "$className": "ReplicatedFirst",
+      "$ignoreUnknownInstances": true,
+      "TravelArrival": {
+        "$path": "../shared/ReplicatedFirst/TravelArrival.client.luau"
       }
     }
   }

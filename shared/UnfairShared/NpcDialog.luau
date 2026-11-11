@@ -1,8 +1,8 @@
 --!nonstrict
 --[[
  NpcDialog - talking to someone in the world, without a dialogue box. The NPC's words appear over their head, typed out; when they
- ask something, numbered answers float beside them. Press 1, 2 or 3 (or click / tap an answer). You can keep moving: walking off,
- jumping or stepping away ends the conversation.
+ ask something, numbered answers float beside them. Press 1, 2 or 3 (or click / tap an answer). You can keep moving and walk
+ round them; only going far away (LEAVE_DISTANCE) ends the conversation.
 
    local talk = NpcDialog.Open(npcModel, { Color = gold })
    if not talk:Say("Fair prices. No refunds.") then return end      -- false when you walked away
@@ -21,7 +21,7 @@ Dialog.__index = Dialog
 
 local KEYS = { Enum.KeyCode.One, Enum.KeyCode.Two, Enum.KeyCode.Three, Enum.KeyCode.Four }
 local PAD = { Enum.KeyCode.KeypadOne, Enum.KeyCode.KeypadTwo, Enum.KeyCode.KeypadThree, Enum.KeyCode.KeypadFour }
-local LEAVE_DISTANCE = 16
+local LEAVE_DISTANCE = 32 -- studs from the NPC's head
 local current
 
 local function make(className, props, parent)
@@ -35,6 +35,20 @@ end
 
 local function headOf(model)
 	return model:FindFirstChild("Head") or model.PrimaryPart or model:FindFirstChildWhichIsA("BasePart", true)
+end
+
+-- How high over the head the words go: above the NPC's own name (a "Nameplate" billboard, or the humanoid's name tag) so the
+-- two never overlap. Returns the height and whether the NPC already shows a name.
+local function speechHeight(model, head)
+	local plate = head and head:FindFirstChild("Nameplate")
+	if plate and plate:IsA("BillboardGui") then
+		return plate.StudsOffset.Y + plate.StudsOffsetWorldSpace.Y + 2.6, true
+	end
+	local humanoid = model:FindFirstChildOfClass("Humanoid")
+	if humanoid and humanoid.DisplayDistanceType ~= Enum.HumanoidDisplayDistanceType.None then
+		return 3.4, true
+	end
+	return 1.6, false
 end
 
 function Dialog.Open(model, options)
@@ -51,12 +65,13 @@ function Dialog.Open(model, options)
 	self.closed = false
 	self.closedEvent = Instance.new("BindableEvent")
 	self.glitch = options.Glitch -- function(text) -> text: scrambles the typed text (the glitched man)
-	-- options.Stay = true: walking off or standing far away does not end it (cutscenes)
+	-- options.Stay = true: even going far away does not end it (cutscenes); options.LeaveDistance overrides LEAVE_DISTANCE
 	local head = headOf(model)
+	local height, named = speechHeight(model, head)
 	local gui = player:WaitForChild("PlayerGui")
 	self.speech = make("BillboardGui", {
-		Name = "NpcSpeech", Adornee = head, Size = UDim2.fromOffset(420, 150), StudsOffsetWorldSpace = Vector3.new(0, options.Height or 1.6, 0),
-		SizeOffset = Vector2.new(0, 0.5), -- the bottom edge (where the words sit) just above the head
+		Name = "NpcSpeech", Adornee = head, Size = UDim2.fromOffset(420, 150), StudsOffsetWorldSpace = Vector3.new(0, options.Height or height, 0),
+		SizeOffset = Vector2.new(0, 0.5), -- the bottom edge (where the words sit) at that height
 		AlwaysOnTop = true, LightInfluence = 0, MaxDistance = 80, ResetOnSpawn = false,
 	}, gui)
 	self.line = make("TextLabel", {
@@ -64,7 +79,7 @@ function Dialog.Open(model, options)
 		Font = self.font, TextSize = 21, TextColor3 = self.textColor, TextStrokeTransparency = 0.2, TextStrokeColor3 = Color3.fromRGB(14, 10, 8),
 		TextWrapped = true, TextYAlignment = Enum.TextYAlignment.Bottom, Text = "", RichText = false,
 	}, self.speech)
-	if options.Name then
+	if options.Name and not named then -- (an NPC that already shows its name does not get a second one)
 		self.nameTag = make("TextLabel", {
 			AnchorPoint = Vector2.new(0.5, 0), Position = UDim2.new(0.5, 0, 1, 2), Size = UDim2.new(1, 0, 0, 18), BackgroundTransparency = 1,
 			Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = self.color, TextStrokeTransparency = 0.3, Text = options.Name,
@@ -72,11 +87,11 @@ function Dialog.Open(model, options)
 	end
 	self.answers = make("BillboardGui", {
 		Name = "NpcAnswers", Adornee = head, Size = UDim2.fromOffset(330, 130), StudsOffsetWorldSpace = Vector3.new(0, -0.6, 0),
-		SizeOffset = Vector2.new(0.62, -0.25), -- beside and a little below the head, clear of the words AlwaysOnTop = true, LightInfluence = 0, MaxDistance = 80, Active = true, Enabled = false,
-		ResetOnSpawn = false,
+		SizeOffset = Vector2.new(0.62, -0.25), -- beside and a little below the head, clear of the words
+		AlwaysOnTop = true, LightInfluence = 0, MaxDistance = 80, Active = true, Enabled = false, ResetOnSpawn = false,
 	}, gui)
 	make("UIListLayout", { Padding = UDim.new(0, 4), SortOrder = Enum.SortOrder.LayoutOrder, VerticalAlignment = Enum.VerticalAlignment.Center }, self.answers)
-	-- walking off, jumping or stepping out of range ends it
+	-- only going far away ends it: moving, jumping or walking round the NPC does not
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
@@ -92,8 +107,7 @@ function Dialog.Open(model, options)
 		if os.clock() < grace or options.Stay then
 			return -- Stay: a cutscene line, nothing the player does ends it
 		end
-		local moving = humanoid.MoveDirection.Magnitude > 0.1 or humanoid.Jump
-		if moving or (root.Position - head.Position).Magnitude > LEAVE_DISTANCE then
+		if (root.Position - head.Position).Magnitude > (options.LeaveDistance or LEAVE_DISTANCE) then
 			self:Close()
 		end
 	end)

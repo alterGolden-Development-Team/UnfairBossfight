@@ -152,32 +152,85 @@ function Kit.sign(part, face, text, color, font, stroke)
 	return gui
 end
 
--- A nameplate that floats over something.
-function Kit.nameplate(part, title, subtitle, color, offset, range)
+-- The three bosses' title styles (Kit.nameplate's `style`): every portal and sign of a boss uses its boss's lettering.
+Kit.PLATE = {
+	-- alterGolden: a king's name, tall serif capitals in molten gold running dark at the foot, a burnt-brown rim
+	Golden = {
+		Font = Font.fromEnum(Enum.Font.Bodoni),
+		SubFont = Font.new(Font.fromEnum(Enum.Font.Bodoni).Family, Enum.FontWeight.Regular, Enum.FontStyle.Italic),
+		Gradient = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 248, 200)), ColorSequenceKeypoint.new(0.45, Color3.fromRGB(255, 206, 84)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(176, 104, 24)),
+		}),
+		Stroke = Color3.fromRGB(58, 32, 6), StrokeThickness = 2.5, SubColor = Color3.fromRGB(255, 226, 150), Size = Vector2.new(380, 92),
+	},
+	-- TheFallenNoob: a castaway's sign, a sea-chart hand washed from foam to deep teal, rimmed in wet rope-brown
+	Island = {
+		Font = Font.fromEnum(Enum.Font.Fondamento),
+		SubFont = Font.fromEnum(Enum.Font.SpecialElite),
+		Gradient = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(0.45, Color3.fromRGB(170, 240, 250)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(64, 190, 222)),
+		}),
+		Stroke = Color3.fromRGB(12, 40, 64), StrokeThickness = 1.2, SubColor = Color3.fromRGB(236, 216, 170), Size = Vector2.new(400, 90),
+	},
+	-- Jeff n' Fred: two brothers, one name; a brush hand cut down the middle, white left and black right, a grey edge so both read
+	Divided = {
+		Font = Font.fromEnum(Enum.Font.PermanentMarker),
+		SubFont = Font.fromEnum(Enum.Font.Michroma),
+		Gradient = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(0.499, Color3.fromRGB(236, 236, 240)),
+			ColorSequenceKeypoint.new(0.5, Color3.fromRGB(26, 26, 30)), ColorSequenceKeypoint.new(1, Color3.fromRGB(8, 8, 10)),
+		}),
+		Rotation = 0, Stroke = Color3.fromRGB(128, 128, 134), StrokeThickness = 2, SubColor = Color3.fromRGB(200, 200, 206), Size = Vector2.new(420, 92),
+	},
+}
+
+-- A nameplate that floats over something. `style` (optional) gives it its own look:
+--   Font / SubFont (Font objects), Gradient (ColorSequence over the title), Stroke (outline colour), StrokeThickness, SubColor,
+--   Rotation (gradient angle), Size (Vector2 pixels).
+function Kit.nameplate(part, title, subtitle, color, offset, range, style)
+	style = style or {}
 	local gui = Instance.new("BillboardGui")
 	gui.Name = "Nameplate"
-	gui.Size = UDim2.fromOffset(340, 86)
+	local size = style.Size or Vector2.new(340, 86)
+	gui.Size = UDim2.fromOffset(size.X, size.Y)
 	gui.StudsOffset = Vector3.new(0, offset or 4, 0)
 	gui.MaxDistance = range or 170
 	gui.LightInfluence = 0
 	gui.Parent = part
 	local head = Instance.new("TextLabel")
+	head.Name = "Title"
 	head.Size = UDim2.new(1, 0, 0.62, 0)
 	head.BackgroundTransparency = 1
-	head.Font = Enum.Font.Garamond
+	head.FontFace = style.Font or Font.fromEnum(Enum.Font.Garamond)
 	head.TextScaled = true
 	head.Text = title
-	head.TextColor3 = color
-	head.TextStrokeTransparency = 0.25
+	head.TextColor3 = style.Gradient and Color3.new(1, 1, 1) or color
+	head.TextStrokeTransparency = style.Stroke and 1 or 0.25
 	head.Parent = gui
+	if style.Stroke then
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = style.Stroke
+		stroke.Thickness = style.StrokeThickness or 2
+		stroke.Parent = head
+	end
+	if style.Gradient then
+		local gradient = Instance.new("UIGradient")
+		gradient.Color = style.Gradient
+		gradient.Rotation = style.Rotation or 90
+		gradient.Parent = head
+	end
 	local sub = Instance.new("TextLabel")
+	sub.Name = "Subtitle"
 	sub.Position = UDim2.fromScale(0, 0.62)
 	sub.Size = UDim2.new(1, 0, 0.3, 0)
 	sub.BackgroundTransparency = 1
-	sub.Font = Enum.Font.GothamMedium
+	sub.FontFace = style.SubFont or Font.fromEnum(Enum.Font.GothamMedium)
 	sub.TextScaled = true
 	sub.Text = subtitle
-	sub.TextColor3 = Color3.new(1, 1, 1)
+	sub.TextColor3 = style.SubColor or Color3.new(1, 1, 1)
+	sub.TextStrokeColor3 = style.Stroke or Color3.new(0, 0, 0)
 	sub.TextStrokeTransparency = 0.35
 	sub.Parent = gui
 	return gui

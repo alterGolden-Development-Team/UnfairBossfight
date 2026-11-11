@@ -94,9 +94,25 @@ return function(actor)
       or actor:GetAttribute("DamageableClone")
       or actor:GetAttribute("IsShieldGateClone")
     then
-      local actual = math.min(h.Health, Damage.Resolve(amount, actor:GetAttribute("Defense") or 0)
-    * (1-math.clamp(actor:GetAttribute("ShieldChainResistance") or 0,0,1)))
+      local resolved = Damage.Resolve(amount, actor:GetAttribute("Defense") or 0)
+    * (1-math.clamp(actor:GetAttribute("ShieldChainResistance") or 0,0,1))
+      -- a BossKit boss (another bossfight map, UnfairShared/BossKit) can carry a shield: it takes the hit first
+      local absorbed = 0
+      if actor:GetAttribute("BossKit") and (actor:GetAttribute("Shield") or 0) > 0 and resolved > 0 then
+        absorbed = math.min(actor:GetAttribute("Shield"), resolved)
+        actor:SetAttribute("Shield", actor:GetAttribute("Shield") - absorbed)
+        resolved -= absorbed
+      end
+      local actual = math.min(h.Health, resolved)
       if actual <= 0 then
+        if absorbed > 0 then
+          local root = actor:FindFirstChild("HumanoidRootPart")
+          if root then
+            combatEffects:FireAllClients("BossDamage", { Position = root.Position + Vector3.new(0, 4.5, 0), Damage = absorbed, HealthDamage = 0, ShieldDamage = absorbed })
+          end
+          DamageTracker.Add(attacker, absorbed)
+          return true, absorbed, h.Health, 0
+        end
         return false
       end
       h.Health -= actual

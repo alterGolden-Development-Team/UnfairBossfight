@@ -52,57 +52,6 @@ function Gates.trigger(parent, cf, size, target)
 	return Kit.trigger(parent, size, cf, target)
 end
 
--- A wall right behind a portal's trigger, so a gate can only be walked into from the front. Each boss's portal has its own
--- (lobby/blender/portal_walls.py), and every area's way back uses the wall of the boss that area belongs to:
---   alterGolden's golden door / the palace  -> WallGolden (marble, gold pilasters, a crowned sun)
---   TheFallenNoob's wreck / the island      -> WallWreck (a broken hull, ribs, rope, porthole, anchor)
---   Jeff n' Fred's swords / the forest      -> WallDivided (half white, half black, a glowing slash down the seam)
--- Sized from the trigger; its base is sunk a little below the trigger's foot. Replaces an older wall on the same trigger.
-local WALL_FOR = {
-	Palace = "WallGolden", Island = "WallWreck", Forest = "WallDivided", -- the hub's portals, by where they lead
-	AlterGolden = "WallGolden", FallenNoob = "WallWreck", JeffAndFred = "WallDivided",
-}
-local WAYBACK_WALL = { Palace = "WallGolden", Island = "WallWreck", Forest = "WallDivided" } -- by the area a way back stands in
-function Gates.wallFor(trigger)
-	local target = trigger:GetAttribute("Target")
-	if target == "Hub" then
-		for area, piece in WAYBACK_WALL do
-			local world = workspace:FindFirstChild("World")
-			local container = world and world:FindFirstChild(area)
-			if container and trigger:IsDescendantOf(container) then
-				return piece
-			end
-		end
-		return "DoorWall"
-	end
-	return WALL_FOR[target] or "DoorWall"
-end
-function Gates.backWall(trigger, piece)
-	local model = trigger.Parent
-	local old = model and model:FindFirstChild("BackWall")
-	if old then
-		old:Destroy()
-	end
-	local ok, wall = pcall(Assets.Get, piece or Gates.wallFor(trigger))
-	if not ok then
-		ok, wall = pcall(Assets.Get, "DoorWall")
-	end
-	if not ok then
-		return nil
-	end
-	local look = Vector3.new(trigger.CFrame.LookVector.X, 0, trigger.CFrame.LookVector.Z)
-	look = look.Magnitude > 0.01 and look.Unit or Vector3.new(0, 0, -1)
-	local scale = math.max((trigger.Size.X + 7) / 26, (trigger.Size.Y + 6) / 30)
-	wall:ScaleTo(scale)
-	local foot = trigger.Position - Vector3.new(0, trigger.Size.Y / 2 + 1.5, 0)
-	local at = foot - look * (trigger.Size.Z / 2 + 0.4)
-	-- the piece's front (-Z) faces the way into the gate; its body runs out behind
-	wall:PivotTo(CFrame.lookAt(at, at + look))
-	wall.Name = "BackWall"
-	wall.Parent = model
-	return wall
-end
-
 -- The way back to the Sanctum. Each area has its own gate (lobby/blender/lobby2.py): the palace a stepped gold deco door with ray
 -- wings, the island an arch of whale ribs hung with a net, the forest a moon gate in a half-white, half-black wall. `cf` = ground
 -- point, front toward the player.
@@ -118,8 +67,7 @@ function Gates.returnGate(parent, cf, piece)
 	local spec = RETURN[piece] or RETURN.GateReturn
 	local m = Gates.place(parent, piece, cf, "WayBack")
 	Gates.glow(m, spec.color, 0.25, 30)
-	local trigger = Gates.trigger(m, cf * CFrame.new(0, spec.center, -1.6), spec.size, "Hub")
-	Gates.backWall(trigger, ({ GateReturnPalace = "WallGolden", GateReturnIsland = "WallWreck", GateReturnForest = "WallDivided" })[piece])
+	Gates.trigger(m, cf * CFrame.new(0, spec.center, -1.6), spec.size, "Hub")
 	local label = Kit.box(m, "ExitLabel", Vector3.new(1, 1, 1), cf * CFrame.new(0, spec.label, 0), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
 	Kit.nameplate(label, "Back to the Sanctum", "", C.White, 2, 60)
 	return m

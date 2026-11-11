@@ -121,4 +121,111 @@ function R6Pose.lerp(a, b, t)
 	return out
 end
 
+-- Dresses a figure from R6Pose.build as a real Roblox user's avatar: body colours, shirt, pants, t-shirt, face, head shape and every
+-- rigid accessory (hats, hair, glasses...), scaled with the figure. Server or Studio edit mode only (it loads the avatar).
+-- Accessories are welded to the part they sit on, so they follow the pose. Returns true when the avatar was applied.
+-- user: a user name or user id.
+function R6Pose.dress(model, user, scale)
+	local Players = game:GetService("Players")
+	local s = scale or model:GetAttribute("Scale") or 1
+	local userId = tonumber(user)
+	if not userId then
+		local ok, id = pcall(Players.GetUserIdFromNameAsync, Players, user)
+		if not ok then
+			warn("[R6Pose] no user " .. tostring(user) .. ": " .. tostring(id))
+			return false
+		end
+		userId = id
+	end
+	local okDesc, description = pcall(Players.GetHumanoidDescriptionFromUserIdAsync, Players, userId)
+	if not okDesc then
+		warn("[R6Pose] no avatar for " .. tostring(user) .. ": " .. tostring(description))
+		return false
+	end
+	local okModel, avatar = pcall(Players.CreateHumanoidModelFromDescriptionAsync, Players, description, Enum.HumanoidRigType.R6)
+	if not okModel then
+		warn("[R6Pose] could not build " .. tostring(user) .. ": " .. tostring(avatar))
+		return false
+	end
+	if s ~= 1 then
+		avatar:ScaleTo(s)
+	end
+	-- the look of each body part
+	local colors = avatar:FindFirstChildOfClass("BodyColors")
+	for _, name in { "Head", "Torso", "Right Arm", "Left Arm", "Right Leg", "Left Leg" } do
+		local mine, theirs = model:FindFirstChild(name), avatar:FindFirstChild(name)
+		if mine and theirs then
+			mine.Color = theirs.Color
+			mine.Material = Enum.Material.SmoothPlastic
+		end
+	end
+	if colors then
+		colors:Destroy()
+	end
+	for _, old in model:GetChildren() do
+		if old:IsA("Clothing") or old:IsA("ShirtGraphic") or old:IsA("Accessory") or old:IsA("BodyColors") then
+			old:Destroy()
+		end
+	end
+	for _, item in avatar:GetChildren() do
+		if item:IsA("Clothing") or item:IsA("ShirtGraphic") then
+			item.Parent = model
+		end
+	end
+	-- the head: its shape and its face
+	local head, avatarHead = model:FindFirstChild("Head"), avatar:FindFirstChild("Head")
+	if head and avatarHead then
+		local mesh, theirMesh = head:FindFirstChildOfClass("SpecialMesh"), avatarHead:FindFirstChildOfClass("SpecialMesh")
+		if mesh and theirMesh then
+			mesh.MeshType, mesh.MeshId, mesh.TextureId = theirMesh.MeshType, theirMesh.MeshId, theirMesh.TextureId
+			mesh.Scale, mesh.Offset = theirMesh.Scale, theirMesh.Offset
+		end
+		local face = head:FindFirstChild("face")
+		local theirFace = avatarHead:FindFirstChild("face")
+		if theirFace and theirFace:IsA("Decal") then
+			if not face then
+				face = Instance.new("Decal")
+				face.Name = "face"
+				face.Parent = head
+			end
+			face.Texture = theirFace.Texture
+		end
+	end
+	-- accessories: kept where they sit on the avatar, relative to the part they are welded to
+	for _, accessory in avatar:GetChildren() do
+		local handle = accessory:IsA("Accessory") and accessory:FindFirstChild("Handle")
+		if handle then
+			local onName = "Head"
+			for _, weld in handle:GetChildren() do
+				if weld:IsA("JointInstance") then
+					local other = weld.Part0 == handle and weld.Part1 or weld.Part0
+					onName = other and other.Name or onName
+				end
+			end
+			local theirs, mine = avatar:FindFirstChild(onName), model:FindFirstChild(onName)
+			if theirs and mine then
+				local offset = theirs.CFrame:ToObjectSpace(handle.CFrame)
+				for _, weld in handle:GetChildren() do
+					if weld:IsA("JointInstance") or weld:IsA("WeldConstraint") then
+						weld:Destroy()
+					end
+				end
+				for _, d in accessory:GetDescendants() do
+					if d:IsA("BasePart") then
+						d.Anchored, d.CanCollide, d.CanQuery, d.CanTouch, d.Massless = false, false, false, false, true
+					end
+				end
+				accessory.Parent = model
+				handle.CFrame = mine.CFrame * offset
+				local weld = Instance.new("WeldConstraint")
+				weld.Part0, weld.Part1 = mine, handle
+				weld.Parent = handle
+			end
+		end
+	end
+	avatar:Destroy()
+	model:SetAttribute("AvatarUserId", userId)
+	return true
+end
+
 return R6Pose

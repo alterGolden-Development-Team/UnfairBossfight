@@ -605,7 +605,7 @@ local function openShowcase(kind)
 	mode = kind
 	gui.Enabled = true
 	Freeze.On()
-	Fade.Out(0.3, "The Reliquary")
+	Fade.Out(0.3, "The Reliquary", "Shop")
 	previousCamera = { camera.CameraType, camera.CameraSubject }
 	setupStage()
 	moodEvent("Stage")

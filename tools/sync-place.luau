@@ -9,6 +9,8 @@ local targets = {
 	ServerScriptService = game:GetService("ServerScriptService"),
 	StarterPlayerScripts = game:GetService("StarterPlayer"):WaitForChild("StarterPlayerScripts"),
 	ServerStorage = game:GetService("ServerStorage"),
+	ReplicatedFirst = game:GetService("ReplicatedFirst"),
+	StarterGui = game:GetService("StarterGui"),
 }
 local done = {}
 for name, service in targets do

@@ -12,12 +12,24 @@ Ids live in `UnfairConfig.SidePlaces`; the lobby's `SidePlaceService` does the t
 
 ## Azusa's training grounds (`tutorial/`)
 
-- `map/init.luau` builds the floating island at dusk (Dojo kit from `lobby/blender/realm.py`: arena, torii, lanterns, posts, sakura).
-- `TutorialService` builds Azusa from the mymeo125 avatar and runs seven lessons, each a small version of an alterGolden attack:
-  circles (step out), the golden wave (dash through with Q), the heavy strike (guard with R), ground rings (jump), bullet fans (strafe),
-  punish (click her while she is open), and an exam. Being hurt never kills you: the lesson repeats.
-- `TutorialClient` has the lesson banner, her voice, and the three tutorial-only controls (Q dash, hold R guard, click).
-- When the lessons are done she offers the way back; the lobby then shows "You're ready" (teleport data `{ from = "Tutorial", done = true }`).
+- `map/init.luau` builds floating islands at dusk from the Blender kit **Blossom** (`tutorial/blender/blossom.py`, asset 80713024384595):
+  the `ShrineArena` (radius 74, the fight; `World.ArenaCenter`), the `SpawnIsle` and red `ArchBridge` to the south, the `GreatSakura`
+  on its own rock behind the arena, a `Pagoda`, drifting `SkyRock`s, plus torii and lanterns from the older Dojo kit. `World.Fence`
+  is a ring of invisible walls; its `Gate` piece (over the bridge) closes while the fight is on. Her sword and attack shapes come from
+  the kit **AzusaFX** (asset 121606459275439) and are stored in `ReplicatedStorage.AzusaFX`.
+- Azusa is a real boss built on **BossKit** (`docs/boss-kit.md`): you are a Warrior with the Golden Encounter's kit, 3 lives, HP and
+  stamina; she has 9000 HP, an HP bar, and a 1600 shield in phase 2. `Tutorial/Azusa.luau` is her body (mymeo125's avatar, the katana
+  with a blade trail, afterimages, and ten generated animations: combat idle, quick-draw, overhead slash, plunge, dancer's throw,
+  dash-cut, summon, stagger, point, kneel), `Tutorial/AzusaAttacks.luau` her skills, `TutorialService` the fight.
+- Her skills: Blossom Mines (step out), Moonlit Crescent (dash through), Flash Draw (deflect: she staggers, "OPEN", takes 50% more),
+  Thorn Waltz (jump), Petal Storm (strafe or guard); below 50%: Hundred Steps (deflect each cut) and Petal Requiem (a giant spirit
+  blade, chasing pillars, then a ring wave to dash). Each is layered: Neon core + ForceField aura shapes, petals, smoke, lights, camera
+  shake, and an inverted impact frame on the big cuts. She explains each one the first time, out loud, through the boss dialogue
+  (`BossKit.Say`), then just calls its name.
+- Every telegraph flashes: shapes are tagged `AzusaFlash` with `FlashFrom` / `FlashTo` (server time) and `TutorialClient` blinks them
+  from 3 to 16 times a second until they land; sigils are tagged `AzusaSpin` and turn.
+- No "E: Talk" prompt during the fight (E is deflect); a life lost mid-fight puts you back in the arena.
+- Lose your lives and she starts over; beat her and you are "TutorialDone" (the lobby then shows "You're ready").
 
 ## The Reality Orb quest
 
@@ -27,7 +39,9 @@ Ids live in `UnfairConfig.SidePlaces`; the lobby's `SidePlaceService` does the t
    saved as `Items.RealityOrb` in the player's record (`UnfairShared/RecordStore`, same DataStore and key as cash).
 2. **Inventory**: the bag icon on the left edge of every place (`UnfairShared/InventoryUI`, key B) lists what you carry, from the
    `Inventory` player attribute that each place's server publishes.
-3. **Glitched place** (`glitched/`): walk the broken road to the man on the bench. Without the orb he asks for it; with it, "Give him the
+3. **Glitched place** (`glitched/`; the world is the Blender kit **Void**, `glitched/blender/void.py`, asset 110711929130764: a road of
+   broken slabs, a sliced city, a shattered clock, upside-down trees, stairs and doors to nowhere, the cracked dais and its turning
+   halo): walk the broken road to the man on the bench. Without the orb he asks for it; with it, "Give him the
    Reality Orb" takes the orb and grants the class in one save (`RecordStore.TradeItemForClass`), plays the cutscene (he rises, tears the
    sky open, the tear pulls you in, "Thank you...") and returns you to the lobby, where a toast says the class is yours.
 4. **Unlock rule**: `ClassUnlocks.Disorderer` is `Kind = "GamePass", Quest = true`: owned by game pass (25 Robux) **or** by the record

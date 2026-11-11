@@ -92,7 +92,7 @@ local function partyPortals(m)
 			face.Name = "Console"
 		end
 		local roster = Kit.box(room, "RosterDisplay", Vector3.new(12, 3, 0.5), base * CFrame.new(0, 28.0, 3.5), C.Ink, M.SmoothPlastic)
-		Kit.sign(roster, Enum.NormalId.Back, "PORTAL " .. index, C.Gold, Enum.Font.Garamond, 0.4)
+		Kit.sign(roster, Enum.NormalId.Back, "PORTAL " .. index, C.Gold, Enum.Font.Bodoni, 0.4) -- alterGolden's lettering (Kit.PLATE.Golden)
 		local pad = Kit.disc(room, "Pad", (base * CFrame.new(0, 1.25, -5)).Position, 16, 0.5, C.GoldDeep, M.Metal)
 		Kit.noShadow(Kit.disc(room, "PadRing", (base * CFrame.new(0, 1.35, -5)).Position, 13, 0.2, C.Gold, M.Foil))
 		room.PrimaryPart = pad

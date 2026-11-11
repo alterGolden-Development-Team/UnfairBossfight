@@ -1,7 +1,10 @@
 --!nonstrict
 -- Full-screen fade with an optional title card, shared by portals and the shop. Client only.
+-- Given a theme (an area name: Hub, Palace, Island, Forest, Stage, Shop, Tutorial, Glitch), it shows that destination's travel card
+-- (UnfairShared/TravelScreen) instead of plain black.
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local TravelScreen = require(game:GetService("ReplicatedStorage"):WaitForChild("UnfairShared"):WaitForChild("TravelScreen"))
 
 local Fade = {}
 
@@ -32,7 +35,14 @@ title.TextTransparency = 1
 title.Text = ""
 title.Parent = gui
 
-function Fade.Out(seconds, text)
+local themed = false
+
+function Fade.Out(seconds, text, theme)
+	if theme and TravelScreen.Themes[theme] then
+		themed = true
+		TravelScreen.Show(theme, seconds or 0.35)
+		return
+	end
 	black.Active = true
 	title.Text = text or ""
 	TweenService:Create(black, TweenInfo.new(seconds or 0.35), { BackgroundTransparency = 0 }):Play()
@@ -42,6 +52,10 @@ end
 
 function Fade.In(seconds)
 	local time = seconds or 0.5
+	if themed then
+		themed = false
+		TravelScreen.Hide(time + 0.2)
+	end
 	TweenService:Create(black, TweenInfo.new(time), { BackgroundTransparency = 1 }):Play()
 	TweenService:Create(title, TweenInfo.new(time), { TextTransparency = 1 }):Play()
 	task.delay(time, function()

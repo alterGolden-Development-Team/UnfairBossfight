@@ -34,7 +34,7 @@ local function midas(root, pos)
 		leaf:SetAttribute("Range", 46)
 		Kit.tag(leaf, "UnfairDoor")
 	end
-	Gates.backWall(Gates.trigger(m, base * CFrame.new(0, 16, -1.6), Vector3.new(16, 26, 3), "Palace"))
+	Gates.trigger(m, base * CFrame.new(0, 16, -1.6), Vector3.new(16, 26, 3), "Palace")
 	-- what the king's touch does: people turned to gold, kneeling at his door, and spilled coin
 	for _, side in { -1, 1 } do
 		local spot = base * CFrame.new(side * 30, 0, -14)
@@ -65,7 +65,7 @@ local function midas(root, pos)
 		Kit.noShadow(Kit.cyl(m, "Coin", 0.22, 1.5, CFrame.new(p + Vector3.new(0, r:NextNumber(0, 0.3), 0)) * CFrame.Angles(r:NextNumber(-0.2, 0.2), r:NextNumber(0, 6), math.rad(90) + r:NextNumber(-0.2, 0.2)), C.Gold, M.Foil))
 	end
 	local label = Kit.box(m, "Label", Vector3.new(1, 1, 1), base * CFrame.new(0, 60, 0), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false })
-	Kit.nameplate(label, "alterGolden", "The Golden Encounter  -  Open", C.GoldPale, 2, 110)
+	Kit.nameplate(label, "alterGolden", "The Golden Encounter  -  Open", C.GoldPale, 2, 110, Kit.PLATE.Golden)
 	return m
 end
 
@@ -91,12 +91,12 @@ local function fallen(root, pos)
 	-- the lantern hanging at the bow, lit
 	local lamp = Kit.noShadow(Kit.ball(m, "BowLamp", 1.2, (base * B(36, 0, 21.6)).Position, C.GoldPale, M.Neon, { CanCollide = false, CanQuery = false, CanTouch = false }))
 	Kit.light(lamp, Kit.rgb(255, 210, 140), 22, 1)
-	Gates.backWall(Gates.trigger(m, base * CFrame.new(0, 14, -7.5), Vector3.new(14, 20, 4), "Island"))
+	Gates.trigger(m, base * CFrame.new(0, 14, -7.5), Vector3.new(14, 20, 4), "Island")
 	Kit.palm(m, (base * CFrame.new(-30, 1.6, 8)).Position, 32)
 	Kit.palm(m, (base * CFrame.new(31, 1.2, 12)).Position, 26)
 	Kit.palm(m, (base * CFrame.new(27, 1.0, -18)).Position, 20)
 	local label = Kit.box(m, "Label", Vector3.new(1, 1, 1), base * CFrame.new(0, 54, 0), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false })
-	Kit.nameplate(label, "TheFallenNoob's Private Island", "Coming soon", Kit.rgb(200, 240, 250), 2, 110)
+	Kit.nameplate(label, "TheFallenNoob's Private Island", "Coming soon", Kit.rgb(200, 240, 250), 2, 110, Kit.PLATE.Island)
 	return m
 end
 
@@ -123,9 +123,9 @@ local function brothers(root, pos)
 		petals.RotSpeed = NumberRange.new(-120, 120)
 		petals.Parent = face
 	end
-	Gates.backWall(Gates.trigger(m, base * CFrame.new(0, 11, -1.6), Vector3.new(16, 20, 3), "Forest"))
+	Gates.trigger(m, base * CFrame.new(0, 11, -1.6), Vector3.new(16, 20, 3), "Forest")
 	local label = Kit.box(m, "Label", Vector3.new(1, 1, 1), base * CFrame.new(0, 62, 0), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false })
-	Kit.nameplate(label, "Jeff n' Fred Bizzare Brother", "Coming soon", C.White, 2, 110)
+	Kit.nameplate(label, "Jeff n' Fred Bizzare Brother", "Coming soon", C.White, 2, 110, Kit.PLATE.Divided)
 	return m
 end
 

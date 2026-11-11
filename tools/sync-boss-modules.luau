@@ -49,6 +49,14 @@ local PATHS = {
 	"ReplicatedStorage.UnfairShared.ItemConfig",
 	"ReplicatedStorage.UnfairShared.RecordStore",
 	"ReplicatedStorage.UnfairShared.InventoryUI",
+	-- 2026-11-11 (second pass): the shared fight layer (UnfairShared/BossKit) hooks: another map's boss as the class target,
+	-- a BossKit boss's shield, the vitals panel built in code; the NPC talk fix, travel cards
+	"ServerScriptService.BossSystem.Attacks.Shared.BossDamageService",
+	"ReplicatedStorage.BossShared.Presentation.VitalsPanel",
+	"ReplicatedStorage.UnfairShared.NpcDialog",
+	"ReplicatedStorage.UnfairShared.TravelScreen",
+	"ReplicatedStorage.UnfairShared.BossKit",
+	"ReplicatedStorage.UnfairShared.BossKit.BossBar",
 }
 local built = game:GetObjects("rbxasset://unfair_bosssync.rbxm")[1]
 local function walk(root, path, separator)

@@ -39,7 +39,6 @@ Assets.Kits = {
 	Figures = { id = 118150339553651, note = "Kneeler, BroPelvis/Torso/UpperArm/Forearm/Thigh/Shin/Sword (lobby/blender/figures.py)" },
 	Forest = { id = 124425670320721, note = "ForestTree1..3, ForestGate, ForestLantern, ForestPillar (lobby/blender/forest.py)" },
 	Island = { id = 81123087296809, note = "IslandLighthouse, IslandBoat, IslandPier, IslandHut, IslandArch, IslandCliff1/2 (lobby/blender/island.py)" },
-	PortalWalls = { id = 128516303973129, note = "WallGolden, WallWreck, WallDivided: the wall behind each boss's portal and way back (lobby/blender/portal_walls.py)" },
 	Realm = { id = 114250682217771, note = "ForestCabin, ForestCabinRuin, ForestWell, ForestRock1..3, ForestStump, ForestLogPile, ForestShrine, GlitchPortal, DoorWall (lobby/blender/realm.py)" },
 }
 

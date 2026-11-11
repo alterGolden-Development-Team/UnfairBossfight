@@ -9,6 +9,7 @@ local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 
 local Fade = require(ReplicatedStorage.Lobby.Fade)
+local TravelScreen = require(ReplicatedStorage:WaitForChild("UnfairShared"):WaitForChild("TravelScreen"))
 local Freeze = require(ReplicatedStorage.Lobby.Freeze)
 local LobbyRemotes = require(ReplicatedStorage.Lobby.LobbyRemotes)
 
@@ -167,7 +168,10 @@ end)
 remote.OnClientEvent:Connect(function(action, area)
 	if action == "FadeOut" then
 		reveal(area) -- draw where you are going before the server moves you there
-		task.spawn(Fade.Out, 0.3, TITLES[area])
+		if area == "Glitch" or area == "Tutorial" then
+			TravelScreen.ForTeleport(area) -- the same card stays up while the other place loads
+		end
+		task.spawn(Fade.Out, 0.3, TITLES[area], area)
 	elseif action == "FadeIn" then
 		applyMood(area)
 		showOnly(area)

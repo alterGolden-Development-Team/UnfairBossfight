@@ -15,6 +15,9 @@ local TweenService = game:GetService("TweenService")
 local Shared = ReplicatedStorage:WaitForChild("UnfairShared")
 local NpcDialog = require(Shared.NpcDialog)
 local InventoryUI = require(Shared.InventoryUI)
+local TravelScreen = require(Shared:WaitForChild("TravelScreen"))
+-- whatever takes you back (the door, or the man's cutscene), the Sanctum's travel card shows while the lobby loads
+TravelScreen.ForTeleport("Hub")
 local remote = ReplicatedStorage:WaitForChild("Glitch")
 
 local player = Players.LocalPlayer
@@ -124,7 +127,39 @@ end)
 -- limbs skip and the road shivers
 local world = workspace:WaitForChild("World", 30)
 local road = world and world:FindFirstChild("Road")
-local roadParts = road and road:GetDescendants() or {}
+-- only the loose bits shiver (cracks, pixels), never the slabs you stand on
+local roadParts = {}
+for _, part in road and road:GetDescendants() or {} do
+	if part:IsA("BasePart") and not part.CanCollide then
+		table.insert(roadParts, part)
+	end
+end
+-- the halo of shards over the end turns; the white seams (Glow) and the static bands flicker
+local glows = {}
+for _, part in world and world:GetDescendants() or {} do
+	if part:IsA("BasePart") and (part.Name == "Glow" or part.Name == "Static") then
+		table.insert(glows, part)
+	end
+end
+local halo = world and world:FindFirstChild("End") and world.End:FindFirstChild("VoidHalo")
+local haloHome = halo and halo:GetPivot()
+RunService.RenderStepped:Connect(function()
+	local t = os.clock()
+	if halo and haloHome then
+		halo:PivotTo(haloHome * CFrame.Angles(0, 0, t * (halo:GetAttribute("Spin") or 0.1)) * CFrame.Angles(math.sin(t * 0.3) * 0.15, 0, 0))
+	end
+end)
+task.spawn(function()
+	while true do
+		task.wait(0.07)
+		for _ = 1, 6 do
+			local part = glows[rng:NextInteger(1, math.max(1, #glows))]
+			if part then
+				part.LocalTransparencyModifier = rng:NextNumber() < 0.5 and 0.85 or 0
+			end
+		end
+	end
+end)
 task.spawn(function()
 	while true do
 		task.wait(0.12)

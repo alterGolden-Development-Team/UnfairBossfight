@@ -7,7 +7,8 @@ local Input = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 local gui = script.Parent
 gui.Enabled = true
-local panel = gui.Panel
+-- a place without the panel in its file (any other bossfight map) builds the same one (BossShared/Presentation/VitalsPanel)
+local panel = gui:FindFirstChild("Panel") or require(Shared:WaitForChild("Presentation"):WaitForChild("VitalsPanel")).Build(gui)
 local hp = panel.Health
 local stamina = panel.Stamina
  

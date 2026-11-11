@@ -149,7 +149,7 @@ local function interior(m)
 end
 
 local function keeper(m)
-	-- the keeper: an R6 avatar in a wine-red robe, a tall star-spangled hat and a long white beard, leaning on his counter
+	-- the keeper: an R6 avatar leaning on his counter
 	local R6Pose = require(game:GetService("ReplicatedStorage").Lobby.R6Pose)
 	local scale = 1.9
 	local fig = R6Pose.build(m, "Shopkeeper", { skin = Kit.rgb(226, 178, 138), torso = Kit.rgb(112, 40, 52), arms = Kit.rgb(112, 40, 52), legs = Kit.rgb(84, 30, 40) })
@@ -159,16 +159,19 @@ local function keeper(m)
 		end
 	end
 	local _, head = R6Pose.place(fig, BASE * B(0, 11.5, 1), { shR = { 52, 0, 8 }, shL = { 52, 0, -8 }, spine = { -6, 0, 0 }, neck = { -6, 0, 0 } }, scale)
-	local hat = Assets.Get("KeeperHat")
-	hat:ScaleTo(scale * 0.55)
-	hat:PivotTo(head * CFrame.new(0, 0.5 * scale, 0))
-	hat.Name = "Hat"
-	hat.Parent = fig
-	local beard = Assets.Get("KeeperBeard")
-	beard:ScaleTo(scale * 0.62)
-	beard:PivotTo(head * CFrame.new(0, -0.15 * scale, -0.5 * scale))
-	beard.Name = "Beard"
-	beard.Parent = fig
+	-- he wears elcuh_4l's avatar (R6Pose.dress); if it cannot load, the old robe, star-spangled hat and long white beard stand in
+	if not R6Pose.dress(fig, "elcuh_4l", scale) then
+		local hat = Assets.Get("KeeperHat")
+		hat:ScaleTo(scale * 0.55)
+		hat:PivotTo(head * CFrame.new(0, 0.5 * scale, 0))
+		hat.Name = "Hat"
+		hat.Parent = fig
+		local beard = Assets.Get("KeeperBeard")
+		beard:ScaleTo(scale * 0.62)
+		beard:PivotTo(head * CFrame.new(0, -0.15 * scale, -0.5 * scale))
+		beard.Name = "Beard"
+		beard.Parent = fig
+	end
 	for _, part in fig:GetDescendants() do
 		if part:IsA("BasePart") then
 			part.CanCollide = part.Name == "Torso"

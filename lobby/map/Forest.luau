@@ -42,7 +42,7 @@ local function piece(parent, name, cf, scale)
 end
 
 -- The ground runs on under the mountain wall on every side and past the way back, so nowhere does the floor stop short of the rock.
-local GROUND_X, GROUND_Z0, GROUND_Z1 = 500, -700, 190
+local GROUND_X, GROUND_Z0, GROUND_Z1 = 500, -700, 260
 local function ground(m)
 	local length = GROUND_Z1 - GROUND_Z0
 	local centerZ = (GROUND_Z0 + GROUND_Z1) / 2
@@ -125,10 +125,15 @@ local function clearing(m)
 	Kit.box(m, "CutBlack", Vector3.new(74, 1, 148), CFrame.new(center + Vector3.new(37, 0.1, 0)), C.Black, M.Slate)
 	-- a slash scorched through the seam: the cut itself
 	Kit.noShadow(Kit.box(m, "TheCut", Vector3.new(1.6, 0.2, 110), CFrame.new(center + Vector3.new(0, 0.72, 0)) * CFrame.Angles(0, math.rad(8), 0), C.Black, M.Neon))
-	-- the brothers: R6 avatars with Blender katanas and headbands, posed here at guard and animated by the client (AreaClient)
+	-- the brothers: R6 avatars with Blender katanas, posed here at guard and animated by the client (AreaClient). They wear real
+	-- players' avatars (R6Pose.dress): Jeff is hosuh1215, Fred is bobtheunfunnyman. If an avatar cannot load, the old two-tone body
+	-- and a headband stand in.
 	local fight = Kit.model(m, "TheFight")
 	local R6Pose = require(game:GetService("ReplicatedStorage").Lobby.R6Pose)
-	for _, who in { { "Jeff", -9, C.Black, Kit.rgb(40, 40, 44), Kit.rgb(150, 30, 36), C.White }, { "Fred", 9, C.White, Kit.rgb(214, 214, 218), Kit.rgb(40, 60, 120), C.Black } } do
+	for _, who in {
+		{ "Jeff", -9, C.Black, Kit.rgb(40, 40, 44), Kit.rgb(150, 30, 36), C.White, user = "hosuh1215" },
+		{ "Fred", 9, C.White, Kit.rgb(214, 214, 218), Kit.rgb(40, 60, 120), C.Black, user = "bobtheunfunnyman" },
+	} do
 		local scale = 2.2
 		local home = CFrame.lookAt(center + Vector3.new(who[2], 0.6, 0), center + Vector3.new(0, 0.6, 0))
 		local brother = R6Pose.build(fight, who[1], { skin = who[4], torso = who[3], arms = who[3], legs = who[4] })
@@ -161,6 +166,9 @@ local function clearing(m)
 			end
 		end
 		band.Parent = brother
+		if R6Pose.dress(brother, who.user, scale) then
+			band:Destroy() -- their own hats instead
+		end
 		brother.WorldPivot = home
 		brother:SetAttribute("Scale", scale)
 		BrotherRig.pose(brother, home, BrotherRig.POSES.guard, scale)
@@ -187,7 +195,7 @@ local function clearing(m)
 		local face = Gates.glow(shell, Kit.rgb(128, 128, 132), 0.3, 20)
 		if face then
 			face.Name = "Face"
-			Kit.nameplate(face, "Portal " .. i, "Coming soon", C.White, 9, 70)
+			Kit.nameplate(face, "Portal " .. i, "Coming soon", C.White, 9, 70, Kit.PLATE.Divided)
 			face:SetAttribute("ComingSoon", "JeffAndFred")
 			face.CanTouch = true
 			Kit.tag(face, "UnfairComingSoon")
@@ -200,8 +208,8 @@ local function mountains(m)
 	local f = Kit.folder(m, "Mountains")
 	local r = Kit.R
 	local sides = {
-		{ -440, -560, -440, 90 }, { 440, -560, 440, 90 }, -- west and east, along z
-		{ -440, -600, 440, -600 }, { -440, 110, 440, 110 }, -- north and south, along x
+		{ -440, -560, -440, 160 }, { 440, -560, 440, 160 }, -- west and east, along z
+		{ -440, -600, 440, -600 }, { -440, 178, 440, 178 }, -- north and south, along x (the south one well behind the way back at z = 66)
 	}
 	for _, side in sides do
 		local a, b = Vector3.new(side[1], 0, side[2]), Vector3.new(side[3], 0, side[4])

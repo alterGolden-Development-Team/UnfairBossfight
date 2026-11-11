@@ -2,9 +2,29 @@
   "name": "GlitchedSync",
   "tree": {
     "$className": "Folder",
-    "ReplicatedStorage": { "$className": "Folder", "UnfairShared": { "$path": "../shared/UnfairShared" } },
-    "ServerScriptService": { "$path": "src/ServerScriptService" },
-    "StarterPlayerScripts": { "$path": "src/StarterPlayer/StarterPlayerScripts" },
-    "ServerStorage": { "$className": "Folder", "MapBuilder": { "$path": "map" } }
+    "ReplicatedStorage": {
+      "$className": "Folder",
+      "UnfairShared": {
+        "$path": "../shared/UnfairShared"
+      }
+    },
+    "ServerScriptService": {
+      "$path": "src/ServerScriptService"
+    },
+    "StarterPlayerScripts": {
+      "$path": "src/StarterPlayer/StarterPlayerScripts"
+    },
+    "ServerStorage": {
+      "$className": "Folder",
+      "MapBuilder": {
+        "$path": "map"
+      }
+    },
+    "ReplicatedFirst": {
+      "$className": "Folder",
+      "TravelArrival": {
+        "$path": "../shared/ReplicatedFirst/TravelArrival.client.luau"
+      }
+    }
   }
 }

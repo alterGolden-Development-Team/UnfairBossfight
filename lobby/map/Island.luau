@@ -173,7 +173,7 @@ local function portals(parent)
 			face.CFrame *= CFrame.new(0, -0.8, 3.2)
 			face.Name = "Face"
 			face.CanTouch = true
-			Kit.nameplate(face, "Portal " .. i, "Coming soon", Kit.rgb(200, 240, 250), 12, 70)
+			Kit.nameplate(face, "Portal " .. i, "Coming soon", Kit.rgb(200, 240, 250), 12, 70, Kit.PLATE.Island)
 			face:SetAttribute("ComingSoon", "FallenNoob")
 			Kit.tag(face, "UnfairComingSoon")
 		end
