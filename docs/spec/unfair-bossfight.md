@@ -57,9 +57,9 @@ Users: Roblox players (solo or party). Author: the sole developer, who play-test
 ```
 Check (boss, existing gate):   powershell -ExecutionPolicy Bypass -File tools/check.ps1
 Check (both projects):         powershell -ExecutionPolicy Bypass -File tools/check.ps1     # extended to build lobby too (task in plan)
-Build boss place:              rojo build boss/default.project.json -o build/boss.rbxl
+Build boss place:              rojo build alterGolden Bossfight/default.project.json -o build/boss.rbxl
 Build lobby place:             rojo build lobby/default.project.json -o build/lobby.rbxl
-Serve boss to Studio:          rojo serve boss/default.project.json --port 34872
+Serve boss to Studio:          rojo serve alterGolden Bossfight/default.project.json --port 34872
 Serve lobby to Studio:         rojo serve lobby/default.project.json --port 34873
 Sync mirror copies (boss):     powershell -File tools/check.ps1 -SyncMirrors
 ```
@@ -68,12 +68,12 @@ Paths assume the new layout in section 5. Until the move, boss commands run from
 
 ## 5. Project structure
 
-Target: one git repo rooted at `D:/Project/UnfairBossfight`, with the current repo's history preserved (`.git` moved up one level, existing files `git mv`-ed into `boss/`).
+Target: one git repo rooted at `D:/Project/UnfairBossfight`, with the current repo's history preserved (`.git` moved up one level, existing files `git mv`-ed into `alterGolden Bossfight/`).
 
 ```
 D:/Project/UnfairBossfight/
-  boss/                    the current alterGoldenBossfight project, moved as-is
-    default.project.json   unchanged tree, paths still relative to boss/
+  alterGolden Bossfight/                    the current alterGoldenBossfight project, moved as-is
+    default.project.json   unchanged tree, paths still relative to alterGolden Bossfight/
     src/ place/ tools/ tasks/ _backup/
   lobby/
     default.project.json   DataModel for the lobby place
@@ -86,13 +86,13 @@ D:/Project/UnfairBossfight/
   shared/
     UnfairShared/          UnfairConfig (place ids, RequireLobby, cash table), TeleportPayload, DifficultyIds
   docs/ intent/ spec/
-  tasks/                   unfair-bossfight plan and todo (the boss refactor records stay in boss/tasks)
+  tasks/                   unfair-bossfight plan and todo (the boss refactor records stay in alterGolden Bossfight/tasks)
   README.md                updated layout and the "which port is which" notes
 ```
 
 Sharing rules:
 - `shared/UnfairShared` is mounted into `ReplicatedStorage.UnfairShared` by **both** projects.
-- `ClassConfig` and `ClassUnlocks` stay where they are (`boss/src/ReplicatedStorage/BossShared/Classes`) and the lobby project **mounts that folder** at `ReplicatedStorage.BossShared.Classes`. One source of truth, no copies, so the lobby picker and the boss place can never disagree. If a require inside those files needs siblings that do not exist in the lobby, the plan task moves just that dependency into `shared/`.
+- `ClassConfig` and `ClassUnlocks` stay where they are (`alterGolden Bossfight/src/ReplicatedStorage/BossShared/Classes`) and the lobby project **mounts that folder** at `ReplicatedStorage.BossShared.Classes`. One source of truth, no copies, so the lobby picker and the boss place can never disagree. If a require inside those files needs siblings that do not exist in the lobby, the plan task moves just that dependency into `shared/`.
 - Every new folder under `src/` gets an `init.meta.json` with `{"ignoreUnknownInstances": true}` (this once wiped `Templates`; see `project-refactor-tooling` memory).
 - Moving the repo changes Claude's per-project memory path (`d--Project-alterGoldenBossfight`). The memory files are copied across as part of `project-layout`.
 
@@ -216,11 +216,11 @@ end
 
 ## 12. Open questions (all answered by the user on 2026-11-09)
 
-Answers: 1 yes, Talueber's Place is the empty lobby place. 2 yes, create a test universe. 3 yes, cash table is fine. 4 yes, Return to Lobby is the only way to change difficulty. 5 yes, move the git root and `git mv` into `boss/`. 6 fine, 4 rooms.
+Answers: 1 yes, Talueber's Place is the empty lobby place. 2 yes, create a test universe. 3 yes, cash table is fine. 4 yes, Return to Lobby is the only way to change difficulty. 5 yes, move the git root and `git mv` into `alterGolden Bossfight/`. 6 fine, 4 rooms.
 
 1. Which place becomes the lobby: is "Talueber's Place: 11092026_1" the empty place you made for it? And what are the two place IDs (I can read them from Studio)?
 2. OK to create a **separate test universe** for teleport testing before the live game changes? Without it, any teleport test touches the live game.
 3. Cash values for the middle modes (proposed NerfedHardcore 15, Hardcore 25, TrueHardcore 35) fine?
 4. After a loss, should the party be able to change difficulty without leaving the server, or is Return to Lobby the only way (my assumption)?
-5. Git move: OK to make `D:/Project/UnfairBossfight` the git root and `git mv` the current project into `boss/` (history kept)? The alternative is leaving the repo where it is and adding `lobby/` as a sibling folder in a new, second repo.
+5. Git move: OK to make `D:/Project/UnfairBossfight` the git root and `git mv` the current project into `alterGolden Bossfight/` (history kept)? The alternative is leaving the repo where it is and adding `lobby/` as a sibling folder in a new, second repo.
 6. Is the 4-rooms-per-lobby-server count fine, or do you want a different number?

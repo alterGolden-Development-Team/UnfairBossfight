@@ -6,6 +6,8 @@ $out = Join-Path $env:TEMP "claude\lobbysync.rbxm"
 Push-Location $root
 try { rojo build lobby/sync.project.json -o $out | Out-Null } finally { Pop-Location }
 $versions = Join-Path $env:LOCALAPPDATA "Roblox\Versions"
-$studio = Get-ChildItem $versions -Directory | Where-Object { Test-Path (Join-Path $_.FullName "RobloxStudioBeta.exe") } | Select-Object -First 1
-Copy-Item $out (Join-Path $studio.FullName "content\unfair_lobbysync.rbxm") -Force
+# every installed Studio version: the running one may not be the newest folder
+foreach ($studio in (Get-ChildItem $versions -Directory | Where-Object { Test-Path (Join-Path $_.FullName "RobloxStudioBeta.exe") })) {
+	Copy-Item $out (Join-Path $studio.FullName "content\unfair_lobbysync.rbxm") -Force
+}
 Write-Output ("synced " + (Get-Item $out).Length + " bytes")

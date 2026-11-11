@@ -1,7 +1,9 @@
 {
   "folders": [
-    { "name": "boss (The Golden Encounter)", "path": "boss" },
+    { "name": "alterGolden Bossfight (The Golden Encounter)", "path": "alterGolden Bossfight" },
     { "name": "lobby (Unfair Bossfight)", "path": "lobby" },
+    { "name": "tutorial (Azusa's training grounds)", "path": "tutorial" },
+    { "name": "glitched (!A GL!TC3D PL@CE!)", "path": "glitched" },
     { "name": "shared", "path": "shared" },
     { "name": "docs + tasks (root)", "path": "." }
   ]

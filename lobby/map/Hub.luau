@@ -61,7 +61,15 @@ local function lowClear(x, z)
 	return false
 end
 
-local ringWall = Kit.ring
+local function piece(parent, name, cf, scale)
+	local model = Assets.Get(name)
+	if scale and scale ~= 1 then
+		model:ScaleTo(scale)
+	end
+	model:PivotTo(cf)
+	model.Parent = parent
+	return model
+end
 
 -- Stretches one mesh of a store asset to an exact size (mesh parts scale per axis; models only uniformly).
 local function meshPiece(parent, name, size, cf, color, material)
@@ -134,64 +142,75 @@ local function slabPath(area, from, to, width)
 	end
 end
 
-local function fountain(f)
-	-- a store fountain (MR_MohamedTarek's two-tier marble one) on a gold-rimmed step
-	local center = v(0, 0, 0.92)
-	Kit.column(f, "FountainStep", v(0, 0, 0.1), 0.8, 28, C.Marble, M.Marble)
-	ringWall(f, "FountainStepLip", v(0, 0, 0.6), 28, 0.35, 1, 32, C.Gold, M.Foil)
-	local model = Assets.Place(f, "Fountain", CFrame.new(center), 26, true)
-	model.Name = "Fountain"
-end
-
 local function plaza(area)
 	local f = Kit.folder(area, "Plaza")
-	Kit.disc(f, "Floor", v(0, 0, 0.5), 76, 1, C.StoneWarm, M.Slate)
-	Kit.noShadow(Kit.disc(f, "Ring", v(0, 0, 0.62), 72, 0.2, C.Gold, M.Foil))
-	Kit.noShadow(Kit.disc(f, "RingIn", v(0, 0, 0.72), 68, 0.2, C.StoneWarm, M.Slate))
-	Kit.noShadow(Kit.disc(f, "Medallion", v(0, 0, 0.82), 26, 0.2, C.Gold, M.Foil))
-	Kit.noShadow(Kit.disc(f, "MedallionIn", v(0, 0, 0.92), 22, 0.2, C.Stone, M.Slate))
-	-- eight gold rays from the medallion to the ring, pointing at everything there is to do
-	for i = 0, 7 do
-		local a = i / 8 * math.pi * 2 + math.pi / 8
-		local p = v(math.cos(a) * 23.5, math.sin(a) * 23.5, 0.78)
-		Kit.noShadow(Kit.box(f, "Ray", Vector3.new(0.9, 0.12, 21), CFrame.lookAt(p, p + Vector3.new(math.cos(a), 0, math.sin(a))), C.GoldDeep, M.Metal))
+	-- Blender paving (lobby/blender/hub.py HubPlaza): rings of pavers, gold rays and rings, a marble step for the fountain
+	piece(f, "HubPlaza", CFrame.new(v(0, 0, 0))).Name = "Paving"
+	-- the fountain (Blender, hub: HubFountain): three marble tiers, falling sheets, lion spouts, a gold armillary sphere on top
+	local fountain = piece(f, "HubFountain", CFrame.new(v(0, 0, 1.5)))
+	fountain.Name = "Fountain"
+	for _, water in fountain:GetChildren() do
+		if water.Name == "Water" then
+			water.CanCollide, water.CanQuery = false, false
+		end
 	end
-	fountain(f)
-	-- the old sundial: a ruined column ring around the plaza, overgrown
+	-- spray off the top bowl and splash where the sheets land
+	for _, spot in { { 16.6, 3.2, 10 }, { 11.0, 7.0, 6 }, { 4.1, 12.2, 3 } } do
+		local e = Kit.detail(Kit.box(f, "Splash", Vector3.new(spot[2] * 2, 0.4, spot[2] * 2), CFrame.new(v(0, 0, 1.5 + spot[1])), nil, nil, { Transparency = 1, CanQuery = false, CanTouch = false }))
+		local p = Instance.new("ParticleEmitter")
+		p.Name = "Spray"
+		p.Color = ColorSequence.new(Color3.fromRGB(235, 248, 255))
+		p.Transparency = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.35), NumberSequenceKeypoint.new(1, 1) })
+		p.Size = NumberSequence.new({ NumberSequenceKeypoint.new(0, 0.4), NumberSequenceKeypoint.new(1, 1.4) })
+		p.Lifetime = NumberRange.new(0.6, 1.1)
+		p.Rate = spot[3] * 3
+		p.Speed = NumberRange.new(2, 5)
+		p.SpreadAngle = Vector2.new(35, 35)
+		p.Acceleration = Vector3.new(0, -18, 0)
+		p.Parent = e
+	end
+	-- the old sundial: a ring of marble columns round the plaza, some whole, some broken with their drums lying beside them
 	local r = Kit.R
 	for i = 1, 10 do
 		local a = (i + 0.5) / 10 * math.pi * 2
 		local p = v(math.cos(a) * 41, math.sin(a) * 41, 0)
 		if (p.Z > -20 or math.abs(p.X) > 30) and math.abs(p.X) > 16 then
-			local height = r:NextNumber() > 0.4 and 26 or r:NextNumber(7, 14)
-			Kit.disc(f, "Base", p + Vector3.new(0, 1, 0), 7.5, 1.4, C.Marble, M.Marble)
-			Kit.column(f, "Column", p + Vector3.new(0, 1, 0), height, 5, C.Marble, M.Marble)
-			if height > 20 then
-				Kit.disc(f, "Cap", p + Vector3.new(0, height + 2.2, 0), 7.5, 1.4, C.Marble, M.Marble)
-				Kit.noShadow(Kit.disc(f, "CapTrim", p + Vector3.new(0, height + 0.9, 0), 6, 0.5, C.Gold, M.Foil))
-			else
-				-- the fallen top lies beside its stump
-				local out = (p - v(0, 0)).Unit
-				local tangent = out:Cross(Vector3.yAxis)
-				local piece = p + out * 4 + tangent * r:NextNumber(-3, 3) + Vector3.new(0, 2.3, 0)
-				Kit.cyl(f, "Drum", 6, 4.6, CFrame.lookAt(piece, piece + tangent) * CFrame.Angles(0, math.rad(90), 0) * CFrame.Angles(r:NextNumber(-0.2, 0.2), 0, 0), C.Marble, M.Marble)
-				Kit.detail(Kit.cyl(f, "Chip", 1.4, 2.6, CFrame.new(p + out * -3 + tangent * 2 + Vector3.new(0, 0.8, 0)) * CFrame.Angles(0.3, r:NextNumber(0, 6), 1.2), C.Marble, M.Marble))
-			end
+			local whole = r:NextNumber() > 0.4
+			local col = piece(f, whole and "HubColumn" or "HubColumnBroken", CFrame.lookAt(p, v(0, 0)) * CFrame.Angles(0, r:NextNumber(-0.4, 0.4), 0))
+			col.Name = "Column"
 			-- ivy climbing the shaft
-			for k = 1, math.floor(height / 3) do
+			for k = 1, whole and 7 or 3 do
 				local ia = k * 1.3 + i
-				local ip = p + Vector3.new(math.cos(ia) * 2.5, 1 + k * 2.6, math.sin(ia) * 2.5)
+				local ip = p + Vector3.new(math.cos(ia) * 2.35, 2 + k * 2.6, math.sin(ia) * 2.35)
 				Kit.detail(Kit.box(f, "Ivy", Vector3.new(1.4, 1.8, 0.35), CFrame.lookAt(ip, ip + Vector3.new(math.cos(ia), 0, math.sin(ia))) * CFrame.Angles(0, 0, r:NextNumber(-0.6, 0.6)), k % 2 == 0 and C.GrassDark or C.Leaf, M.LeafyGrass))
 			end
-			Kit.bush(f, p + Vector3.new(math.cos(a) * 3, 0, math.sin(a) * 3), 4, C.GrassDark)
+			Kit.bush(f, p + Vector3.new(math.cos(a) * 4, 0, math.sin(a) * 4), 4, C.GrassDark)
 		end
 	end
-	-- benches around the fountain, facing it, away from the view to the portals
-	for _, deg in { 45, 135, 180 } do
+	-- benches round the fountain, facing it, away from the view to the portals; each one you can sit on
+	for _, deg in { 45, 135, 180, 0 } do
 		local a = math.rad(deg)
-		local p = v(math.cos(a) * 30, math.sin(a) * 30, 0.72)
-		Kit.bench(f, CFrame.lookAt(p, v(0, 0, 0.72)), 8)
+		local p = v(math.cos(a) * 30, math.sin(a) * 30, 0.85)
+		local cf = CFrame.lookAt(p, v(0, 0, 0.85)) * CFrame.Angles(0, math.pi, 0)
+		local bench = piece(f, "HubBench", cf)
+		bench.Name = "Bench"
+		local seat = Instance.new("Seat")
+		seat.Name = "BenchSeat"
+		seat.Size, seat.CFrame = Vector3.new(6, 0.4, 1.8), cf * CFrame.new(0, 2.1, 0.2)
+		seat.Transparency, seat.Anchored = 1, true
+		seat.Parent = bench
 	end
+	-- planters either side of the four ways into the plaza
+	for _, deg in { 90, 270, 20, 160 } do
+		local a = math.rad(deg)
+		for _, side in { -1, 1 } do
+			local p = v(math.cos(a) * 39 + math.cos(a + math.pi / 2) * side * 8, math.sin(a) * 39 + math.sin(a + math.pi / 2) * side * 8, 0)
+			piece(f, "HubPlanter", CFrame.lookAt(p, v(0, 0))).Name = "Planter"
+		end
+	end
+	-- a ball to kick about: plain physics, light and bouncy
+	local ball = Kit.ball(f, "Ball", 4, v(18, 26, 4), Kit.rgb(230, 70, 60), M.SmoothPlastic, { Anchored = false })
+	ball.CustomPhysicalProperties = PhysicalProperties.new(0.3, 0.4, 0.7)
 end
 
 local function water(area)
@@ -225,12 +244,10 @@ local function water(area)
 			end
 		end
 	end
-	-- a little plank bridge where the stream is easiest to see
+	-- an arched stone footbridge where the stream is easiest to see
 	local mid = from + dir * 0.45
-	for k = -2, 2 do
-		local p = mid + dir.Unit * k * 1.75 + Vector3.new(0, 0.7, 0)
-		Kit.box(f, "Bridge", Vector3.new(1.6, 0.4, 10), CFrame.lookAt(p, p + dir.Unit:Cross(Vector3.yAxis)) * CFrame.Angles(0, 0, Kit.R:NextNumber(-0.03, 0.03)), C.Plank, M.Wood)
-	end
+	local across = dir.Unit:Cross(Vector3.yAxis)
+	piece(f, "HubBridge", CFrame.lookAt(mid, mid + across)).Name = "Bridge"
 	-- the falls: two sheets and mist where the water leaves the rock
 	local out = Vector3.new(math.cos(FALLS_ANGLE), 0, math.sin(FALLS_ANGLE))
 	local edge = v(FALLS.x, FALLS.z) + out * 6
@@ -257,19 +274,17 @@ end
 local function flora(area)
 	local f = Kit.folder(area, "Flora")
 	local r = Kit.R
-	-- trees are the store island's own low-poly tree (Starblaze Games), in three greens and a few in blossom
-	local leafTints = { Kit.rgb(72, 121, 60), Kit.rgb(88, 140, 66), Kit.rgb(60, 104, 52) }
+	-- round-crowned trees from Blender (hub.py), most leafy, some in blossom
 	for _ = 1, 30 do
 		local a, d = r:NextNumber(0, 6.28), r:NextNumber(58, 110)
 		local p = v(math.cos(a) * d, math.sin(a) * d, 0)
 		if not keepClear(p.X, p.Z, 4) then
-			local blossom = r:NextNumber() < 0.16
-			local tree = Assets.Place(f, "Tree", CFrame.new(p - Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, r:NextNumber(0, 6.28), 0), r:NextNumber(22, 34))
-			for _, part in tree:GetDescendants() do
-				if part:IsA("MeshPart") and part.MeshId == "rbxassetid://7383573087" then
-					part.Color = blossom and Kit.rgb(240, 172, 196) or leafTints[r:NextInteger(1, #leafTints)]
-					part.CastShadow = true
-				end
+			local blossom = r:NextNumber() < 0.22
+			local tree = piece(f, blossom and "HubTree2" or "HubTree1", CFrame.new(p - Vector3.new(0, 0.6, 0)) * CFrame.Angles(0, r:NextNumber(0, 6.28), 0), r:NextNumber(0.8, 1.15))
+			tree.Name = "Tree"
+			local leaf = not blossom and tree:FindFirstChild("Leaf")
+			if leaf then
+				leaf.Color = ({ Kit.rgb(72, 121, 60), Kit.rgb(88, 140, 66), Kit.rgb(60, 104, 52) })[r:NextInteger(1, 3)]
 			end
 		end
 	end
@@ -379,14 +394,56 @@ function Hub.Build(root)
 	slabPath(area, v(-38, 6), v(POND.x + POND.d / 2 + 3, POND.z - 4), 6)
 	flora(area)
 	satellites(area)
-	for _, spot in {
-		{ v(-10, 54), Vector3.xAxis }, { v(10, 54), -Vector3.xAxis },
-		{ v(-74, -30), Vector3.new(1, 0, -1) }, { v(74, -30), Vector3.new(-1, 0, -1) },
-		{ v(-14, -60), Vector3.xAxis }, { v(14, -60), -Vector3.xAxis },
-		{ v(56, 2), Vector3.zAxis }, { v(56, 34), -Vector3.zAxis },
-		{ v(-62, 26), Vector3.new(0, 0, -1) },
-	} do
-		Kit.lantern(area, spot[1], spot[2])
+	-- iron lamp posts along the paths
+	for _, spot in { v(-10, 54), v(10, 54), v(-74, -30), v(74, -30), v(-14, -60), v(14, -60), v(56, 2), v(56, 34), v(-62, 26) } do
+		local lamp = piece(area, "HubLamp", CFrame.new(spot))
+		lamp.Name = "Lamp"
+		local glow = Kit.noShadow(Kit.ball(lamp, "Flame", 1.1, spot + Vector3.new(0, 11, 0), C.GoldPale, M.Neon, { CanCollide = false, CanQuery = false, CanTouch = false }))
+		Kit.light(glow, Kit.rgb(255, 214, 150), 26, 1.1)
+	end
+	-- a domed pavilion looking over the spring
+	piece(area, "HubGazebo", CFrame.lookAt(v(-74, 72), v(POND.x, POND.z))).Name = "Gazebo"
+	-- a big tree with a rope swing on its low bough (the bough runs out along the tree's front, local -Z)
+	local treeCF = CFrame.lookAt(v(-40, 88, -0.4), v(-40, 60, -0.4))
+	piece(area, "HubSwingTree", treeCF).Name = "SwingTree"
+	local swing = Kit.model(area, "Swing")
+	local branch = treeCF.LookVector
+	local hangA, hangB = (treeCF * CFrame.new(0, 11.6, -13.4)).Position, (treeCF * CFrame.new(0, 11.6, -16.8)).Position
+	local seatCenter = (hangA + hangB) / 2 - Vector3.new(0, 8.2, 0)
+	local seatCF = CFrame.fromMatrix(seatCenter, branch, Vector3.yAxis)
+	local plank = piece(swing, "HubSwingSeat", seatCF)
+	local main = plank:FindFirstChild("Wood")
+	for _, part in plank:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.Anchored = false
+			if part ~= main then
+				local w = Instance.new("WeldConstraint")
+				w.Part0, w.Part1 = main, part
+				w.Parent = part
+			end
+		end
+	end
+	local seat = Instance.new("Seat")
+	seat.Name = "SwingSeat"
+	seat.Size, seat.CFrame = Vector3.new(4, 0.3, 1.6), seatCF * CFrame.new(0, 0.3, 0)
+	seat.Transparency, seat.Anchored = 1, false
+	seat.Parent = swing
+	local sw = Instance.new("WeldConstraint")
+	sw.Part0, sw.Part1 = main, seat
+	sw.Parent = seat
+	for _, hang in { hangA, hangB } do
+		local top = Kit.box(swing, "Hook", Vector3.new(0.3, 0.3, 0.3), CFrame.new(hang), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
+		local a0 = Instance.new("Attachment")
+		a0.Parent = top
+		local a1 = Instance.new("Attachment")
+		a1.Parent = main
+		a1.WorldPosition = Vector3.new(hang.X, seatCenter.Y + 0.2, hang.Z)
+		local rope = Instance.new("RopeConstraint")
+		rope.Attachment0, rope.Attachment1 = a0, a1
+		rope.Length = hang.Y - seatCenter.Y - 0.2
+		rope.Visible, rope.Thickness = true, 0.18
+		rope.Color = BrickColor.new("Brown")
+		rope.Parent = top
 	end
 	signpost(area, v(13, 60))
 
@@ -401,6 +458,15 @@ function Hub.Build(root)
 	Kit.noShadow(Kit.disc(area, "SpawnRing", v(0, 72, 1.2), 13, 0.2, C.Gold, M.Foil))
 	Kit.noShadow(Kit.disc(area, "SpawnRingIn", v(0, 72, 1.3), 11.6, 0.2, C.Marble, M.Marble))
 	Kit.arrival(area, CFrame.new(v(0, 66, 4)), 8)
+
+	-- Azusa's spot beside the path out of spawn (SidePlaceService stands her here, in the mymeo125 avatar), with a ring of flowers
+	local azusaAt = v(-13, 58, 0)
+	Kit.box(area, "AzusaSpot", Vector3.new(1, 1, 1), CFrame.lookAt(azusaAt, v(0, 66, 0)), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
+	Kit.noShadow(Kit.disc(area, "AzusaRing", azusaAt + Vector3.new(0, 0.2, 0), 7, 0.2, Kit.rgb(150, 196, 110), M.Grass))
+	for i = 1, 10 do
+		local a = i / 10 * math.pi * 2
+		Kit.noShadow(Kit.ball(area, "AzusaFlower", 0.5, azusaAt + Vector3.new(math.cos(a) * 3.3, 0.35, math.sin(a) * 3.3), i % 2 == 0 and Kit.rgb(255, 176, 214) or Kit.rgb(255, 240, 250), M.Neon))
+	end
 	return area
 end
 

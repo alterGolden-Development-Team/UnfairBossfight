@@ -129,6 +129,84 @@ function Ledger.purchase(record: any, kind: any, id: any, price: any): ({ [strin
 	return out, "Bought"
 end
 
+-- A class given for free (the Reality Disorderer quest). Returns (new record, applied); applied is false when it was already owned.
+function Ledger.grantClass(record: any, id: any): ({ [string]: any }, boolean)
+	local out: { [string]: any } = {}
+	if type(record) == "table" then
+		for key, value in record do
+			out[key] = value
+		end
+	end
+	if type(id) ~= "string" or id == "" or Ledger.owns(out, "Classes", id) then
+		return out, false
+	end
+	local owned = { Classes = ownedList(out, "Classes"), Orbs = ownedList(out, "Orbs") }
+	table.insert(owned.Classes, id)
+	out.Owned = owned
+	return out, true
+end
+
+-- Inventory: Items = { [itemId] = count }. Items are found in the world (the Reality Orb), never bought or sent by a client.
+Ledger.MaxItemCount = 99
+
+function Ledger.itemCount(record: any, id: any): number
+	if type(record) ~= "table" or type(record.Items) ~= "table" or type(id) ~= "string" then
+		return 0
+	end
+	return wholeNonNegative(record.Items[id])
+end
+
+-- Every item the record holds, as { [id] = count } (only counts above 0).
+function Ledger.items(record: any): { [string]: number }
+	local out: { [string]: number } = {}
+	if type(record) == "table" and type(record.Items) == "table" then
+		for id, count in record.Items do
+			local n = type(id) == "string" and wholeNonNegative(count) or 0
+			if n > 0 then
+				out[id] = n
+			end
+		end
+	end
+	return out
+end
+
+local function withItems(record: any): { [string]: any }
+	local out: { [string]: any } = {}
+	if type(record) == "table" then
+		for key, value in record do
+			out[key] = value
+		end
+	end
+	out.Items = Ledger.items(record)
+	return out
+end
+
+-- Returns (new record, applied). `limit` caps how many of this item one record may hold (default MaxItemCount).
+function Ledger.addItem(record: any, id: any, count: any, limit: number?): ({ [string]: any }, boolean)
+	local out = withItems(record)
+	if type(id) ~= "string" or id == "" or type(count) ~= "number" or count ~= math.floor(count) or count <= 0 then
+		return out, false
+	end
+	local have = out.Items[id] or 0
+	local cap = math.min(limit or Ledger.MaxItemCount, Ledger.MaxItemCount)
+	if have >= cap then
+		return out, false
+	end
+	out.Items[id] = math.min(cap, have + count)
+	return out, true
+end
+
+-- Takes one of an item. Returns (new record, applied); applied is false when there was none.
+function Ledger.takeItem(record: any, id: any): ({ [string]: any }, boolean)
+	local out = withItems(record)
+	local have = type(id) == "string" and out.Items[id] or 0
+	if not have or have <= 0 then
+		return out, false
+	end
+	out.Items[id] = have > 1 and have - 1 or nil
+	return out, true
+end
+
 -- The orb to use, or nil. An equipped orb the record does not own counts as none.
 function Ledger.equippedOrb(record: any): string?
 	if type(record) ~= "table" then

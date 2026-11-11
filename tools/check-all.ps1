@@ -4,7 +4,7 @@
     powershell -ExecutionPolicy Bypass -File tools\check-all.ps1            # everything
     powershell -ExecutionPolicy Bypass -File tools\check-all.ps1 -SkipBoss  # lobby + shared only
 
-  1. boss/tools/check.ps1  (boss build + analyzer diff against its baseline + mirror pairs)
+  1. alterGolden Bossfight/tools/check.ps1  (boss build + analyzer diff against its baseline + mirror pairs)
   2. lobby: `rojo build` must succeed.
   3. lobby + shared: `luau-lsp analyze` must report NO diagnostics at all. The lobby is new code, so unlike the boss
      project it has no baseline of known problems to hide behind.
@@ -22,11 +22,11 @@ function Stop-Tooling($msg) { Write-Host "TOOLING: $msg" -ForegroundColor Red; e
 # --- 1. boss ----------------------------------------------------------------------------------------------
 if (-not $SkipBoss) {
     Write-Host '=== boss ===' -ForegroundColor Cyan
-    & powershell -ExecutionPolicy Bypass -File (Join-Path $root 'boss\tools\check.ps1')
+    & powershell -ExecutionPolicy Bypass -File (Join-Path $root 'alterGolden Bossfight\tools\check.ps1')
     if ($LASTEXITCODE -ne 0) { Write-Host 'FAIL: boss check failed' -ForegroundColor Red; exit $LASTEXITCODE }
 }
 
-# --- locate tools (same lookup as boss/tools/check.ps1) ------------------------------------------------------
+# --- locate tools (same lookup as alterGolden Bossfight/tools/check.ps1) ------------------------------------------------------
 if (-not (Get-Command rojo -ErrorAction SilentlyContinue)) { Stop-Tooling 'rojo is not on PATH' }
 $lsp = Get-ChildItem "$env:USERPROFILE\.vscode\extensions\johnnymorganz.luau-lsp-*\bin\server.exe" -ErrorAction SilentlyContinue |
     Sort-Object { $_.Directory.Parent.Name } | Select-Object -Last 1
@@ -53,11 +53,31 @@ $raw = & $lsp.FullName analyze "--definitions=$($defs.FullName)" "--sourcemap=$s
 $ErrorActionPreference = 'Stop'
 $problems = @($raw | Where-Object { $_ -match '(TypeError|[A-Za-z]+Unused|SyntaxError|[A-Za-z]+): ' -and $_ -match '[\\/](src|shared)[\\/]' -and
     # the boss code the lobby mounts (class kits for the showroom) is gated by the boss check and its baseline, not here
-    $_ -notmatch '^\s*\S*[\\/]boss[\\/]src[\\/]' })
+    $_ -notmatch '[\\/]alterGolden Bossfight[\\/]src[\\/]' })
 if ($problems.Count) {
     Write-Host "FAIL: $($problems.Count) analyzer diagnostics in lobby/shared:" -ForegroundColor Red
     $problems | Select-Object -First 40 | ForEach-Object { Write-Host "  $_" }
     exit 1
 }
-Write-Host 'PASS: lobby builds, lobby + shared analyze clean (boss gate included unless -SkipBoss).' -ForegroundColor Green
+
+# --- 4. the side places (glitched, tutorial): build + zero-tolerance analyze -----------------------------------
+foreach ($place in @('glitched', 'tutorial')) {
+    Write-Host "=== $place ===" -ForegroundColor Cyan
+    $project = Join-Path $root "$place\default.project.json"
+    $ErrorActionPreference = 'Continue'
+    & rojo build $project -o (Join-Path $tmp "$place.rbxl") | Out-Null
+    if ($LASTEXITCODE -ne 0) { Write-Host "FAIL: $place rojo build failed" -ForegroundColor Red; exit 1 }
+    $map = Join-Path $tmp "$place-sourcemap.json"
+    & rojo sourcemap $project -o $map | Out-Null
+    Set-Location (Join-Path $root $place)
+    $raw = & $lsp.FullName analyze "--definitions=$($defs.FullName)" "--sourcemap=$map" --no-strict-dm-types src map 2>&1 | ForEach-Object { "$_" }
+    $ErrorActionPreference = 'Stop'
+    $found = @($raw | Where-Object { $_ -match '(TypeError|[A-Za-z]+Unused|SyntaxError|[A-Za-z]+): ' -and $_ -match '[\\/](src|map)[\\/]' })
+    if ($found.Count) {
+        Write-Host "FAIL: $($found.Count) analyzer diagnostics in ${place}:" -ForegroundColor Red
+        $found | Select-Object -First 40 | ForEach-Object { Write-Host "  $_" }
+        exit 1
+    }
+}
+Write-Host 'PASS: lobby, glitched and tutorial build and analyze clean (alterGolden Bossfight gate included unless -SkipBoss).' -ForegroundColor Green
 exit 0

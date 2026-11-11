@@ -3,15 +3,19 @@
 One Roblox experience made of several places, grouped in this repo.
 
 ```
-boss/     The Golden Encounter (alterGolden's Bossfight). Rojo project: boss/default.project.json
-lobby/    Unfair Bossfight lobby: class picker, party pads, cash HUD, coming-soon panels. Rojo project: lobby/default.project.json
-shared/   Code mounted into both places as ReplicatedStorage.UnfairShared (config, teleport payload, party rules, cash rules)
-docs/     intent/ (what we want), spec/ (how it should work), cutover.md (going live)
-tasks/    unfair-bossfight/ plan.md, todo.md and user-tests.md (boss/tasks holds the earlier code-cleanup record)
-tools/    check-all.ps1, the gate for both projects
+alterGolden Bossfight/   The Golden Encounter (alterGolden's bossfight). Rojo project: alterGolden Bossfight/default.project.json
+lobby/                   Unfair Bossfight lobby: hub, Keeper's shop + class showroom, palace party portals, island, Divided Wood, Azusa.
+                         Rojo project: lobby/default.project.json
+tutorial/                Azusa's training grounds (the Tutorial place): her seven lessons. tutorial/default.project.json
+glitched/                "!A GL!TC3D PL@CE!": the glitched road and the man who wants the Reality Orb. glitched/default.project.json
+shared/                  Code mounted into every place as ReplicatedStorage.UnfairShared (config, teleport payload, party and cash rules,
+                         saved record, inventory, NPC dialogue)
+docs/                    intent/ (what we want), spec/ (how it should work), cutover.md (going live), side-places.md
+tasks/                   unfair-bossfight/ plan.md, todo.md and user-tests.md
+tools/                   check-all.ps1 (the gate for every place) and the sync tools
 ```
 
-Open `UnfairBossfight.code-workspace` in VS Code to get all four folders with the right Luau settings.
+Open `UnfairBossfight.code-workspace` in VS Code to get every folder with the right Luau settings.
 
 ## How a run works
 
@@ -19,7 +23,7 @@ Open `UnfairBossfight.code-workspace` in VS Code to get all four folders with th
 2. The first player on a pad is the leader: they pick the difficulty and Enraged. Up to 6 players join the room. **Start** runs a
    5 second countdown, then the lobby reserves a private boss server and teleports the whole party with one `TeleportAsync`.
    The teleport carries a versioned payload (`shared/UnfairShared/TeleportPayload.luau`).
-3. The **boss place** (`boss/.../Encounter/Intake.luau`) validates the payload, sets class, difficulty and Enraged, and hides the
+3. The **boss place** (`alterGolden Bossfight/.../Encounter/Intake.luau`) validates the payload, sets class, difficulty and Enraged, and hides the
    difficulty statue, class statue and Enraged gate. Anyone who did not come through the lobby is sent back to it.
 4. When the boss falls, `CashService` pays each winner once (`CashRules` x `CashLedger`, DataStore
    `UnfairBossfight_PlayerData_v1`, key `user_<id>`). After a win or a loss the player can **Retry** (same server, same settings) or
@@ -29,7 +33,7 @@ Open `UnfairBossfight.code-workspace` in VS Code to get all four folders with th
 
 | Project | Command | Port |
 |---|---|---|
-| boss | `rojo serve boss/default.project.json --port 34872` | 34872 |
+| boss | `rojo serve "alterGolden Bossfight/default.project.json" --port 34872` | 34872 |
 | lobby | `rojo serve lobby/default.project.json --port 34873` | 34873 |
 
 Connect each Studio window to **its own** port only. If Studio stops receiving changes, check that the matching `rojo` process is
@@ -50,7 +54,7 @@ come with the cut-over (see [docs/cutover.md](docs/cutover.md)). The test univer
 
 `powershell -ExecutionPolicy Bypass -File tools/check-all.ps1` builds both Rojo projects and runs the Luau analyzer: the boss
 against its baseline (no new diagnostics), the lobby and `shared/` with zero tolerated. `-SkipBoss` checks only lobby and shared.
-`boss/tools/check.ps1` is the boss-only gate; see [boss/README.md](boss/README.md) for how the boss place's files are laid out.
+`alterGolden Bossfight/tools/check.ps1` is the boss-only gate; see [alterGolden Bossfight/README.md](<alterGolden Bossfight/README.md>) for how the boss place's files are laid out.
 
 The pure rule modules in `shared/UnfairShared/` have test files in `shared/UnfairShared/Tests/` (run with the `Harness`; there is
 no local Luau runner, so they are run in Studio through `execute_luau`).

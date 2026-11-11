@@ -11,7 +11,7 @@ local function party(): TeleportPayload.Party
 	return {
 		partyId = "party-1",
 		leaderUserId = 101,
-		difficulty = "Hardcore",
+		difficulty = "TrueHardcore",
 		enraged = true,
 		members = { { userId = 101, class = "Warrior" }, { userId = 202, class = "Mage" } },
 	}
@@ -24,7 +24,7 @@ local function raw(): any
 		runId = "run-1",
 		partyId = "party-1",
 		leaderUserId = 101,
-		difficulty = "Hardcore",
+		difficulty = "TrueHardcore",
 		enraged = true,
 		members = { { userId = 101, class = "Warrior" }, { userId = 202, class = "Mage" } },
 		issuedAt = NOW,
@@ -54,7 +54,7 @@ cases:add("valid payload is accepted and returned as a copy", function()
 	Harness.truthy(out ~= nil, "payload accepted")
 	local payload = out :: TeleportPayload.Payload
 	Harness.eq(payload.runId, "run-1")
-	Harness.eq(payload.difficulty, "Hardcore")
+	Harness.eq(payload.difficulty, "TrueHardcore")
 	Harness.eq(payload.enraged, true)
 	Harness.eq(#payload.members, 2)
 	Harness.eq(payload.members[2].class, "Mage")
@@ -246,7 +246,7 @@ cases:add("build produces a payload that validates, with the party's settings", 
 	Harness.eq(built.runId, "run-9")
 	Harness.eq(built.partyId, "party-1")
 	Harness.eq(built.leaderUserId, 101)
-	Harness.eq(built.difficulty, "Hardcore")
+	Harness.eq(built.difficulty, "TrueHardcore")
 	Harness.eq(built.enraged, true)
 	Harness.eq(built.issuedAt, NOW)
 	Harness.eq(#built.members, 2)

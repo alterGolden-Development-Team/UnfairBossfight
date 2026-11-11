@@ -26,7 +26,8 @@ local ISLAND_ORIGIN = islandFolder and islandFolder:GetAttribute("Origin") or Ve
 local AREAS = {
 	Hub = { Arrival = "Hub.Arrival", Floor = 330 },
 	Palace = { Arrival = "Palace.ArrivalPalace", Floor = -440 },
-	Island = { Arrival = "Island.ArrivalIsland", Floor = -40, Radius = 760, Center = ISLAND_ORIGIN },
+	-- the main island and the arrival isle 1300 out to sea, with the ferry crossing between them
+	Island = { Arrival = "Island.ArrivalIsland", Floor = -40, Radius = 1150, Center = ISLAND_ORIGIN + Vector3.new(0, 0, 650) },
 	Forest = { Arrival = "Forest.ArrivalForest", Floor = -440 },
 	Stage = { Arrival = "Stage.ArrivalStage", Floor = -440 }, -- the training hall; TryoutService sends people there
 }
@@ -150,7 +151,7 @@ local boardSpot = islandFolder and islandFolder:FindFirstChild("BoardingSpot")
 local landing = islandFolder and islandFolder:FindFirstChild("BoatLanding")
 
 if boatsFolder and boardSpot and landing then
-	local SAIL_TIME, WAIT_DOCK, WAIT_LAND = 12, 7, 3
+	local SAIL_TIME, WAIT_DOCK, WAIT_LAND = 26, 8, 3
 	local fleet = {}
 
 	local function seatsOf(boat)
@@ -163,21 +164,35 @@ if boatsFolder and boardSpot and landing then
 		return seats
 	end
 
-	local function sail(boat, from, to)
-		-- a gentle curve and a little roll, so it does not look like an elevator
+	-- a long crossing on a gentle swell: the boat rises and falls and rolls a little the whole way, never leaving its lane
+	local function sail(boat, from, to, duration)
 		local value = Instance.new("NumberValue")
-		local tween = TweenService:Create(value, TweenInfo.new(SAIL_TIME, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Value = 1 })
+		local tween = TweenService:Create(value, TweenInfo.new(duration or SAIL_TIME, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), { Value = 1 })
 		local root = boat.PrimaryPart
+		local phase = math.random() * 6
 		local connection = value.Changed:Connect(function(t)
-			local arc = math.sin(t * math.pi)
-			local offset = Vector3.new(arc * 22 * (to.Position.Z < from.Position.Z and 1 or -1), 0, 0)
-			root.CFrame = from:Lerp(to, t) + offset
+			local clock = os.clock() + phase
+			local swell = CFrame.new(0, math.sin(clock * 1.1) * 0.5, 0) * CFrame.Angles(math.sin(clock * 0.8) * 0.03, 0, math.sin(clock * 0.95) * 0.05)
+			root.CFrame = from:Lerp(to, t) * swell
 		end)
 		tween:Play()
 		tween.Completed:Wait()
 		connection:Disconnect()
 		value:Destroy()
 		root.CFrame = to
+	end
+
+	-- riding at the dock: the same swell, gentler, for `seconds`
+	local function bob(boat, at, seconds)
+		local root = boat.PrimaryPart
+		local phase = math.random() * 6
+		local stop = os.clock() + seconds
+		while os.clock() < stop and boat.Parent do
+			local clock = os.clock() + phase
+			root.CFrame = at * CFrame.new(0, math.sin(clock * 1.1) * 0.3, 0) * CFrame.Angles(0, 0, math.sin(clock * 0.9) * 0.03)
+			task.wait(1 / 20)
+		end
+		root.CFrame = at
 	end
 
 	local function unload(boat)
@@ -199,19 +214,24 @@ if boatsFolder and boardSpot and landing then
 
 	for index, boat in boatsFolder:GetChildren() do
 		local dock = boat.PrimaryPart.CFrame
-		local shore = CFrame.new(Vector3.new(ISLAND_ORIGIN.X + (dock.Position.X - ISLAND_ORIGIN.X) * 0.35, dock.Position.Y, ISLAND_ORIGIN.Z + 214)) * dock.Rotation
+		-- each boat stops in its own lane (Island builder sets Shore), so they never converge on one spot
+		local shore = boat:GetAttribute("Shore") or CFrame.new(Vector3.new(dock.Position.X, dock.Position.Y, ISLAND_ORIGIN.Z + 214)) * dock.Rotation
 		local info = { boat = boat, docked = false }
 		table.insert(fleet, info)
 		task.spawn(function()
-			task.wait((index - 1) * ((SAIL_TIME * 2 + WAIT_DOCK + WAIT_LAND) / #boatsFolder:GetChildren()))
+			task.wait((index - 1) * ((SAIL_TIME * 2 + WAIT_DOCK + WAIT_LAND + 6) / #boatsFolder:GetChildren()))
 			while boat.Parent do
 				info.docked = true
-				task.wait(WAIT_DOCK)
+				bob(boat, dock, WAIT_DOCK)
 				info.docked = false
 				sail(boat, dock, shore)
 				unload(boat)
-				task.wait(WAIT_LAND)
-				sail(boat, shore, dock)
+				bob(boat, shore, WAIT_LAND)
+				-- come about, sail home bow first, and come about again at the dock
+				local turned = CFrame.Angles(0, math.pi, 0)
+				sail(boat, shore, shore * turned, 3)
+				sail(boat, shore * turned, dock * turned)
+				sail(boat, dock * turned, dock, 3)
 			end
 		end)
 	end

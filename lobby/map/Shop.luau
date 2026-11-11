@@ -1,239 +1,221 @@
 --!nonstrict
--- The Reliquary: the shop on the hub. Layout from the reference photo (a keeper behind a counter of sacks, walled in by floor-to-ceiling
--- shelves so full they feel like they might fall), but the stock is swords, bows, axes, shields, potions, scrolls and orbs.
--- Local coordinates: front (doorway) is -Z, back wall is +Z. A giant sword through the roof is the landmark you steer by.
+-- The Reliquary: the shop on the hub. A timber-framed shop with a tiled roof, bay windows and a striped awning; inside, a keeper behind
+-- a counter heaped with sacks, walled in by shelves of swords, potions, shields, books, scrolls and orbs. Blender meshes
+-- (lobby/blender/shop.py, kit "Shop"); this file places them and adds what is live: the keeper's prompt, lamps, smoke, the sign that
+-- swings on its hinge, and barrels and crates you can push about. Local frame: front (door) is -Z. Gates.B converts Blender points.
 local Kit = require(script.Parent.Kit)
 local Assets = require(script.Parent.Assets)
+local Gates = require(script.Parent.Gates)
 local C, M = Kit.C, Kit.M
+local B = Gates.B
 
 local Shop = {}
 local BASE = CFrame.new(84, 400, 18) * CFrame.Angles(0, math.rad(90), 0)
+local HEIGHT, DEPTH = 24, 36
 
-local WIDTH, DEPTH, HEIGHT = 44, 36, 24
+local BREWS = { Kit.rgb(230, 60, 70), Kit.rgb(70, 150, 245), Kit.rgb(90, 220, 120), Kit.rgb(245, 180, 60), Kit.rgb(190, 90, 240) }
+local SHIELDS = { Kit.rgb(140, 36, 40), Kit.rgb(40, 70, 130), Kit.rgb(60, 100, 60) }
 
-local POTIONS = { Kit.rgb(220, 60, 60), Kit.rgb(70, 140, 235), Kit.rgb(90, 210, 110), Kit.rgb(230, 170, 60), Kit.rgb(190, 90, 230) }
-local ORBS = { Kit.rgb(255, 214, 92), Kit.rgb(110, 230, 130), Kit.rgb(120, 200, 255), Kit.rgb(255, 120, 70), Kit.rgb(240, 170, 255) }
-
-local function detail(part)
-	part.CastShadow = false
-	part.CanCollide = false
-	part.CanQuery = false
-	part.CanTouch = false
-	return part
-end
-
--- Items stand on a shelf at `at` (a CFrame on the plank, -Z facing the room). Each returns the width it took.
-local function sword(m, at, big)
-	local s = big and 1.35 or 1
-	local steel = Kit.rgb(196, 204, 214)
-	detail(Kit.box(m, "Blade", Vector3.new(0.34, 3 * s, 0.1) , at * CFrame.new(0, 1.5 * s, 0), steel, M.Metal))
-	detail(Kit.box(m, "Guard", Vector3.new(1.3, 0.2, 0.26) * s, at * CFrame.new(0, 3.08 * s, 0), C.Gold, M.Metal))
-	detail(Kit.box(m, "Grip", Vector3.new(0.2, 0.9, 0.2) * s, at * CFrame.new(0, 3.6 * s, 0), C.WoodDark, M.Fabric))
-	detail(Kit.ball(m, "Pommel", 0.34 * s, (at * CFrame.new(0, 4.1 * s, 0)).Position, C.Gold, M.Metal))
-	return 1.5
-end
-
-local function bow(m, at)
-	local count = 7
-	for i = 0, count - 1 do
-		local a = math.rad(-65 + i / (count - 1) * 130)
-		local p = at * CFrame.new(0, 2.1 + math.sin(a) * 2, -math.cos(a) * 0.65 + 0.4)
-		detail(Kit.box(m, "Limb", Vector3.new(0.2, 0.82, 0.24), p * CFrame.Angles(a, 0, 0), C.Wood, M.Wood))
+local function piece(parent, name, cf, scale)
+	local model = Assets.Get(name)
+	if scale and scale ~= 1 then
+		model:ScaleTo(scale)
 	end
-	detail(Kit.box(m, "String", Vector3.new(0.05, 3.7, 0.05), at * CFrame.new(0, 2.1, 0.45), C.White, M.Fabric))
-	return 1.4
+	model:PivotTo(cf)
+	model.Parent = parent
+	return model
 end
 
-local function axe(m, at)
-	detail(Kit.box(m, "Haft", Vector3.new(0.24, 3.8, 0.24), at * CFrame.new(0, 1.9, 0), C.Wood, M.Wood))
-	detail(Kit.wedge(m, "Bit", Vector3.new(0.14, 1.3, 1), at * CFrame.new(0.55, 3.1, 0) * CFrame.Angles(0, math.rad(90), 0), Kit.rgb(166, 172, 184), M.Metal))
-	detail(Kit.wedge(m, "Bit", Vector3.new(0.14, 1.3, 1), at * CFrame.new(-0.55, 3.1, 0) * CFrame.Angles(0, math.rad(-90), 0), Kit.rgb(166, 172, 184), M.Metal))
-	return 1.9
-end
-
-local function shield(m, at, tint)
-	detail(Kit.cyl(m, "Face", 0.22, 2.7, at * CFrame.new(0, 1.55, 0) * CFrame.Angles(0, math.rad(90), 0), tint, M.Metal))
-	detail(Kit.cyl(m, "Boss", 0.42, 0.8, at * CFrame.new(0, 1.55, -0.08) * CFrame.Angles(0, math.rad(90), 0), C.Gold, M.Metal))
-	return 3
-end
-
-local function potion(m, at, tint)
-	detail(Kit.ball(m, "Flask", 1.05, (at * CFrame.new(0, 0.6, 0)).Position, tint, M.Glass, { Transparency = 0.2 }))
-	detail(Kit.box(m, "Neck", Vector3.new(0.3, 0.55, 0.3), at * CFrame.new(0, 1.3, 0), tint, M.Glass))
-	detail(Kit.box(m, "Cork", Vector3.new(0.34, 0.22, 0.34), at * CFrame.new(0, 1.66, 0), C.Plank, M.Wood))
-	return 1.2
-end
-
-local function orb(m, at, tint)
-	detail(Kit.cyl(m, "Stand", 0.32, 1, at * CFrame.new(0, 0.16, 0) * CFrame.Angles(0, 0, math.rad(90)), C.GoldDeep, M.Metal))
-	detail(Kit.ball(m, "Orb", 1.3, (at * CFrame.new(0, 0.95, 0)).Position, tint, M.Neon))
-	return 1.6
-end
-
-local function scrolls(m, at)
-	for i = 0, 2 do
-		detail(Kit.cyl(m, "Scroll", 2, 0.42, at * CFrame.new(0, 0.22 + (i == 2 and 0.38 or 0), (i == 2 and 0.2 or i * 0.44)) , Kit.rgb(226, 208, 164), M.Fabric))
+local function detail(model)
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.CanCollide, part.CanQuery, part.CanTouch, part.CastShadow = false, false, false, false
+		end
 	end
-	return 2.3
+	return model
 end
 
-local function dagger(m, at)
-	detail(Kit.box(m, "Blade", Vector3.new(0.24, 1.3, 0.08), at * CFrame.new(0, 0.65, 0), Kit.rgb(196, 204, 214), M.Metal))
-	detail(Kit.box(m, "Guard", Vector3.new(0.7, 0.14, 0.2), at * CFrame.new(0, 1.35, 0), C.Gold, M.Metal))
-	detail(Kit.box(m, "Grip", Vector3.new(0.16, 0.56, 0.16), at * CFrame.new(0, 1.7, 0), C.WoodDark, M.Fabric))
-	return 0.9
+local function tint(model, role, color)
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") and part.Name == role then
+			part.Color = color
+		end
+	end
+	return model
 end
 
--- One floor-to-ceiling shelf unit. `at` is the bottom-centre, -Z toward the room.
-local function shelfUnit(parent, at, width, rows, rowHeight)
-	local m = Kit.model(parent, "Shelves")
-	local r = Kit.R
-	Kit.box(m, "Back", Vector3.new(width, rows * rowHeight + 1, 0.6), at * CFrame.new(0, (rows * rowHeight + 1) / 2, 1.5), C.WoodDark, M.WoodPlanks)
-	for _, side in { -1, 1 } do
-		Kit.box(m, "Upright", Vector3.new(0.7, rows * rowHeight + 1, 3.2), at * CFrame.new(side * width / 2, (rows * rowHeight + 1) / 2, 0), C.Wood, M.Wood)
+-- an unanchored prop welded into one body, so players can shove it about
+local function physical(model)
+	local main
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") then
+			main = main or part
+			part.Anchored = false
+			part.CanCollide = true
+			part.CanQuery = true
+		end
 	end
-	for row = 0, rows do
-		Kit.box(m, "Plank", Vector3.new(width, 0.4, 3.2), at * CFrame.new(0, row * rowHeight + 0.5, 0), C.Plank, M.Wood)
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") and part ~= main then
+			local w = Instance.new("WeldConstraint")
+			w.Part0, w.Part1 = main, part
+			w.Parent = part
+		end
 	end
-	for row = 0, rows - 1 do
-		-- each row sells one thing, like the photo's rows of matching bottles, with odd ones crammed in
-		local stock = row % 5
-		local x = -width / 2 + 1.1
-		local limit = width / 2 - 0.9
-		while x < limit do
-			local at2 = at * CFrame.new(x, row * rowHeight + 0.7, r:NextNumber(-0.5, 0.2))
-			local tint = POTIONS[r:NextInteger(1, #POTIONS)]
-			local roll = r:NextNumber()
-			local used
-			if roll < 0.12 then
-				used = orb(m, at2, ORBS[r:NextInteger(1, #ORBS)])
-			elseif stock == 0 then
-				used = sword(m, at2)
-			elseif stock == 1 then
-				used = potion(m, at2, tint)
-			elseif stock == 2 then
-				used = roll < 0.55 and bow(m, at2) or axe(m, at2)
-			elseif stock == 3 then
-				used = roll < 0.6 and scrolls(m, at2) or dagger(m, at2)
+	model.PrimaryPart = main
+	return model
+end
+
+-- One shelf unit's stock: a different kind of thing on each shelf, the odd orb crammed in.
+local LEVELS = { 1.2, 5.9, 10.6, 15.3 }
+local function stock(parent, shelfCF, r)
+	for row, z in LEVELS do
+		local kind = (row + r:NextInteger(0, 3)) % 5
+		local u = -5.0
+		while u < 5.0 do
+			local at = shelfCF * CFrame.new(u, z + 0.2, 0.1)
+			local width
+			if r:NextNumber() < 0.1 then
+				tint(detail(piece(parent, "ShopOrbStand", at)), "Neon", BREWS[r:NextInteger(1, #BREWS)])
+				width = 1.4
+			elseif kind == 0 then
+				tint(detail(piece(parent, "ShopPotion", at * CFrame.Angles(0, r:NextNumber(-0.5, 0.5), 0))), "Neon", BREWS[r:NextInteger(1, #BREWS)])
+				width = 1.5
+			elseif kind == 1 then
+				detail(piece(parent, "ShopSword", at * CFrame.new(0, 0.85, 0) * CFrame.Angles(0, 0, r:NextNumber(-0.06, 0.06))))
+				width = 1.3
+			elseif kind == 2 then
+				tint(detail(piece(parent, "ShopShield", at * CFrame.new(0, 1.7, 0.3) * CFrame.Angles(math.rad(-10), 0, 0))), "Red", SHIELDS[r:NextInteger(1, #SHIELDS)])
+				width = 3.3
+			elseif kind == 3 then
+				detail(piece(parent, "ShopBooks", at))
+				width = 2.4
 			else
-				used = roll < 0.5 and shield(m, at2, C.StoneDark) or orb(m, at2, ORBS[r:NextInteger(1, #ORBS)])
+				detail(piece(parent, "ShopScroll", at))
+				width = 2.2
 			end
-			x += used + r:NextNumber(0.1, 0.5)
+			u += width + r:NextNumber(0.1, 0.4)
 		end
 	end
-	return m
 end
 
-local function shell(m)
-	local h = HEIGHT
-	Kit.box(m, "Floor", Vector3.new(WIDTH, 1, DEPTH), BASE * CFrame.new(0, 0.5, 0), C.StoneDark, M.Slate)
-	Kit.box(m, "Back", Vector3.new(WIDTH, h, 2), BASE * CFrame.new(0, h / 2, DEPTH / 2), C.StoneWarm, M.Limestone)
-	for _, side in { -1, 1 } do
-		Kit.box(m, "Side", Vector3.new(2, h, DEPTH), BASE * CFrame.new(side * WIDTH / 2, h / 2, 0), C.StoneWarm, M.Limestone)
-		Kit.box(m, "Front", Vector3.new(14, h, 2), BASE * CFrame.new(side * (WIDTH / 2 - 7), h / 2, -DEPTH / 2), C.StoneWarm, M.Limestone)
-		-- great timber corner posts
-		Kit.box(m, "Post", Vector3.new(3, h + 2, 3), BASE * CFrame.new(side * (WIDTH / 2), h / 2 + 1, -DEPTH / 2), C.WoodDark, M.Wood)
-		Kit.box(m, "Post", Vector3.new(3, h + 2, 3), BASE * CFrame.new(side * (WIDTH / 2), h / 2 + 1, DEPTH / 2), C.WoodDark, M.Wood)
-		Kit.box(m, "DoorPost", Vector3.new(2.4, h, 2.6), BASE * CFrame.new(side * 8.2, h / 2, -DEPTH / 2), C.WoodDark, M.Wood)
-	end
-	Kit.box(m, "Over", Vector3.new(16, 6, 2), BASE * CFrame.new(0, h - 3, -DEPTH / 2), C.StoneWarm, M.Limestone)
-	Kit.box(m, "Ceiling", Vector3.new(WIDTH, 1, DEPTH), BASE * CFrame.new(0, h + 0.5, 0), C.WoodDark, M.WoodPlanks)
-	for z = -14, 14, 7 do
-		Kit.box(m, "Beam", Vector3.new(WIDTH, 1.4, 1.4), BASE * CFrame.new(0, h - 0.7, z), C.Wood, M.Wood)
-	end
-	-- tile roof: two big wedges, ridge running front to back
-	local roof = Kit.rgb(132, 62, 46)
-	for _, side in { -1, 1 } do
-		Kit.wedge(m, "Roof", Vector3.new(DEPTH + 7, 15, WIDTH / 2 + 4), BASE * CFrame.new(side * (WIDTH / 4 + 2), h + 8.5, 0) * CFrame.Angles(0, side * math.rad(-90), 0), roof, M.Slate)
-	end
-	-- sign, awning and lanterns on the front
-	local plank = Kit.box(m, "SignBoard", Vector3.new(30, 6, 0.8), BASE * CFrame.new(0, h - 2, -DEPTH / 2 - 1.6), C.WoodDark, M.Wood)
-	Kit.sign(plank, Enum.NormalId.Front, "THE RELIQUARY", C.Gold, Enum.Font.Garamond, 0.4)
-	for i = -3, 3 do
-		Kit.wedge(m, "Awning", Vector3.new(4, 2.4, 6), BASE * CFrame.new(i * 4, h - 7.6, -DEPTH / 2 - 3.6) * CFrame.Angles(0, math.rad(180), 0), i % 2 == 0 and Kit.rgb(164, 40, 44) or Kit.rgb(230, 206, 150), M.Fabric)
-	end
-	for _, side in { -1, 1 } do
-		-- on brackets either side of the door, under the awning
-		Kit.wallLantern(m, BASE * CFrame.new(side * 11.5, h - 11, -DEPTH / 2 - 1))
-	end
-	-- the landmark
-	-- the store greatsword (Wirly_world's gothic blade), gilded and made huge, driven point-first through the roof
-	local giant = Assets.Get("GothicSword")
-	local blade = giant:FindFirstChildWhichIsA("MeshPart", true)
-	local length = 84
-	blade.Size *= length / math.max(blade.Size.X, blade.Size.Y, blade.Size.Z)
-	-- the mesh's long axis is X with the hilt at +X; turned hilt-up, leaning a little, about a third of it inside the roof
-	blade.CFrame = BASE * CFrame.new(0, h + 2, 4) * CFrame.Angles(0, 0, math.rad(-7)) * CFrame.new(0, length * 0.3, 0) * CFrame.Angles(0, 0, math.rad(90))
-	local look = blade:FindFirstChildOfClass("SurfaceAppearance")
-	if look then
-		look.Color = Kit.rgb(255, 214, 120)
-	end
-	blade.CastShadow = true
-	giant.Name = "GiantSword"
-	giant.Parent = m
-end
-
-local TIMBER = Kit.rgb(70, 48, 32)
-
--- One outside wall's half-timbering, a window in each upper panel. `face` sits on the wall's outer face, -Z pointing out, X along it.
-local function timberWall(m, face, length, verticals, windows)
-	local h = HEIGHT
-	for _, x in verticals do
-		Kit.box(m, "Timber", Vector3.new(1.1, h, 0.5), face * CFrame.new(x, h / 2, -0.25), TIMBER, M.Wood)
-	end
-	for _, y in { 0.6, 9, h - 0.6 } do
-		Kit.box(m, "Timber", Vector3.new(length, 1.1, 0.5), face * CFrame.new(0, y, -0.3), TIMBER, M.Wood)
-	end
-	-- braces in the lower panels, leaning alternately
-	for i = 1, #verticals - 1 do
-		local x0, x1 = verticals[i], verticals[i + 1]
-		local a = Vector3.new(x0 + 0.6, 1.2, 0)
-		local b = Vector3.new(x1 - 0.6, 8.4, 0)
-		if i % 2 == 0 then
-			a, b = Vector3.new(x0 + 0.6, 8.4, 0), Vector3.new(x1 - 0.6, 1.2, 0)
-		end
-		local mid = (a + b) / 2
-		local cf = face * CFrame.new(mid.X, mid.Y, -0.25) * CFrame.Angles(0, 0, math.atan2(b.Y - a.Y, b.X - a.X))
-		Kit.box(m, "Brace", Vector3.new((b - a).Magnitude, 0.9, 0.45), cf, TIMBER, M.Wood)
-	end
+local function interior(m)
+	local inner = Kit.folder(m, "Stock")
 	local r = Kit.R
-	local colors = { Kit.rgb(236, 90, 90), Kit.rgb(255, 214, 96), Kit.rgb(250, 250, 250) }
-	for _, x in windows do
-		local w = face * CFrame.new(x, 15.5, 0)
-		Kit.box(m, "WindowFrame", Vector3.new(5.6, 6.6, 0.5), w * CFrame.new(0, 0, -0.35), TIMBER, M.Wood)
-		Kit.box(m, "Pane", Vector3.new(4.4, 5.4, 0.2), w * CFrame.new(0, 0, -0.62), Kit.rgb(255, 204, 128), M.Glass)
-		Kit.detail(Kit.box(m, "Mullion", Vector3.new(0.3, 5.4, 0.2), w * CFrame.new(0, 0, -0.75), TIMBER, M.Wood))
-		Kit.detail(Kit.box(m, "Mullion", Vector3.new(4.4, 0.3, 0.2), w * CFrame.new(0, 0, -0.75), TIMBER, M.Wood))
-		for _, s in { -1, 1 } do
-			-- hinged on the frame's edge, swung a little open
-			Kit.detail(Kit.box(m, "Shutter", Vector3.new(2.6, 6.4, 0.25), w * CFrame.new(s * 2.9, 0, -0.75) * CFrame.Angles(0, s * math.rad(28), 0) * CFrame.new(s * 1.3, 0, 0), Kit.rgb(52, 86, 76), M.Wood))
-		end
-		Kit.box(m, "FlowerBox", Vector3.new(5.8, 1.1, 1.4), w * CFrame.new(0, -3.9, -1), TIMBER, M.WoodPlanks)
-		for k = 1, 9 do
-			local leaf = k % 3 == 0
-			Kit.detail(Kit.ball(m, leaf and "Leaf" or "Bloom", r:NextNumber(0.7, 1.1), (w * CFrame.new(-2.5 + k * 0.5, -3.1 + r:NextNumber(0, 0.4), -1 + r:NextNumber(-0.3, 0.3))).Position, leaf and C.GrassDark or colors[r:NextInteger(1, 3)], M.SmoothPlastic))
+	-- shelves: three along the back wall, two down each side, floor to rafters
+	local units = {}
+	for _, x in { -13, 0, 13 } do
+		local p = (BASE * B(x, 15.7, 1)).Position
+		table.insert(units, CFrame.lookAt(p, (BASE * B(x, 0, 1)).Position))
+	end
+	for _, sx in { -1, 1 } do
+		for _, y in { -5.5, 7 } do
+			local p = (BASE * B(sx * 19.7, y, 1)).Position
+			table.insert(units, CFrame.lookAt(p, (BASE * B(0, y, 1)).Position))
 		end
 	end
+	for _, cf in units do
+		piece(inner, "ShopShelf", cf).Name = "Shelves"
+		stock(inner, cf, r)
+	end
+	-- the counter across the shop, heaped with sacks either side of the keeper
+	piece(m, "ShopCounter", BASE * B(0, 6, 1)).Name = "Counter"
+	for i, x in { -11, -8, -5, 5, 8, 11 } do
+		local sack = detail(piece(inner, "ShopSack", BASE * B(x + r:NextNumber(-0.4, 0.4), 2.6, 1) * CFrame.Angles(0, r:NextNumber(0, 6.28), 0), r:NextNumber(0.85, 1.05)))
+		tint(sack, "Fabric", ({ Kit.rgb(216, 192, 140), Kit.rgb(196, 140, 80), Kit.rgb(226, 212, 176) })[i % 3 + 1])
+	end
+	-- on the counter: a balance, a ledger, coin, and the orb of the day
+	local top = BASE * CFrame.new(0, 6.5, 6)
+	Kit.detail(Kit.box(inner, "ScalePost", Vector3.new(0.4, 3.6, 0.4), top * CFrame.new(8, 1.8, 0), C.GoldDeep, M.Metal))
+	Kit.detail(Kit.box(inner, "ScaleBar", Vector3.new(5, 0.25, 0.25), top * CFrame.new(8, 3.5, 0), C.GoldDeep, M.Metal))
+	for _, s in { -1, 1 } do
+		Kit.detail(Kit.cyl(inner, "ScalePan", 0.16, 2.2, top * CFrame.new(8 + s * 2.4, 1.6, 0) * CFrame.Angles(0, 0, math.rad(90)), C.Gold, M.Metal))
+	end
+	Kit.detail(Kit.box(inner, "Ledger", Vector3.new(3, 0.5, 2.2), top * CFrame.new(-7, 0.3, 0) * CFrame.Angles(0, 0.3, 0), Kit.rgb(100, 40, 34), M.Leather))
+	local orb = tint(detail(piece(inner, "ShopOrbStand", top * CFrame.new(4.6, 0, -0.6), 1.4)), "Neon", Kit.rgb(240, 170, 255))
+	orb.Name = "OrbOfTheDay"
+	Kit.light(orb:FindFirstChild("Neon"), Kit.rgb(240, 170, 255), 12, 0.6)
+	for _ = 1, 22 do
+		Kit.detail(Kit.cyl(inner, "Coin", 0.16, 1, top * CFrame.new(r:NextNumber(-5, -2), 0.1 + r:NextNumber(0, 0.5), r:NextNumber(-1.4, 1.4)) * CFrame.Angles(0, 0, math.rad(90) + r:NextNumber(-0.25, 0.25)), C.Gold, M.Foil))
+	end
+	-- warm lamps hung from the beams
+	for _, x in { -13, 0, 13 } do
+		Kit.detail(Kit.box(inner, "Chain", Vector3.new(0.2, 4, 0.2), BASE * CFrame.new(x, HEIGHT - 3, -3), C.StoneDark, M.Metal))
+		local glow = Kit.detail(Kit.ball(inner, "Lamp", 2.2, (BASE * CFrame.new(x, HEIGHT - 6, -3)).Position, C.GoldPale, M.Neon))
+		Kit.light(glow, Kit.rgb(255, 196, 120), 30, 0.9)
+	end
+	Kit.noShadow(Kit.box(m, "Rug", Vector3.new(9, 0.12, 6), BASE * CFrame.new(0, 1.12, -DEPTH / 2 + 5), Kit.rgb(132, 34, 40), M.Fabric))
+	Kit.noShadow(Kit.box(m, "RugTrim", Vector3.new(9.6, 0.1, 6.6), BASE * CFrame.new(0, 1.09, -DEPTH / 2 + 5), C.GoldDeep, M.Fabric))
 end
 
-local function exterior(m)
-	local h = HEIGHT
-	for _, side in { -1, 1 } do
-		-- side walls: outer face at x = +-23, looking out
-		local face = BASE * CFrame.new(side * (WIDTH / 2 + 1), 0, 0) * CFrame.Angles(0, side * math.rad(-90), 0)
-		timberWall(m, face, DEPTH - 2, { -17, -9, 0, 9, 17 }, { -4.5, 4.5 })
+local function keeper(m)
+	-- the keeper: an R6 avatar in a wine-red robe, a tall star-spangled hat and a long white beard, leaning on his counter
+	local R6Pose = require(game:GetService("ReplicatedStorage").Lobby.R6Pose)
+	local scale = 1.9
+	local fig = R6Pose.build(m, "Shopkeeper", { skin = Kit.rgb(226, 178, 138), torso = Kit.rgb(112, 40, 52), arms = Kit.rgb(112, 40, 52), legs = Kit.rgb(84, 30, 40) })
+	for _, part in fig:GetChildren() do
+		if part:IsA("BasePart") then
+			part.Size *= scale
+		end
 	end
-	timberWall(m, BASE * CFrame.new(0, 0, DEPTH / 2 + 1) * CFrame.Angles(0, math.rad(180), 0), WIDTH - 2, { -21, -11, 0, 11, 21 }, { -15.5, 15.5 })
-	-- a stone plinth along the foot of the walls
-	for _, side in { -1, 1 } do
-		Kit.box(m, "Plinth", Vector3.new(1.4, 1.4, DEPTH + 2), BASE * CFrame.new(side * (WIDTH / 2 + 1.2), 0.7, 0), C.StoneDark, M.Cobblestone)
+	local _, head = R6Pose.place(fig, BASE * B(0, 11.5, 1), { shR = { 52, 0, 8 }, shL = { 52, 0, -8 }, spine = { -6, 0, 0 }, neck = { -6, 0, 0 } }, scale)
+	local hat = Assets.Get("KeeperHat")
+	hat:ScaleTo(scale * 0.55)
+	hat:PivotTo(head * CFrame.new(0, 0.5 * scale, 0))
+	hat.Name = "Hat"
+	hat.Parent = fig
+	local beard = Assets.Get("KeeperBeard")
+	beard:ScaleTo(scale * 0.62)
+	beard:PivotTo(head * CFrame.new(0, -0.15 * scale, -0.5 * scale))
+	beard.Name = "Beard"
+	beard.Parent = fig
+	for _, part in fig:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.CanCollide = part.Name == "Torso"
+		end
 	end
-	Kit.box(m, "Plinth", Vector3.new(WIDTH + 2, 1.4, 1.4), BASE * CFrame.new(0, 0.7, DEPTH / 2 + 1.2), C.StoneDark, M.Cobblestone)
-	-- chimney through the roof, with a lazy smoke
-	local chimney = BASE * CFrame.new(-12, 0, 9)
-	Kit.box(m, "Chimney", Vector3.new(4.4, 22, 4.4), chimney * CFrame.new(0, h + 7, 0), C.StoneDark, M.Brick)
-	Kit.box(m, "ChimneyCap", Vector3.new(5.4, 1, 5.4), chimney * CFrame.new(0, h + 18.5, 0), C.Stone, M.Slate)
-	local smoke = Kit.detail(Kit.box(m, "Smoke", Vector3.new(2.4, 0.4, 2.4), chimney * CFrame.new(0, h + 19.2, 0), nil, nil, { Transparency = 1 }))
+	local robe, face = fig:FindFirstChild("Torso"), fig:FindFirstChild("Head")
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "ShopPrompt"
+	prompt.ActionText = "" -- just the key: the nameplate already says who he is
+	prompt.ObjectText = ""
+	prompt.KeyboardKeyCode = Enum.KeyCode.E
+	prompt.RequiresLineOfSight = false
+	prompt.MaxActivationDistance = 18
+	prompt.HoldDuration = 0
+	prompt.Parent = robe
+	Kit.nameplate(face, "The Keeper", "", C.GoldPale, 4, 40)
+	-- where you come back to from the training hall
+	Kit.box(m, "ShopArrival", Vector3.new(1, 1, 1), BASE * CFrame.new(0, 1, 2) * CFrame.Angles(0, math.rad(180), 0), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
+end
+
+local function outside(m)
+	-- the hanging sign: hinged on its bracket and free to swing (AmbientService gives it a gust now and then)
+	local hingeCF = BASE * B(-19, -18 - 6.4, 20.6)
+	local anchor = Kit.box(m, "SignHinge", Vector3.new(0.4, 0.4, 0.4), hingeCF, nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
+	local board = piece(m, "ShopSignBoard", hingeCF)
+	board.Name = "Sign"
+	physical(board)
+	for _, part in board:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.CanCollide = false
+		end
+	end
+	local a0 = Instance.new("Attachment")
+	a0.Parent = anchor
+	local a1 = Instance.new("Attachment")
+	a1.CFrame = board.PrimaryPart.CFrame:ToObjectSpace(hingeCF)
+	a1.Parent = board.PrimaryPart
+	local hinge = Instance.new("HingeConstraint")
+	hinge.Attachment0, hinge.Attachment1 = a0, a1
+	hinge.Parent = anchor
+	Kit.tag(board, "UnfairSway")
+	-- lanterns on the door posts, under the awning
+	for _, side in { -1, 1 } do
+		Kit.wallLantern(m, BASE * CFrame.new(side * 9.6, 10.5, -DEPTH / 2 - 1))
+	end
+	-- chimney smoke
+	local smoke = Kit.detail(Kit.box(m, "Smoke", Vector3.new(2.4, 0.4, 2.4), BASE * B(12, 9, 43.6), nil, nil, { Transparency = 1 }))
 	local e = Instance.new("ParticleEmitter")
 	e.Name = "Smoke"
 	e.Color = ColorSequence.new(Kit.rgb(200, 196, 192))
@@ -247,116 +229,32 @@ local function exterior(m)
 	e.SpreadAngle = Vector2.new(8, 8)
 	e.Acceleration = Vector3.new(1.5, 0.5, 0)
 	e.Parent = smoke
-	-- the doorstep, a rug inside, and the yard: crates and barrels of stock either side of the door
-	Kit.box(m, "Doorstep", Vector3.new(16, 0.6, 3), BASE * CFrame.new(0, 0.3, -DEPTH / 2 - 1.6), C.Stone, M.Slate)
-	Kit.noShadow(Kit.box(m, "Rug", Vector3.new(9, 0.12, 6), BASE * CFrame.new(0, 1.06, -DEPTH / 2 + 4), Kit.rgb(132, 34, 40), M.Fabric))
-	Kit.noShadow(Kit.box(m, "RugTrim", Vector3.new(9.6, 0.1, 6.6), BASE * CFrame.new(0, 1.03, -DEPTH / 2 + 4), C.GoldDeep, M.Fabric))
-	local yard = BASE * CFrame.new(0, 0, -DEPTH / 2 - 3.5)
-	Kit.barrel(m, (yard * CFrame.new(-15.5, 0, 0)).Position)
-	Kit.barrel(m, (yard * CFrame.new(-19, 0, 1)).Position, 3.8, 3)
-	Kit.crate(m, yard * CFrame.new(15.5, 0, 0) * CFrame.Angles(0, 0.2, 0), 3.6)
-	Kit.crate(m, yard * CFrame.new(19.2, 0, 0.6) * CFrame.Angles(0, -0.15, 0), 3.2)
-	Kit.crate(m, yard * CFrame.new(16.2, 3.6, 0.2) * CFrame.Angles(0, 0.5, 0), 2.6)
-	-- a shield hung on the front wall, for whoever cannot read the sign
-	local plaque = BASE * CFrame.new(-18, 11, -DEPTH / 2 - 1.2) -- -Z points out of the wall
-	Kit.cyl(m, "Shield", 0.4, 5, plaque * CFrame.Angles(0, math.rad(90), 0), Kit.rgb(140, 36, 40), M.Metal)
-	Kit.detail(Kit.cyl(m, "ShieldRim", 0.3, 5.5, plaque * CFrame.new(0, 0, 0.1) * CFrame.Angles(0, math.rad(90), 0), C.Gold, M.Foil))
-	for _, a in { 0.7, -0.7 } do
-		Kit.detail(Kit.box(m, "CrossedBlade", Vector3.new(0.6, 8, 0.2), plaque * CFrame.new(0, 0, 0.1) * CFrame.Angles(0, 0, a), Kit.rgb(196, 204, 214), M.Metal))
+	-- the yard: barrels and crates either side of the door that you can shove about
+	local yard = Kit.folder(m, "Yard")
+	for _, spot in { { "ShopBarrel", -24, -22.5 }, { "ShopBarrel", -27.5, -21 }, { "ShopCrate", 24, -22.5 }, { "ShopCrate", 27.4, -21.4 }, { "ShopBarrel", 26, -26 } } do
+		local prop = piece(yard, spot[1], BASE * B(spot[2], spot[3], 0.2) * CFrame.Angles(0, Kit.R:NextNumber(0, 6.28), 0))
+		physical(prop)
 	end
-end
-
-local function interior(m)
-	local inner = Kit.folder(m, "Stock")
-	local rowH = 4.7
-	-- back wall behind the keeper, then the side walls, floor to rafters
-	shelfUnit(inner, BASE * CFrame.new(0, 1, DEPTH / 2 - 3.2) * CFrame.Angles(0, 0, 0), WIDTH - 5, 4, rowH)
-	for _, side in { -1, 1 } do
-		shelfUnit(inner, BASE * CFrame.new(side * (WIDTH / 2 - 3.2), 1, 0.5) * CFrame.Angles(0, side * math.rad(-90), 0), DEPTH - 12, 4, rowH)
+	-- the landmark: the store greatsword (Wirly_world's gothic blade), gilded and huge, driven point-first through the roof
+	local giant = Assets.Get("GothicSword")
+	local blade = giant:FindFirstChildWhichIsA("MeshPart", true)
+	local length = 84
+	blade.Size *= length / math.max(blade.Size.X, blade.Size.Y, blade.Size.Z)
+	blade.CFrame = BASE * CFrame.new(0, 45, 4) * CFrame.Angles(0, 0, math.rad(-7)) * CFrame.new(0, length * 0.3, 0) * CFrame.Angles(0, 0, math.rad(90))
+	local look = blade:FindFirstChildOfClass("SurfaceAppearance")
+	if look then
+		look.Color = Kit.rgb(255, 214, 120)
 	end
-	-- the counter across the shop, heaped with sacks like the photo
-	local counterZ = 6
-	Kit.box(m, "Counter", Vector3.new(26, 4, 5), BASE * CFrame.new(0, 3, counterZ), C.Wood, M.WoodPlanks)
-	Kit.box(m, "CounterTop", Vector3.new(27, 0.6, 6), BASE * CFrame.new(0, 5.3, counterZ), C.Plank, M.Wood)
-	local r = Kit.R
-	local sackColors = { Kit.rgb(216, 192, 140), Kit.rgb(196, 110, 62), Kit.rgb(180, 140, 80), Kit.rgb(226, 212, 176), Kit.rgb(150, 130, 90), Kit.rgb(200, 150, 60) }
-	-- two heaps of tied sacks, the middle left clear in front of the keeper
-	for row = 0, 1 do
-		for i = -5, 5 do
-			if math.abs(i) > 1 or (row == 0 and math.abs(i) == 1) then
-				local x = i * 3.1 + r:NextNumber(-0.3, 0.3)
-				local cf = BASE * CFrame.new(x, 2.2 + row * 1.9, counterZ - 4.8 - (1 - row) * 1.9) * CFrame.Angles(r:NextNumber(-0.08, 0.08), r:NextNumber(-0.3, 0.3), r:NextNumber(-0.08, 0.08))
-				local color = sackColors[r:NextInteger(1, #sackColors)]
-				detail(Kit.box(inner, "Sack", Vector3.new(2.8, 2.4, 2.4), cf, color, M.Fabric))
-				detail(Kit.box(inner, "SackTop", Vector3.new(2.2, 0.5, 1.8), cf * CFrame.new(0, 1.3, 0), color, M.Fabric))
-				detail(Kit.box(inner, "SackTie", Vector3.new(0.9, 0.7, 0.9), cf * CFrame.new(0, 1.8, 0), color:Lerp(Color3.new(0, 0, 0), 0.25), M.Fabric))
-			end
-		end
-	end
-	-- things on the counter: a balance, a ledger, a heap of coin, the orb of the day
-	local top = BASE * CFrame.new(0, 5.7, counterZ)
-	detail(Kit.box(inner, "ScalePost", Vector3.new(0.4, 3.6, 0.4), top * CFrame.new(8, 1.8, 0), C.GoldDeep, M.Metal))
-	detail(Kit.box(inner, "ScaleBar", Vector3.new(5, 0.25, 0.25), top * CFrame.new(8, 3.5, 0), C.GoldDeep, M.Metal))
-	for _, s in { -1, 1 } do
-		detail(Kit.cyl(inner, "ScalePan", 0.16, 2.2, top * CFrame.new(8 + s * 2.4, 1.6, 0) * CFrame.Angles(0, 0, math.rad(90)), C.Gold, M.Metal))
-	end
-	detail(Kit.box(inner, "Ledger", Vector3.new(3, 0.5, 2.2), top * CFrame.new(-7, 0.3, 0) * CFrame.Angles(0, 0.3, 0), Kit.rgb(100, 40, 34), M.Leather))
-	-- beside the keeper, not in front of him
-	detail(Kit.cyl(inner, "OrbStand", 0.5, 1.6, top * CFrame.new(4.6, 0.25, -0.6) * CFrame.Angles(0, 0, math.rad(90)), C.GoldDeep, M.Metal))
-	local showOrb = detail(Kit.ball(inner, "OrbOfTheDay", 1.9, (top * CFrame.new(4.6, 1.4, -0.6)).Position, ORBS[5], M.Neon))
-	Kit.light(showOrb, ORBS[5], 12, 0.6)
-	for _ = 1, 22 do
-		detail(Kit.cyl(inner, "Coin", 0.16, 1, top * CFrame.new(r:NextNumber(-5, -2), 0.2 + r:NextNumber(0, 0.5), r:NextNumber(-1.4, 1.4)) * CFrame.Angles(0, 0, math.rad(90) + r:NextNumber(-0.25, 0.25)), C.Gold, M.Foil))
-	end
-	-- warm lamps hung from the rafters
-	for _, x in { -13, 0, 13 } do
-		detail(Kit.box(inner, "Chain", Vector3.new(0.2, 5, 0.2), BASE * CFrame.new(x, HEIGHT - 3.5, -3), C.StoneDark, M.Metal))
-		local glow = detail(Kit.ball(inner, "Lamp", 2.4, (BASE * CFrame.new(x, HEIGHT - 7, -3)).Position, C.GoldPale, M.Neon))
-		Kit.light(glow, Kit.rgb(255, 196, 120), 30, 0.9)
-	end
-	-- spare stock on the floor: swords in a barrel by the door
-	for _, side in { -1, 1 } do
-		local barrel = BASE * CFrame.new(side * 12, 1, -DEPTH / 2 + 5)
-		Kit.column(inner, "Barrel", barrel.Position, 4.2, 4, C.Wood, M.WoodPlanks)
-		for i = 1, 5 do
-			local a = i / 5 * 6.28
-			sword(inner, barrel * CFrame.new(math.cos(a) * 0.9, 2.4, math.sin(a) * 0.9) * CFrame.Angles(math.cos(a) * 0.14, 0, math.sin(a) * 0.14), true)
-		end
-	end
-end
-
-local function keeper(m)
-	local stand = BASE * CFrame.new(0, 1, 11.5) * CFrame.Angles(0, 0, 0)
-	local robe = Kit.rgb(112, 40, 52)
-	local fig = Kit.figure(m, "Shopkeeper", stand, robe, M.Fabric, 1.15, { headColor = Kit.rgb(214, 172, 132), legColor = Kit.rgb(84, 30, 40) })
-	local head = fig:FindFirstChild("Head")
-	local hood = Kit.box(fig, "Hood", head.Size + Vector3.new(0.5, 0.5, 0.5), head.CFrame * CFrame.new(0, 0.2, 0.4), Kit.rgb(70, 26, 36), M.Fabric)
-	Kit.noShadow(hood)
-	-- face looks at the door: dark eyes on the front
-	for _, s in { -1, 1 } do
-		Kit.noShadow(Kit.box(fig, "Eye", Vector3.new(0.3, 0.3, 0.1), head.CFrame * CFrame.new(s * 0.45, 0.2, -head.Size.Z / 2 - 0.02), C.Ink, M.SmoothPlastic))
-	end
-	local torso = fig:FindFirstChild("Torso")
-	local prompt = Instance.new("ProximityPrompt")
-	prompt.Name = "ShopPrompt"
-	prompt.ActionText = "" -- just the key: the nameplate already says who he is
-	prompt.ObjectText = ""
-	prompt.KeyboardKeyCode = Enum.KeyCode.E
-	prompt.RequiresLineOfSight = false
-	prompt.MaxActivationDistance = 18
-	prompt.HoldDuration = 0
-	prompt.Parent = torso
-	Kit.nameplate(head, "The Keeper", "", C.GoldPale, 4, 40)
-	-- where you come back to from the training hall
-	Kit.box(m, "ShopArrival", Vector3.new(1, 1, 1), BASE * CFrame.new(0, 1, 2) * CFrame.Angles(0, math.rad(180), 0), nil, nil, { Transparency = 1, CanCollide = false, CanQuery = false, CanTouch = false })
+	giant.Name = "GiantSword"
+	giant.Parent = m
 end
 
 function Shop.Build(root)
 	local m = Kit.model(root, "Shop")
-	shell(m)
-	exterior(m)
+	piece(m, "ShopHouse", BASE).Name = "House"
 	interior(m)
 	keeper(m)
+	outside(m)
 	return m
 end
 

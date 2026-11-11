@@ -6,7 +6,7 @@
 -- Result of an ownership question is tri-state: true = owns it, false = does not, nil = could not find out.
 -- A failed lookup never unlocks anything (fail closed).
 
-export type Entry = { Kind: string, Id: number, Hint: string?, ClassId: string?, Price: number? }
+export type Entry = { Kind: string, Id: number, Hint: string?, ClassId: string?, Price: number?, Quest: boolean? }
 
 export type Deps = {
 	bypass: (() -> boolean)?, -- true for Studio / the experience creator / nothing to check
@@ -30,6 +30,13 @@ local function owns(entry: Entry, deps: Deps): boolean?
 			return has == true
 		end
 	elseif entry.Kind == "GamePass" then
+		-- a pass class that can also be earned by a quest: the saved record says so
+		if entry.Quest and deps.hasBought and type(entry.ClassId) == "string" then
+			local worked, has = deps.hasBought(entry.ClassId)
+			if worked and has then
+				return true
+			end
+		end
 		if type(entry.Id) ~= "number" or entry.Id <= 0 then
 			return false -- a pass that is not set up yet cannot be owned
 		end

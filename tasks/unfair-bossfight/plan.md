@@ -3,7 +3,7 @@
 Spec: [docs/spec/unfair-bossfight.md](../../docs/spec/unfair-bossfight.md) (approved). Intent: [docs/intent/unfair-bossfight.md](../../docs/intent/unfair-bossfight.md).
 Task checklist: [todo.md](todo.md). Module ids below match the spec's capability map.
 
-This lives in `tasks/unfair-bossfight/` because `tasks/plan.md` and `tasks/todo.md` are the refactor record and still have unchecked tasks (they were not touched). After task 2 the whole repo moves into `boss/`; this folder and `docs/` are lifted to the new root `D:/Project/UnfairBossfight/` in that task.
+This lives in `tasks/unfair-bossfight/` because `tasks/plan.md` and `tasks/todo.md` are the refactor record and still have unchecked tasks (they were not touched). After task 2 the whole repo moves into `alterGolden Bossfight/`; this folder and `docs/` are lifted to the new root `D:/Project/UnfairBossfight/` in that task.
 
 ## Overview
 
@@ -17,7 +17,7 @@ Corrections to the earlier research notes: `src/ServerStorage/BossEncounter/` is
 - A separate **test universe** is used for every teleport test. The live game is only touched in the final cut-over task.
 - Return to Lobby is the only way to change difficulty. Retry stays in the same reserved server with the same settings.
 - Cash table: Easy 5, NerfedHardcore 15, Hardcore 25, TrueHardcore 35, Hellaven 50; Enraged x2. 4 party rooms per lobby server.
-- Git root moves to `D:/Project/UnfairBossfight`, current project goes into `boss/`, history kept (`git mv`).
+- Git root moves to `D:/Project/UnfairBossfight`, current project goes into `alterGolden Bossfight/`, history kept (`git mv`).
 - Boss place changes are kept minimal and additive (a new intake module plus small hooks), because the refactor just finished and there are no automated tests for the boss code.
 
 ## Dependency graph
@@ -102,15 +102,15 @@ Sizes: XS 1 file, S 1-2, M 3-5. No task is larger than M. (you) = needs you in S
 - Verify: `git log -1` shows the commit.
 - Files: `docs/**`, `tasks/unfair-bossfight/**`. Deps: none.
 
-**T2 - Move the repo to `D:/Project/UnfairBossfight` (project-layout).** (M) Close VS Code, Studio and Rojo first (you). Backup copy of the whole folder. Create `D:/Project/UnfairBossfight`, move `.git` up, `git mv` the project files into `boss/`, lift `docs/` and `tasks/unfair-bossfight/` to the new root, fix hard-coded `D:\Project\alterGoldenBossfight` paths (README, `tools/*`, `.vscode`), regenerate `sourcemap.json`, copy Claude memory files to the new project memory directory, and record the new location in memory.
-- Accept: `git log --follow boss/src/...` shows history; `boss/default.project.json` builds; `check.ps1` result equals the pre-move baseline; Rojo serves boss on 34872 and Studio syncs.
-- Verify: `powershell -File boss/tools/check.ps1`; `rojo build boss/default.project.json -o build/boss.rbxl`; you open the new folder in VS Code and Studio connects. (you)
+**T2 - Move the repo to `D:/Project/UnfairBossfight` (project-layout).** (M) Close VS Code, Studio and Rojo first (you). Backup copy of the whole folder. Create `D:/Project/UnfairBossfight`, move `.git` up, `git mv` the project files into `alterGolden Bossfight/`, lift `docs/` and `tasks/unfair-bossfight/` to the new root, fix hard-coded `D:\Project\alterGoldenBossfight` paths (README, `tools/*`, `.vscode`), regenerate `sourcemap.json`, copy Claude memory files to the new project memory directory, and record the new location in memory.
+- Accept: `git log --follow alterGolden Bossfight/src/...` shows history; `alterGolden Bossfight/default.project.json` builds; `check.ps1` result equals the pre-move baseline; Rojo serves boss on 34872 and Studio syncs.
+- Verify: `powershell -File alterGolden Bossfight/tools/check.ps1`; `rojo build alterGolden Bossfight/default.project.json -o build/boss.rbxl`; you open the new folder in VS Code and Studio connects. (you)
 - Files: README, `tools/*.ps1`, `.vscode/*`, `sourcemap.json` (many renames, few edits). Deps: T1.
 
-**T3 - Lobby skeleton and shared config.** (M) `lobby/default.project.json` (DataModel with ReplicatedStorage, ServerScriptService, StarterGui, StarterPlayer, Workspace left alone), each folder with `init.meta.json`; `shared/UnfairShared/UnfairConfig.luau` (placeholder place IDs, `RequireLobby`, cash table, difficulty ids, party max 6, rooms 4); mount `boss/.../BossShared/Classes` in the lobby project; mount `shared/UnfairShared` in both projects; extend `tools/check.ps1` to build and analyze both projects.
+**T3 - Lobby skeleton and shared config.** (M) `lobby/default.project.json` (DataModel with ReplicatedStorage, ServerScriptService, StarterGui, StarterPlayer, Workspace left alone), each folder with `init.meta.json`; `shared/UnfairShared/UnfairConfig.luau` (placeholder place IDs, `RequireLobby`, cash table, difficulty ids, party max 6, rooms 4); mount `alterGolden Bossfight/.../BossShared/Classes` in the lobby project; mount `shared/UnfairShared` in both projects; extend `tools/check.ps1` to build and analyze both projects.
 - Accept: `rojo build lobby/default.project.json` succeeds; `require(ReplicatedStorage.UnfairShared.UnfairConfig)` works in both builds (analyzer clean); `ClassConfig` resolves in the lobby build; boss analyzer diff unchanged.
 - Verify: `tools/check.ps1`; `rojo serve lobby/default.project.json --port 34873`.
-- Files: `lobby/default.project.json`, `lobby/**/init.meta.json`, `shared/UnfairShared/UnfairConfig.luau`, `boss/default.project.json`, `tools/check.ps1`. Deps: T2.
+- Files: `lobby/default.project.json`, `lobby/**/init.meta.json`, `shared/UnfairShared/UnfairConfig.luau`, `alterGolden Bossfight/default.project.json`, `tools/check.ps1`. Deps: T2.
 
 **T4 - Test universe (you, with my config help).** (S) Create a test universe with a copy of the boss place and a copy of the lobby place (Creator Hub "new experience" plus Studio publish-as). I read both place IDs through Studio MCP (`game.PlaceId`) and note the two live IDs. The lobby place used is Talueber's Place for the live universe.
 - Accept: test universe exists; teleport between its two places is allowed (same universe); you can join the test lobby from Studio with "Play here" off.
@@ -166,7 +166,7 @@ Sizes: XS 1 file, S 1-2, M 3-5. No task is larger than M. (you) = needs you in S
 
 ### Phase 3
 
-**T8 - BossIntake (validate and apply).** (M) New `boss/src/ServerScriptService/BossSystem/Encounter/Intake.luau` plus a small bootstrap `Intake.server.luau`: apply spec 6.2 rules 1-4 (reject non-reserved joins when `RequireLobby`; validate payload with `TeleportPayload`; class existence and unlock re-check through `ClassService`; set `PlayerClass`, `SelectedDifficulty`, `EncounterEnraged`, `DifficultyLocked`; later payloads must match `runId`). Studio or `RequireLobby = false` leaves current behaviour.
+**T8 - BossIntake (validate and apply).** (M) New `alterGolden Bossfight/src/ServerScriptService/BossSystem/Encounter/Intake.luau` plus a small bootstrap `Intake.server.luau`: apply spec 6.2 rules 1-4 (reject non-reserved joins when `RequireLobby`; validate payload with `TeleportPayload`; class existence and unlock re-check through `ClassService`; set `PlayerClass`, `SelectedDifficulty`, `EncounterEnraged`, `DifficultyLocked`; later payloads must match `runId`). Studio or `RequireLobby = false` leaves current behaviour.
 - Accept: valid payload gives correct attributes for each of the 5 difficulties; forged locked class falls back to the default class with a message; Enraged on Easy rejected; no payload in Studio leaves everything as today.
 - Verify: `check.ps1`; tested through T10's harness. Files: `Intake.luau`, `Intake.server.luau`, one hook in `ClassService` or `DifficultyService` if needed (max 3 files). Deps: T6.
 

@@ -13,7 +13,7 @@ local function payload(overrides: { [string]: any }?): any
 		runId = "run-1",
 		partyId = "party-1",
 		leaderUserId = 1,
-		difficulty = "Hardcore",
+		difficulty = "TrueHardcore",
 		enraged = false,
 		members = { { userId = 1, class = "Mage" }, { userId = 2, class = "Tank" } },
 		issuedAt = NOW,

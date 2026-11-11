@@ -12,7 +12,7 @@ local function party(): TeleportPayload.Party
 	return {
 		partyId = "party-1",
 		leaderUserId = 1,
-		difficulty = "Hardcore",
+		difficulty = "TrueHardcore",
 		enraged = true,
 		members = { { userId = 1, class = "Warrior" }, { userId = 2, class = "Mage" }, { userId = 3, class = "Tank" } },
 	}
@@ -31,7 +31,7 @@ local cases = Harness.new()
 cases:add("everyone present: the payload carries the room's settings and members in order", function()
 	local result = LaunchPlan.make(party(), everyone, snapshotClass, "run-1", NOW) :: LaunchPlan.Result
 	Harness.truthy(result ~= nil, "plan made")
-	Harness.eq(result.payload.difficulty, "Hardcore")
+	Harness.eq(result.payload.difficulty, "TrueHardcore")
 	Harness.eq(result.payload.enraged, true)
 	Harness.eq(result.payload.leaderUserId, 1)
 	Harness.eq(result.payload.runId, "run-1")

@@ -1,0 +1,23 @@
+{
+  "name": "BossSync",
+  "tree": {
+    "$className": "Folder",
+    "ReplicatedStorage": {
+      "$className": "Folder",
+      "BossShared": { "$path": "src/ReplicatedStorage/BossShared" },
+      "VFXEngine": { "$path": "src/ReplicatedStorage/VFXEngine" },
+      "UnfairShared": { "$path": "../shared/UnfairShared" }
+    },
+    "ServerScriptService": {
+      "$className": "Folder",
+      "BossSystem": { "$path": "src/ServerScriptService/BossSystem" }
+    },
+    "StarterPlayer": {
+      "$className": "Folder",
+      "StarterPlayerScripts": {
+        "$className": "Folder",
+        "BossClient": { "$path": "src/StarterPlayer/StarterPlayerScripts/BossClient" }
+      }
+    }
+  }
+}

@@ -1,23 +1,29 @@
 --!nonstrict
 --[[
- The shop (docs/spec/lobby-redesign.md). Press E at the Keeper for three choices: Classes, Orbs, Lore.
- Classes and Orbs fade to the showroom: a dummy on a stage wearing what you are looking at. Click a skill and the dummy uses it on a
- second dummy. For classes that is the fight's real skill: the performer is your own character in a dummy's body, running the boss
- place's class kits (TryoutService). Orbs are shown by a dummy that only exists on your client.
+ The shop (docs/spec/lobby-redesign.md). Press E at the Keeper and he talks to you: his words float over his head and three numbered
+ answers appear beside him (press 1, 2, 3 or click one). Walking away ends the conversation. No dialogue box.
+   1. Classes  -> the class showroom: a wooden performer on the training stage uses the class's real skills on the target dummy
+                  (TryoutService). You only watch; pick a skill on the right and the performer uses it.
+   2. Orbs     -> the orb dais, a dummy that only exists on your client.
+   3. Lore     -> he tells you the story himself.
  Every button only asks the server; prices and ownership are decided there (ShopService, ClassPickService).
 ]]
 local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local ClassConfig = require(ReplicatedStorage.BossShared.Classes.ClassConfig)
 local ClassUnlocks = require(ReplicatedStorage.BossShared.Classes.ClassUnlocks)
+local StatusIcons = require(ReplicatedStorage.BossShared.Presentation.StatusIcons)
 local OrbConfig = require(ReplicatedStorage.UnfairShared.OrbConfig)
 local Fade = require(ReplicatedStorage.Lobby.Fade)
 local Freeze = require(ReplicatedStorage.Lobby.Freeze)
 local Lore = require(ReplicatedStorage.Lobby.Lore)
 local LobbyRemotes = require(ReplicatedStorage.Lobby.LobbyRemotes)
+local NpcDialog = require(ReplicatedStorage.UnfairShared.NpcDialog)
 local Rig = require(ReplicatedStorage.Lobby.Rig)
+local ShowcaseMoves = require(ReplicatedStorage.Lobby.ShowcaseMoves)
 local SkillDemos = require(ReplicatedStorage.Lobby.SkillDemos)
 
 local player = Players.LocalPlayer
@@ -26,16 +32,15 @@ local classRemote = LobbyRemotes.get("ClassPick")
 local tryRemote = LobbyRemotes.get("Tryout")
 
 local GOLD = Color3.fromRGB(246, 211, 117)
+local GOLD_DIM = Color3.fromRGB(150, 124, 70)
 local INK = Color3.fromRGB(18, 15, 14)
 local CARD = Color3.fromRGB(38, 32, 28)
+local TRACK = Color3.fromRGB(58, 50, 40)
 local TEXT = Color3.fromRGB(226, 220, 208)
 local DIM = Color3.fromRGB(160, 152, 140)
+local HIDDEN = Color3.fromRGB(205, 150, 255)
 local TITLE_FONT = Enum.Font.Garamond
 local BODY_FONT = Enum.Font.Gotham
-local SKILL_KEYS = { "M1", "F", "C", "V", "R" }
-local KEY_LABEL = { M1 = "Click", F = "F", C = "C", V = "V", R = "R" }
--- skills the fight makes you hold: how long the performer holds them (Mage's C is a tap or a hold; the tap is the one shown)
-local HOLD = { Tank = { F = 1.6 }, Mage = { C = 0.1 }, Duelist = { C = 1.2 }, Disorderer = { M1 = 1.2, C = 1.2, V = 1.2 } }
 
 local function make(className, props, parent)
 	local instance = Instance.new(className)
@@ -76,85 +81,69 @@ end
 
 local gui = make("ScreenGui", { Name = "ShopGui", ResetOnSpawn = false, IgnoreGuiInset = true, DisplayOrder = 50, Enabled = false }, player:WaitForChild("PlayerGui"))
 
--- The Keeper's dialogue ---------------------------------------------------------------------------------------------
-local menu = make("Frame", { Name = "Menu", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -28), Size = UDim2.new(0.92, 0, 0, 210), BackgroundColor3 = INK, BackgroundTransparency = 0.04, Visible = false }, gui)
-make("UISizeConstraint", { MaxSize = Vector2.new(720, 210) }, menu)
-round(menu, 12, GOLD, 2)
-text(menu, { Size = UDim2.new(1, -40, 0, 34), Position = UDim2.fromOffset(20, 12), Font = TITLE_FONT, TextSize = 28, TextColor3 = GOLD, Text = "The Keeper" })
-text(menu, { Size = UDim2.new(1, -40, 0, 44), Position = UDim2.fromOffset(20, 48), TextSize = 16, Text = "Everything here belonged to someone braver than you. Fair prices. No refunds." })
-
-local openShowcase, openLore, closeAll
-
-local menuRow = make("Frame", { Name = "Row", Size = UDim2.new(1, -40, 0, 64), Position = UDim2.fromOffset(20, 124), BackgroundTransparency = 1 }, menu)
-make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 12), SortOrder = Enum.SortOrder.LayoutOrder }, menuRow)
-for order, item in { { "Buy Classes", "Classes" }, { "Buy Orbs", "Orbs" }, { "Lore", "Lore" }, { "Leave", "Leave" } } do
-	button(menuRow, { Name = item[2], Size = UDim2.new(0.25, -9, 1, 0), LayoutOrder = order, Text = item[1], TextSize = 24 }, function()
-		if item[2] == "Lore" then
-			openLore()
-		elseif item[2] == "Leave" then
-			closeAll()
-		else
-			openShowcase(item[2])
-		end
-	end)
-end
-
--- Lore ---------------------------------------------------------------------------------------------------------------
-local lore = make("Frame", { Name = "Lore", AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(0.9, 0, 0.74, 0), BackgroundColor3 = INK, BackgroundTransparency = 0.03, Visible = false }, gui)
-make("UISizeConstraint", { MaxSize = Vector2.new(720, 520) }, lore)
-round(lore, 12, GOLD, 2)
-local loreTitle = text(lore, { Size = UDim2.new(1, -48, 0, 46), Position = UDim2.fromOffset(24, 18), Font = TITLE_FONT, TextSize = 38, TextColor3 = GOLD })
-local loreBody = text(lore, { Size = UDim2.new(1, -48, 1, -140), Position = UDim2.fromOffset(24, 76), TextSize = 18, Font = Enum.Font.Merriweather })
-local lorePage = 1
-local function showLore()
-	loreTitle.Text, loreBody.Text = Lore[lorePage].Title, Lore[lorePage].Text
-end
-button(lore, { Size = UDim2.fromOffset(120, 42), Position = UDim2.new(0, 24, 1, -60), Text = "Previous" }, function()
-	lorePage = (lorePage - 2) % #Lore + 1
-	showLore()
-end)
-button(lore, { Size = UDim2.fromOffset(120, 42), Position = UDim2.new(0, 156, 1, -60), Text = "Next" }, function()
-	lorePage = lorePage % #Lore + 1
-	showLore()
-end)
-button(lore, { AnchorPoint = Vector2.new(1, 0), Size = UDim2.fromOffset(120, 42), Position = UDim2.new(1, -24, 1, -60), Text = "Back" }, function()
-	lore.Visible = false
-	menu.Visible = true
-end)
-
--- The showroom UI: list on the left, the dummy in the middle, details on the right ---------------------------------------
+-- The showroom UI: list on the left (Back under it), the stage in the middle, details on the right -----------------------
 local view = make("Frame", { Name = "Showroom", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, Visible = false }, gui)
 
 local topBar = make("Frame", { Name = "TopBar", Size = UDim2.new(1, 0, 0, 58), BackgroundColor3 = INK, BackgroundTransparency = 0.25, BorderSizePixel = 0 }, view)
 local heading = text(topBar, { AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.fromScale(0.5, 0.5), Size = UDim2.new(0.5, 0, 1, 0), Font = TITLE_FONT, TextSize = 36, TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Center, TextYAlignment = Enum.TextYAlignment.Center })
 local cashLabel = text(topBar, { AnchorPoint = Vector2.new(1, 0.5), Position = UDim2.new(1, -20, 0.5, 0), Size = UDim2.fromOffset(220, 30), TextSize = 22, Font = TITLE_FONT, TextColor3 = GOLD, TextXAlignment = Enum.TextXAlignment.Right, TextYAlignment = Enum.TextYAlignment.Center })
-local backButton = button(topBar, { Name = "Back", AnchorPoint = Vector2.new(0, 0.5), Position = UDim2.new(0, 14, 0.5, 0), Size = UDim2.fromOffset(96, 38), Text = "Back" })
 
-local listPanel = make("ScrollingFrame", { Name = "List", Position = UDim2.new(0, 14, 0, 72), Size = UDim2.new(0.22, 0, 1, -88), BackgroundColor3 = INK, BackgroundTransparency = 0.12, BorderSizePixel = 0, ScrollBarThickness = 4, CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, view)
+local listPanel = make("ScrollingFrame", { Name = "List", Position = UDim2.new(0, 14, 0, 72), Size = UDim2.new(0.22, 0, 1, -150), BackgroundColor3 = INK, BackgroundTransparency = 0.12, BorderSizePixel = 0, ScrollBarThickness = 4, CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, view)
 round(listPanel, 10)
 make("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, listPanel)
 make("UIPadding", { PaddingTop = UDim.new(0, 10), PaddingBottom = UDim.new(0, 10), PaddingLeft = UDim.new(0, 10), PaddingRight = UDim.new(0, 10) }, listPanel)
+-- Back sits under the list, bottom left: well away from Roblox's own menu buttons in the top-left corner
+local backButton = button(view, { Name = "Back", AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 14, 1, -14), Size = UDim2.new(0.22, 0, 0, 54), Text = "\u{2190}  Back to the Keeper", TextSize = 24 })
 
-local info = make("Frame", { Name = "Info", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 72), Size = UDim2.new(0.33, 0, 1, -88), BackgroundColor3 = INK, BackgroundTransparency = 0.12 }, view)
+local info = make("ScrollingFrame", { Name = "Info", AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, -14, 0, 72), Size = UDim2.new(0.34, 0, 1, -150), BackgroundColor3 = INK, BackgroundTransparency = 0.12, BorderSizePixel = 0, ScrollBarThickness = 4, CanvasSize = UDim2.new(), AutomaticCanvasSize = Enum.AutomaticSize.Y }, view)
 round(info, 10)
-local nameLabel = text(info, { Position = UDim2.fromOffset(18, 12), Size = UDim2.new(1, -36, 0, 40), Font = TITLE_FONT, TextSize = 36, TextColor3 = GOLD })
-local tagLabel = text(info, { Position = UDim2.fromOffset(18, 54), Size = UDim2.new(1, -36, 0, 40), TextSize = 14, TextColor3 = TEXT })
-local statLabel = text(info, { Position = UDim2.fromOffset(18, 98), Size = UDim2.new(1, -36, 0, 18), TextSize = 13, TextColor3 = GOLD, Font = Enum.Font.GothamMedium })
-text(info, { Position = UDim2.fromOffset(18, 122), Size = UDim2.new(1, -36, 0, 22), Font = TITLE_FONT, TextSize = 22, TextColor3 = GOLD, Text = "Passive" })
-local passiveLabel = text(info, { Position = UDim2.fromOffset(18, 146), Size = UDim2.new(1, -36, 0, 74), TextSize = 13 })
-local skillsTitle = text(info, { Position = UDim2.fromOffset(18, 224), Size = UDim2.new(1, -36, 0, 22), Font = TITLE_FONT, TextSize = 22, TextColor3 = GOLD, Text = "Skills: click one to see it" })
-local skillRow = make("Frame", { Name = "Skills", Position = UDim2.fromOffset(18, 250), Size = UDim2.new(1, -36, 0, 40), BackgroundTransparency = 1 }, info)
-make("UIListLayout", { FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0, 6), SortOrder = Enum.SortOrder.LayoutOrder }, skillRow)
-local skillName = text(info, { Position = UDim2.fromOffset(18, 296), Size = UDim2.new(1, -36, 0, 22), Font = Enum.Font.GothamBold, TextSize = 15, TextColor3 = GOLD })
-local skillBody = text(info, { Position = UDim2.fromOffset(18, 318), Size = UDim2.new(1, -36, 1, -402), TextSize = 13 })
-local status = text(info, { AnchorPoint = Vector2.new(0, 1), Position = UDim2.new(0, 18, 1, -64), Size = UDim2.new(1, -36, 0, 18), TextSize = 13, TextColor3 = Color3.fromRGB(255, 170, 150), TextXAlignment = Enum.TextXAlignment.Center })
-local actionButton = button(info, { Name = "Action", AnchorPoint = Vector2.new(0.5, 1), Position = UDim2.new(0.5, 0, 1, -14), Size = UDim2.new(1, -36, 0, 46), TextSize = 26, TextColor3 = INK, BackgroundColor3 = GOLD })
+make("UIListLayout", { Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder }, info)
+make("UIPadding", { PaddingTop = UDim.new(0, 14), PaddingBottom = UDim.new(0, 14), PaddingLeft = UDim.new(0, 18), PaddingRight = UDim.new(0, 18) }, info)
+
+local function auto(label, order)
+	label.LayoutOrder = order
+	label.Size = UDim2.new(1, 0, 0, 0)
+	label.AutomaticSize = Enum.AutomaticSize.Y
+	return label
+end
+
+local titleRow = make("Frame", { LayoutOrder = 1, Size = UDim2.new(1, 0, 0, 46), BackgroundTransparency = 1 }, info)
+local iconHolder = make("Frame", { Size = UDim2.fromOffset(44, 44), BackgroundTransparency = 1 }, titleRow)
+local nameLabel = text(titleRow, { Position = UDim2.fromOffset(54, 2), Size = UDim2.new(1, -54, 1, 0), Font = TITLE_FONT, TextSize = 36, TextColor3 = GOLD, TextYAlignment = Enum.TextYAlignment.Center, TextScaled = false })
+local tagLabel = auto(text(info, { TextSize = 14 }), 2)
+
+-- the stat sheet, like the old armoury: a labelled bar per stat
+local statFrame = make("Frame", { LayoutOrder = 3, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }, info)
+make("UIListLayout", { Padding = UDim.new(0, 5), SortOrder = Enum.SortOrder.LayoutOrder }, statFrame)
+local statRows = {}
+for order, stat in { "HP", "Stamina", "Dash", "Speed", "Base Defense" } do
+	local row = make("Frame", { LayoutOrder = order, Size = UDim2.new(1, 0, 0, 18), BackgroundTransparency = 1 }, statFrame)
+	text(row, { Size = UDim2.new(0, 104, 1, 0), Font = Enum.Font.GothamBold, TextSize = 13, TextColor3 = GOLD, Text = stat .. ":", TextYAlignment = Enum.TextYAlignment.Center })
+	local track = make("Frame", { Position = UDim2.new(0, 108, 0.5, -4), Size = UDim2.new(1, -184, 0, 8), BackgroundColor3 = TRACK, BorderSizePixel = 0 }, row)
+	round(track, 4)
+	local fill = make("Frame", { Size = UDim2.fromScale(0.5, 1), BackgroundColor3 = GOLD, BorderSizePixel = 0 }, track)
+	round(fill, 4)
+	local value = text(row, { AnchorPoint = Vector2.new(1, 0), Position = UDim2.new(1, 0, 0, 0), Size = UDim2.new(0, 70, 1, 0), TextSize = 13, Font = Enum.Font.GothamMedium, TextXAlignment = Enum.TextXAlignment.Right, TextYAlignment = Enum.TextYAlignment.Center })
+	statRows[stat] = { fill = fill, value = value }
+end
+
+local passiveTitle = auto(text(info, { Font = TITLE_FONT, TextSize = 22, TextColor3 = GOLD, Text = "Passive" }), 4)
+local passiveLabel = auto(text(info, { TextSize = 13 }), 5)
+local skillsTitle = auto(text(info, { Font = TITLE_FONT, TextSize = 22, TextColor3 = GOLD, Text = "Skills: pick one to watch it" }), 6)
+local skillGrid = make("Frame", { Name = "Skills", LayoutOrder = 7, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1 }, info)
+make("UIGridLayout", { CellSize = UDim2.new(0.333, -6, 0, 38), CellPadding = UDim2.fromOffset(6, 6), SortOrder = Enum.SortOrder.LayoutOrder }, skillGrid)
+local skillName = auto(text(info, { Font = Enum.Font.GothamBold, TextSize = 15, TextColor3 = GOLD }), 8)
+local skillBody = auto(text(info, { TextSize = 13 }), 9)
+local status = auto(text(info, { TextSize = 13, TextColor3 = Color3.fromRGB(255, 170, 150), TextXAlignment = Enum.TextXAlignment.Center }), 10)
+local actionButton = button(view, { Name = "Action", AnchorPoint = Vector2.new(1, 1), Position = UDim2.new(1, -14, 1, -14), Size = UDim2.new(0.34, 0, 0, 54), TextSize = 26, TextColor3 = INK, BackgroundColor3 = GOLD })
 
 -- State ----------------------------------------------------------------------------------------------------------------
 local mode = nil -- "Classes" | "Orbs"
 local selected = nil
-local rig, stageFolder, targetPart
+local rig, stageFolder
 local rows = {}
+local performer = nil
+local markAt = nil -- where the performer's mark is: the camera frames it and the dummy, and never follows a dash
 
 local function fmt(n)
 	local s = tostring(math.floor(n)):reverse():gsub("(%d%d%d)", "%1,"):reverse()
@@ -182,7 +171,7 @@ local function classStatus(id)
 	elseif entry.Kind == "Cash" then
 		return fmt(entry.Price) .. " cash", TEXT
 	elseif entry.Kind == "GamePass" then
-		return (entry.Price or "?") .. " Robux", Color3.fromRGB(150, 220, 160)
+		return (entry.Price or "?") .. " Robux" .. (entry.Quest and " or a quest" or ""), Color3.fromRGB(150, 220, 160)
 	end
 	return "Earned by badge", DIM
 end
@@ -226,6 +215,9 @@ local function refreshAction()
 			end
 		elseif entry.Kind == "GamePass" then
 			actionButton.Text = "Buy for " .. (entry.Price or "?") .. " Robux"
+			if entry.Quest then
+				status.Text = entry.Hint or ""
+			end
 		else
 			actionButton.Text, enabled = "How to earn it", false
 			status.Text = entry.Hint or ""
@@ -278,11 +270,6 @@ shopRemote.OnClientEvent:Connect(function(action, data)
 		refreshAction()
 	end
 end)
-tryRemote.OnClientEvent:Connect(function(action, data)
-	if action == "Result" and type(data) == "table" and data.Message then
-		print("[Shop] " .. data.Message)
-	end
-end)
 classRemote.OnClientEvent:Connect(function(action, data)
 	if action == "Result" and type(data) == "table" and data.Message and data.Message ~= "" then
 		status.Text = data.Message
@@ -298,40 +285,55 @@ player.AttributeChanged:Connect(function(name)
 	end
 end)
 
--- Has the performer use a skill for real: back to its mark with cooldowns cleared, then the same message the fight's input sends.
-local performToken = 0
-local function perform(classId, key)
-	local control = ReplicatedStorage:FindFirstChild("ClassControl")
-	local target = workspace:FindFirstChild("ClassTrainingDummy")
-	if not control or not target or player:GetAttribute("TryoutClass") ~= classId then
-		return
-	end
-	performToken += 1
-	local mine = performToken
-	tryRemote:FireServer("Ready")
-	task.delay(0.25, function()
-		if mine ~= performToken or player:GetAttribute("TryoutClass") ~= classId then
-			return
-		end
-		local aim = target:GetPivot().Position
-		control:FireServer("Action", key, "Begin", aim)
-		local hold = HOLD[classId] and HOLD[classId][key]
-		if hold then
-			task.wait(hold)
-			if mine == performToken then
-				control:FireServer("Action", key, "End", aim)
-			end
-		end
-	end)
+-- stats ----------------------------------------------------------------------------------------------------------------
+local maxima = { HP = 1, Stamina = 1, Dash = 1, Speed = 1, ["Base Defense"] = 0.01 }
+for _, id in ClassConfig.Order do
+	local d = ClassConfig.Classes[id]
+	maxima.HP = math.max(maxima.HP, d.HP or 0)
+	maxima.Stamina = math.max(maxima.Stamina, d.Stamina or 0)
+	maxima.Dash = math.max(maxima.Dash, d.DashCost or 0)
+	maxima.Speed = math.max(maxima.Speed, d.Speed or 0)
+	maxima["Base Defense"] = math.max(maxima["Base Defense"], d.BaseDefense or 0)
+end
+local function setStat(stat, value, shown, color)
+	local row = statRows[stat]
+	row.fill.Size = UDim2.fromScale(math.clamp(value / maxima[stat], 0.03, 1), 1)
+	row.fill.BackgroundColor3 = color
+	row.value.Text = shown
 end
 
+local function setIcon(id, color)
+	iconHolder:ClearAllChildren()
+	if id then
+		StatusIcons.Create(iconHolder, "Logo" .. id, UDim2.fromScale(1, 1), UDim2.new(), color)
+	end
+end
+
+-- skills: the performer uses them, you watch ----------------------------------------------------------------------------
+local skillButtons = {}
 local function clearSkills()
-	for _, child in skillRow:GetChildren() do
+	for _, child in skillGrid:GetChildren() do
 		if child:IsA("TextButton") then
 			child:Destroy()
 		end
 	end
+	skillButtons = {}
 	skillName.Text, skillBody.Text = "", ""
+end
+
+local function chooseMove(move, perform)
+	skillName.Text = (move.Hidden and "\u{2605} " or "") .. move.Name
+	skillName.TextColor3 = move.Hidden and HIDDEN or GOLD
+	skillBody.Text = move.Text
+	for id, b in skillButtons do
+		local stroke = b:FindFirstChildOfClass("UIStroke")
+		if stroke then
+			stroke.Thickness = id == move.Id and 2.5 or 1.2
+		end
+	end
+	if perform then
+		tryRemote:FireServer("Perform", move.Id)
+	end
 end
 
 local function showClass(id)
@@ -339,30 +341,39 @@ local function showClass(id)
 	status.Text = ""
 	local def = ClassConfig.Classes[id]
 	nameLabel.Text = def.Name
+	nameLabel.TextColor3 = def.Color or GOLD
+	setIcon(id, def.Color)
 	tagLabel.Text = def.Tagline or ""
-	statLabel.Text = string.format("HP %d   Stamina %d   Speed %d", def.HP or 0, def.Stamina or 0, def.Speed or 0)
-	passiveLabel.Text = def.Passive and (def.Passive.Name .. ": " .. def.Passive.Text) or ""
-	skillsTitle.Text = "Skills: click one to see it"
+	statFrame.Visible = true
+	local color = def.Color or GOLD
+	setStat("HP", def.HP or 0, tostring(def.HP or 0), color)
+	setStat("Stamina", def.Stamina or 0, tostring(def.Stamina or 0), color)
+	setStat("Dash", def.DashCost or 0, (def.DashCost or 0) .. " stam", color)
+	setStat("Speed", def.Speed or 0, tostring(def.Speed or 0), color)
+	local defense = def.BaseDefense or 0
+	setStat("Base Defense", defense, defense > 0 and string.format("%d%%", defense * 100) or "none", color)
+	passiveTitle.Text = def.Passive and ("Passive: " .. def.Passive.Name) or "Passive"
+	passiveLabel.Text = def.Passive and def.Passive.Text or ""
+	skillsTitle.Text = "Skills: pick one to watch it"
+	skillsTitle.Visible, skillGrid.Visible = true, true
 	clearSkills()
-	performToken += 1
 	if player:GetAttribute("TryoutClass") ~= id then
 		tryRemote:FireServer("Class", id)
 	end
-	local order = 0
-	for _, key in SKILL_KEYS do
-		local skill = def[key]
-		if type(skill) == "table" and skill.Name then
-			order += 1
-			local b = button(skillRow, { Name = "Skill" .. key, Size = UDim2.new(0, 56, 1, 0), LayoutOrder = order, Text = KEY_LABEL[key], TextSize = 18 })
-			local function choose()
-				skillName.Text, skillBody.Text = skill.Name, skill.Text or ""
-				perform(id, key)
-			end
-			b.Activated:Connect(choose)
-			if order == 1 then
-				skillName.Text, skillBody.Text = skill.Name, skill.Text or ""
-			end
+	local moves = ShowcaseMoves.For(id)
+	for order, move in moves do
+		local b = button(skillGrid, { Name = "Skill" .. move.Id, LayoutOrder = order, Text = (move.Hidden and "\u{2605} " or "") .. move.Label, TextSize = 17, Font = Enum.Font.GothamBold, TextColor3 = move.Hidden and HIDDEN or TEXT })
+		local stroke = b:FindFirstChildOfClass("UIStroke")
+		if stroke and move.Hidden then
+			stroke.Color = HIDDEN
 		end
+		skillButtons[move.Id] = b
+		b.Activated:Connect(function()
+			chooseMove(move, true)
+		end)
+	end
+	if moves[1] then
+		chooseMove(moves[1], false)
 	end
 	refreshAction()
 end
@@ -373,12 +384,14 @@ local function showOrb(id)
 	status.Text = ""
 	local orb = OrbConfig.Items[id]
 	nameLabel.Text = orb.Name
+	nameLabel.TextColor3 = orb.Color
+	setIcon(nil)
 	tagLabel.Text = orb.Flavor
-	statLabel.Text = ""
+	statFrame.Visible = false
+	passiveTitle.Text = "Passive"
 	passiveLabel.Text = orb.Passive .. "\n\nOne orb can be equipped at a time. It works in every fight."
-	skillsTitle.Text = ""
+	skillsTitle.Visible, skillGrid.Visible = false, false
 	clearSkills()
-	skillName.Text, skillBody.Text = "", ""
 	if orbVisual then
 		orbVisual:Destroy()
 	end
@@ -416,9 +429,18 @@ local function buildList()
 		end
 		local row = make("TextButton", { Name = id, Size = UDim2.new(1, 0, 0, 58), LayoutOrder = order, BackgroundColor3 = CARD, Text = "", AutoButtonColor = true }, listPanel)
 		round(row, 8)
-		make("Frame", { Size = UDim2.new(0, 5, 1, -14), Position = UDim2.fromOffset(6, 7), BackgroundColor3 = color, BorderSizePixel = 0 }, row)
-		text(row, { Position = UDim2.fromOffset(18, 7), Size = UDim2.new(1, -24, 0, 24), Font = TITLE_FONT, TextSize = 22, TextColor3 = TEXT, Text = name, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd })
-		local statusText = text(row, { Position = UDim2.fromOffset(18, 33), Size = UDim2.new(1, -24, 0, 18), TextSize = 13, Font = Enum.Font.GothamMedium })
+		make("Frame", { Size = UDim2.new(0, 4, 1, -14), Position = UDim2.fromOffset(5, 7), BackgroundColor3 = color, BorderSizePixel = 0 }, row)
+		local x = 16
+		if mode == "Classes" then
+			StatusIcons.Create(row, "Logo" .. id, UDim2.fromOffset(36, 36), UDim2.fromOffset(14, 11), color)
+			x = 58
+		else
+			local dot = make("Frame", { Size = UDim2.fromOffset(22, 22), Position = UDim2.fromOffset(18, 18), BackgroundColor3 = color, BorderSizePixel = 0 }, row)
+			round(dot, 11)
+			x = 50
+		end
+		text(row, { Position = UDim2.fromOffset(x, 7), Size = UDim2.new(1, -x - 6, 0, 24), Font = TITLE_FONT, TextSize = 22, TextColor3 = TEXT, Text = name, TextWrapped = false, TextTruncate = Enum.TextTruncate.AtEnd })
+		local statusText = text(row, { Position = UDim2.fromOffset(x, 33), Size = UDim2.new(1, -x - 6, 0, 18), TextSize = 13, Font = Enum.Font.GothamMedium })
 		rows[id] = { frame = row, status = statusText }
 		row.Activated:Connect(function()
 			if mode == "Classes" then
@@ -435,40 +457,63 @@ local camera = workspace.CurrentCamera
 local previousCamera
 local prompt
 local mood
+local transit = false
 
-local function setControls(enabled)
-	if enabled then
-		Freeze.Off()
-	else
-		Freeze.On()
-	end
+local function sink()
+	return Enum.ContextActionResult.Sink
 end
+
+-- Classes: a fixed side view of your performer and the target dummy. The camera is yours alone: nothing the performer does moves it.
+local function frameStage()
+	local target = workspace:FindFirstChild("ClassTrainingDummy")
+	if not markAt or not target then
+		return
+	end
+	local from = markAt
+	local to = target:GetPivot().Position
+	local mid = (from + to) / 2
+	local along = (to - from) * Vector3.new(1, 0, 1)
+	along = along.Magnitude > 0.1 and along.Unit or Vector3.xAxis
+	local side = along:Cross(Vector3.yAxis)
+	-- look from the side the watcher stands on, so your own body is behind the camera
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if root and (root.Position - mid):Dot(side) < 0 then
+		side = -side
+	end
+	camera.CameraType = Enum.CameraType.Scriptable
+	camera.FieldOfView = 70
+	camera.CFrame = CFrame.lookAt(mid + side * 19 + Vector3.new(0, 5.5, 0), mid + Vector3.new(0, 2.5, 0))
+end
+
+local function setupClassStage()
+	ContextActionService:BindActionAtPriority("ShowroomStill", sink, false, 3000, table.unpack(Enum.PlayerActions:GetEnumItems()))
+	Freeze.On()
+	-- re-assert the framing every frame: a skill's camera effect can never take the view away
+	pcall(RunService.UnbindFromRenderStep, RunService, "ShowroomCamera")
+	RunService:BindToRenderStep("ShowroomCamera", Enum.RenderPriority.Last.Value + 10, function()
+		if view.Visible and mode == "Classes" then
+			frameStage()
+		end
+	end)
+end
+
+local function stopClassCamera()
+	pcall(RunService.UnbindFromRenderStep, RunService, "ShowroomCamera")
+end
+
+tryRemote.OnClientEvent:Connect(function(action, data)
+	if action == "Result" and type(data) == "table" and data.Message then
+		status.Text = data.Message
+	elseif action == "Performer" and typeof(data) == "Instance" and data:IsA("Model") then
+		performer = data
+		markAt = data:GetPivot().Position -- each fresh body is put on its mark before it is announced
+	end
+end)
 
 local function stage()
 	local world = workspace:WaitForChild("World")
 	return world:WaitForChild("Stage"):WaitForChild("OrbSpot")
-end
-
--- Classes: the performer and its target are real and already on the stage; this side only points the camera at them from the side
--- and stops the movement keys (the skill keys still work, so pressing F does what clicking F does).
-local transit = false
-local function sink()
-	return Enum.ContextActionResult.Sink
-end
-local function setupClassStage()
-	local character = player.Character
-	local root = character and character:WaitForChild("HumanoidRootPart", 5)
-	local target = workspace:WaitForChild("ClassTrainingDummy", 5)
-	if not root or not target then
-		return
-	end
-	local from, to = root.Position, target:GetPivot().Position
-	local mid = (from + to) / 2
-	local along = ((to - from) * Vector3.new(1, 0, 1)).Unit
-	local side = along:Cross(Vector3.yAxis)
-	camera.CameraType = Enum.CameraType.Scriptable
-	camera.CFrame = CFrame.lookAt(mid + side * 13 + Vector3.new(0, 1.4, 0), mid + Vector3.new(0, 0.2, 0))
-	ContextActionService:BindActionAtPriority("ShowroomStill", sink, false, 3000, table.unpack(Enum.PlayerActions:GetEnumItems()))
 end
 
 local function setupStage()
@@ -479,8 +524,6 @@ local function setupStage()
 	local position = spot.Position + Vector3.new(-2.5, 3, 0)
 	local targetAt = spot.Position + Vector3.new(4.5, 3, 0)
 	rig = Rig.new(stageFolder, position, Vector3.new(0.9, 0, 1), targetAt)
-	targetPart = make("Part", { Name = "Target", Size = Vector3.new(2.4, 5.4, 1.6), CFrame = CFrame.new(targetAt), Anchored = true, CanCollide = false, Color = Color3.fromRGB(120, 86, 56), Material = Enum.Material.Wood }, stageFolder)
-	make("Part", { Name = "TargetFoot", Size = Vector3.new(4, 0.5, 4), CFrame = CFrame.new(targetAt - Vector3.new(0, 2.9, 0)), Anchored = true, CanCollide = false, Color = Color3.fromRGB(70, 50, 34), Material = Enum.Material.Wood }, stageFolder)
 	SkillDemos.Setup(stageFolder)
 	camera.CameraType = Enum.CameraType.Scriptable
 	camera.CFrame = CFrame.lookAt(spot.Position + Vector3.new(0.9, 4.2, 11.5), spot.Position + Vector3.new(0.9, 3.2, 0))
@@ -506,133 +549,180 @@ local function moodEvent(name)
 	end
 end
 
+local talk -- the Keeper's conversation, defined below
+
 local function openClasses()
 	mode = "Classes"
-	menu.Visible = false
 	transit = true
+	performer = nil
+	gui.Enabled = true
 	local first = player:GetAttribute("PlayerClass") or ClassConfig.Default
 	tryRemote:FireServer("Enter", first)
-	-- the server fades the screen, swaps the body and sets TryoutClass when the performer is on its mark
+	-- the server fades the screen, moves you to the stage and sets TryoutClass when the performer is on its mark
 	local waited = 0
-	while not player:GetAttribute("TryoutClass") and waited < 6 do
+	while (not player:GetAttribute("TryoutClass") or not performer) and waited < 8 do
 		waited += task.wait(0.05)
 	end
 	transit = false
 	if not player:GetAttribute("TryoutClass") then
-		menu.Visible = true
+		gui.Enabled = false
 		return
 	end
-	setupClassStage()
 	heading.Text = "Classes"
 	view.Visible = true
+	setupClassStage()
 	buildList()
 	showClass(player:GetAttribute("TryoutClass"))
 end
 
 local function closeClasses()
 	view.Visible = false
-	performToken += 1
+	stopClassCamera()
 	transit = true
 	ContextActionService:UnbindAction("ShowroomStill")
-	local performer = player.Character
 	tryRemote:FireServer("Leave")
-	-- done when the server has cleared TryoutClass AND handed back your own body (it does those in that order)
 	local waited = 0
-	while (player:GetAttribute("TryoutClass") or player.Character == performer) and waited < 8 do
+	while player:GetAttribute("TryoutClass") and waited < 8 do
 		waited += task.wait(0.05)
 	end
-	local own = player.Character
-	if own then
-		own:WaitForChild("Humanoid", 5)
-	end
 	camera.CameraType = Enum.CameraType.Custom
+	camera.FieldOfView = 70
 	local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
 	if humanoid then
 		camera.CameraSubject = humanoid
 	end
 	transit = false
-	-- back at the Keeper, in your own body
 	Freeze.Off()
-	Freeze.On()
-	menu.Visible = true
+	gui.Enabled = false
+	performer = nil
 end
 
-openShowcase = function(kind)
+local function openShowcase(kind)
 	if kind == "Classes" then
 		openClasses()
 		return
 	end
 	mode = kind
-	menu.Visible = false
-	Fade.Out(0.3, kind == "Classes" and "The Armoury" or "The Reliquary")
+	gui.Enabled = true
+	Freeze.On()
+	Fade.Out(0.3, "The Reliquary")
 	previousCamera = { camera.CameraType, camera.CameraSubject }
 	setupStage()
 	moodEvent("Stage")
-	heading.Text = kind == "Classes" and "Classes" or "Orbs"
+	heading.Text = "Orbs"
 	view.Visible = true
 	buildList()
-	if kind == "Classes" then
-		showClass(player:GetAttribute("PlayerClass") or ClassConfig.Default)
-	else
-		showOrb(player:GetAttribute("PlayerOrb") or OrbConfig.Order[1])
-	end
+	showOrb(player:GetAttribute("PlayerOrb") or OrbConfig.Order[1])
 	Fade.In(0.5)
 end
 
 local function closeShowcase()
 	if mode == "Classes" then
 		closeClasses()
-		return
+	else
+		Fade.Out(0.3)
+		view.Visible = false
+		teardownStage()
+		if previousCamera then
+			camera.CameraType, camera.CameraSubject = previousCamera[1], previousCamera[2]
+		end
+		moodEvent("Area")
+		gui.Enabled = false
+		Freeze.Off()
+		Fade.In(0.5)
 	end
-	Fade.Out(0.3)
-	view.Visible = false
-	teardownStage()
-	if previousCamera then
-		camera.CameraType, camera.CameraSubject = previousCamera[1], previousCamera[2]
-	end
-	moodEvent("Area")
-	menu.Visible = true
-	Fade.In(0.5)
+	-- back at the Keeper: he picks the conversation up again
+	task.defer(function()
+		if talk then
+			talk(true)
+		end
+	end)
 end
 backButton.Activated:Connect(closeShowcase)
 
-openLore = function()
-	menu.Visible = false
-	lore.Visible = true
-	lorePage = 1
-	showLore()
+-- The Keeper's conversation ------------------------------------------------------------------------------------------------
+local keeper
+local GREETINGS = {
+	"Everything here belonged to someone braver than you. Fair prices. No refunds.",
+	"Back again? Good. The dead don't haggle.",
+	"Look around. Touch nothing you can't afford.",
+}
+local AGAIN = { "Anything else?", "What else can I do for you?", "Still here? Then pick." }
+
+local function paragraphs(body)
+	local out = {}
+	for chunk in (body .. "\n\n"):gmatch("(.-)\n\n") do
+		if chunk:match("%S") then
+			table.insert(out, chunk)
+		end
+	end
+	return out
 end
 
-local function open()
-	gui.Enabled = true
-	menu.Visible = true
-	lore.Visible = false
-	view.Visible = false
+local function tellLore(d)
+	if not d:Say("Which story do you want?") then
+		return false
+	end
+	local pick = d:Choose({ "This place", "alterGolden", "The island and the forest" })
+	if not pick then
+		return false
+	end
+	local entries = pick == 1 and { Lore[1] } or pick == 2 and { Lore[2] } or { Lore[3], Lore[4] }
+	for _, entry in entries do
+		for _, line in paragraphs(entry.Text) do
+			if not d:Say(line) then
+				return false
+			end
+		end
+	end
+	return true
+end
+
+talk = function(again)
+	if not keeper or gui.Enabled then
+		return
+	end
+	local d = NpcDialog.Open(keeper, { Name = "The Keeper", Color = GOLD })
 	if prompt then
 		prompt.Enabled = false
 	end
-	setControls(false)
-end
-
-closeAll = function()
-	gui.Enabled = false
-	menu.Visible = false
+	local line = again and AGAIN[math.random(#AGAIN)] or GREETINGS[math.random(#GREETINGS)]
+	while d:IsOpen() do
+		if not d:Say(line, 0.6) then
+			break
+		end
+		local pick = d:Choose({ "Show me the classes", "Show me the orbs", "Tell me a story" })
+		if pick == 1 or pick == 2 then
+			d:Close()
+			openShowcase(pick == 1 and "Classes" or "Orbs")
+			break
+		elseif pick == 3 then
+			if not tellLore(d) then
+				break
+			end
+			line = AGAIN[math.random(#AGAIN)]
+		else
+			break
+		end
+	end
+	d:Close()
 	if prompt then
 		prompt.Enabled = true
 	end
-	setControls(true)
 end
 
 task.spawn(function()
 	local world = workspace:WaitForChild("World", 30)
 	local shop = world and world:WaitForChild("Shop", 30)
-	local keeper = shop and shop:WaitForChild("Shopkeeper", 30)
+	keeper = shop and shop:WaitForChild("Shopkeeper", 30)
 	local torso = keeper and keeper:WaitForChild("Torso", 30)
 	prompt = torso and torso:WaitForChild("ShopPrompt", 30)
 	if prompt then
+		prompt.ActionText = "Talk"
+		prompt.ObjectText = "The Keeper"
 		prompt.Triggered:Connect(function(who)
 			if who == player then
-				open()
+				task.spawn(talk, false)
 			end
 		end)
 	end
@@ -640,16 +730,18 @@ end)
 
 player.CharacterRemoving:Connect(function()
 	if transit then
-		return -- the showroom swapping the body in or out
+		return
 	end
 	ContextActionService:UnbindAction("ShowroomStill")
+	stopClassCamera()
 	if gui.Enabled then
-		if view.Visible then
-			view.Visible = false
+		if view.Visible and mode ~= "Classes" then
 			teardownStage()
 			moodEvent("Area")
-			camera.CameraType = Enum.CameraType.Custom
 		end
-		closeAll()
+		view.Visible = false
+		camera.CameraType = Enum.CameraType.Custom
+		gui.Enabled = false
+		Freeze.Off()
 	end
 end)

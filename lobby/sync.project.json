@@ -11,13 +11,13 @@
         "$path": "../shared/UnfairShared"
       },
       "BossShared": {
-        "$path": "../boss/src/ReplicatedStorage/BossShared",
+        "$path": "../alterGolden Bossfight/src/ReplicatedStorage/BossShared",
         "ClassModels": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Players/Classes/ClassModels"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Players/Classes/ClassModels"
         }
       },
       "VFXEngine": {
-        "$path": "../boss/src/ReplicatedStorage/VFXEngine"
+        "$path": "../alterGolden Bossfight/src/ReplicatedStorage/VFXEngine"
       }
     },
     "ServerScriptService": {
@@ -28,34 +28,34 @@
       "BossSystem": {
         "$className": "Folder",
         "Attacks": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Attacks"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Attacks"
         },
         "Boss": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Boss"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Boss"
         },
         "Combat": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Combat"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Combat"
         },
         "Development": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Development"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Development"
         },
         "Encounter": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Encounter"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Encounter"
         },
         "Mechanics": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Mechanics"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Mechanics"
         },
         "Passives": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Passives"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Passives"
         },
         "Phases": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Phases"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Phases"
         },
         "Players": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Players"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Players"
         },
         "Presentation": {
-          "$path": "../boss/src/ServerScriptService/BossSystem/Presentation"
+          "$path": "../alterGolden Bossfight/src/ServerScriptService/BossSystem/Presentation"
         }
       }
     },
@@ -69,24 +69,24 @@
         "Players": {
           "$className": "Folder",
           "ClassClient": {
-            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau"
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassClient.client.luau"
           },
           "ClassAnimator": {
-            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassAnimator.client.luau"
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/ClassAnimator.client.luau"
           },
           "R6ActionAnimations": {
-            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau"
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Players/R6ActionAnimations.client.luau"
           }
         },
         "Presentation": {
           "$className": "Folder",
           "BossAudioClient": {
-            "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau"
+            "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/BossClient/Presentation/BossAudioClient.client.luau"
           }
         }
       },
       "VFXEngineClient": {
-        "$path": "../boss/src/StarterPlayer/StarterPlayerScripts/VFXEngineClient.client.luau"
+        "$path": "../alterGolden Bossfight/src/StarterPlayer/StarterPlayerScripts/VFXEngineClient.client.luau"
       }
     },
     "MapBuilder": {

@@ -9,6 +9,7 @@
    Cash / CashState      "Loading" | "Ready" | "Error"
    OrbOwned_<id>         owned orbs
    PlayerOrb             the equipped orb
+   Inventory             JSON { [itemId] = count } of the items found in the world (UnfairShared/ItemConfig)
 ]]
 local DataStoreService = game:GetService("DataStoreService")
 local Players = game:GetService("Players")
@@ -50,6 +51,9 @@ local function publish(player, record)
 		player:SetAttribute("OrbOwned_" .. id, CashLedger.owns(record, "Orbs", id))
 	end
 	player:SetAttribute("PlayerOrb", CashLedger.equippedOrb(record))
+	-- the inventory (InventoryClient): items found in the world, e.g. the Reality Orb
+	local ok, json = pcall(game:GetService("HttpService").JSONEncode, game:GetService("HttpService"), CashLedger.items(record))
+	player:SetAttribute("Inventory", ok and json or "{}")
 end
 
 -- (lookup worked, record)
